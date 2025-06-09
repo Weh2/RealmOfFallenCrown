@@ -14,6 +14,16 @@ config/name="Новый игровой проект"
 config/features=PackedStringArray("4.4", "GL Compatibility")
 config/icon="res://icon.svg"
 
+[file_customization]
+
+folder_colors={
+"res://assets/": "orange",
+"res://levels/": "green",
+"res://network/": "blue",
+"res://scripts/": "red",
+"res://ui/": "yellow"
+}
+
 [rendering]
 
 renderer/rendering_method="gl_compatibility"
