@@ -1,8 +1,10 @@
-[gd_scene load_steps=2 format=3 uid="uid://di2dvgsex66k0"]
+[gd_scene load_steps=3 format=3 uid="uid://di2dvgsex66k0"]
 
 [ext_resource type="PackedScene" uid="uid://buxurdmy5l22s" path="res://character_body_2d.tscn" id="1_f3sb7"]
+[ext_resource type="Script" uid="uid://b3hlyi3p80cvt" path="res://Character/player_2.gd" id="1_fj7yv"]
 
 [node name="World" type="Node2D"]
+script = ExtResource("1_fj7yv")
 
 [node name="CharacterBody2D" parent="." instance=ExtResource("1_f3sb7")]
-speed = 300.0
+position = Vector2(2, 56)
