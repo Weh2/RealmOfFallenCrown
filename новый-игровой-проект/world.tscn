@@ -1,13 +1,41 @@
 [gd_scene load_steps=4 format=3 uid="uid://di2dvgsex66k0"]
 
 [ext_resource type="PackedScene" uid="uid://buxurdmy5l22s" path="res://character_body_2d.tscn" id="1_f3sb7"]
-[ext_resource type="Script" uid="uid://b3hlyi3p80cvt" path="res://Character/player_2.gd" id="1_fj7yv"]
-[ext_resource type="PackedScene" uid="uid://b5ywybysq6c8v" path="res://Character/player2.tscn" id="3_tlwt5"]
+[ext_resource type="PackedScene" uid="uid://dgtdefo0s7uej" path="res://Character/character_body_2d2.tscn" id="3_tlwt5"]
+
+[sub_resource type="GDScript" id="GDScript_fj7yv"]
+script/source = "extends CharacterBody2D
+
+@export var speed = 300.0
+@onready var animation_player = $AnimationPlayer
+@onready var sprite = $Sprite2D  # Или AnimatedSprite2D, если используете его
+
+func _physics_process(delta):
+	var input_direction = Input.get_vector(\"ui_left\", \"ui_right\", \"ui_up\", \"ui_down\")
+	velocity = input_direction * speed
+	move_and_slide()
+
+	# Управление анимациями
+	if velocity.length() > 0:  # Если персонаж движется
+		if abs(velocity.x) > abs(velocity.y):  # Горизонтальное движение важнее
+			if velocity.x > 0:
+				animation_player.play(\"walk_right\")
+			else:
+				animation_player.play(\"walk_left\")
+		else:  # Вертикальное движение
+			if velocity.y > 0:
+				animation_player.play(\"walk_down\")
+			else:
+				animation_player.play(\"walk_up\")
+	else:
+		animation_player.play(\"idle\")
+"
 
 [node name="World" type="Node2D"]
-script = ExtResource("1_fj7yv")
+script = SubResource("GDScript_fj7yv")
 
 [node name="CharacterBody2D" parent="." instance=ExtResource("1_f3sb7")]
 position = Vector2(2, 56)
 
-[node name="player2" parent="." instance=ExtResource("3_tlwt5")]
+[node name="CharacterBody2D2" parent="." instance=ExtResource("3_tlwt5")]
+position = Vector2(2, -2)
