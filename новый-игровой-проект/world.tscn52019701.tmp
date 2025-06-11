@@ -1,0 +1,18 @@
+[gd_scene load_steps=5 format=3 uid="uid://di2dvgsex66k0"]
+
+[ext_resource type="PackedScene" uid="uid://buxurdmy5l22s" path="res://character_body_2d.tscn" id="1_f3sb7"]
+[ext_resource type="Script" uid="uid://e1e2wt4yv510" path="res://world.gd" id="1_fj7yv"]
+[ext_resource type="PackedScene" uid="uid://dgtdefo0s7uej" path="res://Character/character_body_2d2.tscn" id="3_tlwt5"]
+[ext_resource type="PackedScene" uid="uid://bbkr4n78dcosl" path="res://canvas_layer.tscn" id="4_aqk2v"]
+
+[node name="World" type="Node2D"]
+script = ExtResource("1_fj7yv")
+
+[node name="CharacterBody2D" parent="." instance=ExtResource("1_f3sb7")]
+position = Vector2(2, 56)
+
+[node name="canvas_layer" parent="CharacterBody2D" instance=ExtResource("4_aqk2v")]
+
+[node name="CharacterBody2D2" parent="." instance=ExtResource("3_tlwt5")]
+
+[node name="canvas_layer" parent="CharacterBody2D2" instance=ExtResource("4_aqk2v")]

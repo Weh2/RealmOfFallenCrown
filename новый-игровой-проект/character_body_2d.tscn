@@ -136,8 +136,8 @@ libraries = {
 &"": SubResource("AnimationLibrary_44cfe")
 }
 
-[node name="Node" type="Node" parent="."]
-script = ExtResource("3_ghijl")
-
 [node name="Camera2D" type="Camera2D" parent="."]
 script = ExtResource("4_44cfe")
+
+[node name="Node" type="Node" parent="."]
+script = ExtResource("3_ghijl")
