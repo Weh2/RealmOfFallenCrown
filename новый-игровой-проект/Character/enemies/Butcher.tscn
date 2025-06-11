@@ -1,0 +1,39 @@
+[gd_scene load_steps=6 format=3 uid="uid://dc8qexmjly4ak"]
+
+[ext_resource type="Script" uid="uid://doed4m7bqefde" path="res://Character/enemies/butcher.gd" id="1_u7ynv"]
+[ext_resource type="Texture2D" uid="uid://suogldk628r2" path="res://Character/goblin.png" id="1_xswlk"]
+
+[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_u7ynv"]
+radius = 14.0
+height = 48.0
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_u7ynv"]
+radius = 151.013
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_v1xi3"]
+
+[node name="Butcher" type="CharacterBody2D"]
+script = ExtResource("1_u7ynv")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+position = Vector2(0, 3.8147e-06)
+texture = ExtResource("1_xswlk")
+hframes = 11
+vframes = 5
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+position = Vector2(0, -3)
+shape = SubResource("CapsuleShape2D_u7ynv")
+
+[node name="DetectionArea" type="Area2D" parent="."]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="DetectionArea"]
+position = Vector2(0, -1)
+shape = SubResource("CircleShape2D_u7ynv")
+
+[node name="AttackArea" type="Area2D" parent="."]
+position = Vector2(1, 4)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="AttackArea"]
+position = Vector2(-18, -2)
+shape = SubResource("CircleShape2D_v1xi3")
