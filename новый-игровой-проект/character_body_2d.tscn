@@ -1,7 +1,9 @@
-[gd_scene load_steps=11 format=3 uid="uid://buxurdmy5l22s"]
+[gd_scene load_steps=13 format=3 uid="uid://buxurdmy5l22s"]
 
 [ext_resource type="Texture2D" uid="uid://suogldk628r2" path="res://Character/goblin.png" id="1_f50pn"]
 [ext_resource type="Script" uid="uid://7j2fxan644jx" path="res://character_body_2d.gd" id="1_ij6vw"]
+[ext_resource type="Script" uid="uid://cl74mr4y7gwpo" path="res://health_component.gd" id="3_ghijl"]
+[ext_resource type="Script" uid="uid://cdw5xqpa77fb6" path="res://camera_2d.gd" id="4_44cfe"]
 
 [sub_resource type="CapsuleShape2D" id="CapsuleShape2D_ij6vw"]
 radius = 12.0
@@ -133,3 +135,9 @@ shape = SubResource("CapsuleShape2D_ij6vw")
 libraries = {
 &"": SubResource("AnimationLibrary_44cfe")
 }
+
+[node name="Node" type="Node" parent="."]
+script = ExtResource("3_ghijl")
+
+[node name="Camera2D" type="Camera2D" parent="."]
+script = ExtResource("4_44cfe")

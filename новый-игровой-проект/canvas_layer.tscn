@@ -1,0 +1,20 @@
+[gd_scene load_steps=2 format=3 uid="uid://bbkr4n78dcosl"]
+
+[ext_resource type="Script" uid="uid://c1nhrjo3fqog7" path="res://texture_progress_bar.gd" id="2_tg4cr"]
+
+[node name="HealthBar" type="CanvasLayer"]
+
+[node name="TextureProgressBar" type="TextureProgressBar" parent="."]
+offset_right = 40.0
+offset_bottom = 40.0
+script = ExtResource("2_tg4cr")
+
+[node name="background" type="TextureRect" parent="TextureProgressBar"]
+layout_mode = 0
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="fill" type="TextureRect" parent="TextureProgressBar"]
+layout_mode = 0
+offset_right = 40.0
+offset_bottom = 40.0
