@@ -13,6 +13,7 @@ extends CharacterBody2D
 @export var shake_power: float = 5.0
 @export var shake_duration: float = 0.5
 
+
 # Флаги состояния
 var is_flashing := false
 
@@ -70,6 +71,7 @@ func _on_death():
 	await flash_sprite(Color.DARK_RED, 0.2, 5)
 	await animation_player.animation_finished
 	queue_free()
+	
 
 # Мигание спрайта
 func flash_sprite(color: Color, duration: float, times: int = 1):
