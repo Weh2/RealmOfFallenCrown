@@ -19,4 +19,4 @@ position = Vector2(2, 56)
 [node name="canvas_layer" parent="CharacterBody2D2" instance=ExtResource("4_aqk2v")]
 
 [node name="Butcher" parent="." instance=ExtResource("5_036b0")]
-position = Vector2(169, 44)
+position = Vector2(297, 24)
