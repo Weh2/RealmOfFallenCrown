@@ -10,11 +10,12 @@
 script = ExtResource("1_fj7yv")
 
 [node name="CharacterBody2D" parent="." instance=ExtResource("1_f3sb7")]
-position = Vector2(2, 56)
+position = Vector2(2, 5)
 
 [node name="canvas_layer" parent="CharacterBody2D" instance=ExtResource("4_aqk2v")]
 
 [node name="CharacterBody2D2" parent="." instance=ExtResource("3_tlwt5")]
+position = Vector2(-122, -6)
 
 [node name="canvas_layer" parent="CharacterBody2D2" instance=ExtResource("4_aqk2v")]
 

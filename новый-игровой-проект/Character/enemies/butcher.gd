@@ -4,9 +4,51 @@ extends CharacterBody2D
 @export var damage = 15
 @export var attack_cooldown = 1.5
 @export var attack_range = 50.0
+@export var health := 100  # Перенесли в export для удобства настройки
+
+@onready var hurtbox = $Hurtbox  # Обязательно добавьте Area2D с CollisionShape2D
+@onready var health_component = $HealthComponent  # Если используете компонент
 
 var target = null
 var can_attack = true
+
+func _ready():
+	# Автоподключение сигналов
+	hurtbox.body_entered.connect(_on_hurtbox_body_entered)
+	add_to_group("enemies")  # Важно для идентификации
+	
+	# Инициализация здоровья, если используете HealthComponent
+	if health_component:
+		health_component.died.connect(_on_death)
+		
+
+func take_damage(damage: int):
+	if health_component:  # Если используете компонент здоровья
+		health_component.take_damage(damage)
+	else:
+		health -= damage
+		print("Enemy took ", damage, " damage. Remaining HP: ", health)
+		
+		if health <= 0:
+			_on_death()
+	var sprite = $Sprite2D
+	var tween = create_tween()
+	tween.tween_property(sprite, "modulate", Color.RED, 0.1)
+	tween.tween_property(sprite, "modulate", Color.WHITE, 0.1)
+
+func _on_death():
+	print("Enemy died!")
+	queue_free()
+
+func _on_hurtbox_body_entered(body):
+	if body.is_in_group("player_weapons"):  # Группа для атак игрока
+		if body.has_method("get_damage"):
+			take_damage(body.get_damage())
+		elif body.has_method("take_damage"):  # Совместимость со старым кодом
+			take_damage(body.damage)
+			
+
+# Остальные функции (_physics_process, _attack_player и т.д.) остаются без изменений
 
 func _physics_process(delta):
 	if not target:

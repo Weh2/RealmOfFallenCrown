@@ -13,6 +13,10 @@ extends CharacterBody2D
 @export var shake_power: float = 5.0
 @export var shake_duration: float = 0.5
 
+# Атака
+@onready var hitbox = $Hitbox/CollisionShape2D
+var is_attacking := false
+var attack_damage := 100
 
 # Флаги состояния
 var is_flashing := false
@@ -20,6 +24,8 @@ var is_flashing := false
 # Сигналы
 signal health_changed(new_health)
 signal died
+
+
 
 func _ready():
 	# Инициализация здоровья
@@ -29,27 +35,77 @@ func _ready():
 		health_component.died.connect(_on_death)
 	else:
 		push_error("HealthComponent not found!")
+	
+	# Выключаем хитбокс сразу
+	if hitbox:
+		hitbox.disabled = true
+	else:
+		push_error("Hitbox not found!")
+	
 
 func _physics_process(delta):
-	# Движение
-	var input_direction = Input.get_vector("ui_left", "ui_right", "ui_up", "ui_down")
-	velocity = input_direction * speed
-	move_and_slide()
+	# Движение только если не атакуем
+	if not is_attacking:
+		var input_direction = Input.get_vector("ui_left", "ui_right", "ui_up", "ui_down")
+		velocity = input_direction * speed
+		move_and_slide()
 
-	# Анимации
-	if velocity.length() > 0:
-		if abs(velocity.x) > abs(velocity.y):
-			if velocity.x > 0:
-				animation_player.play("walk_right")
+		# Анимации движения
+		if velocity.length() > 0:
+			if abs(velocity.x) > abs(velocity.y):
+				if velocity.x > 0:
+					animation_player.play("walk_right")
+				else:
+					animation_player.play("walk_left")
 			else:
-				animation_player.play("walk_left")
+				if velocity.y > 0:
+					animation_player.play("walk_down")
+				else:
+					animation_player.play("walk_up")
 		else:
-			if velocity.y > 0:
-				animation_player.play("walk_down")
-			else:
-				animation_player.play("walk_up")
+			animation_player.play("idle")
+
+func _input(event):
+	if event.is_action_pressed("attack") and not is_attacking:
+		_start_attack()
+
+# Логика атаки
+func _start_attack():
+	is_attacking = true
+	
+	# Определяем направление атаки по последнему движению
+	if abs(velocity.x) > abs(velocity.y):
+		if velocity.x > 0:
+			animation_player.play("attack_right")
+		else:
+			animation_player.play("attack_left")
 	else:
-		animation_player.play("idle")
+		if velocity.y > 0:
+			animation_player.play("attack_down")
+		else:
+			animation_player.play("attack_up")
+	
+	# Включаем хитбокс с задержкой
+	await get_tree().create_timer(0.2).timeout
+	if hitbox:
+		hitbox.disabled = false
+	
+	await animation_player.animation_finished
+	
+	# Выключаем хитбокс после анимации
+	if hitbox:
+		hitbox.disabled = true
+	is_attacking = false
+
+# Обработка попаданий
+func _on_hitbox_body_entered(body):
+	print("Hitbox collided with: ", body.name)
+	if body.has_method("take_damage"):
+		print("Damage applied to: ", body.name)
+		body.take_damage(attack_damage)
+	else:
+		print("Body has no take_damage() method!")
+
 
 # Обработчик изменения здоровья
 func _on_health_changed(current: float, max_health: float):
@@ -71,7 +127,6 @@ func _on_death():
 	await flash_sprite(Color.DARK_RED, 0.2, 5)
 	await animation_player.animation_finished
 	queue_free()
-	
 
 # Мигание спрайта
 func flash_sprite(color: Color, duration: float, times: int = 1):
