@@ -20,7 +20,6 @@ height = 50.0
 [node name="Butcher" type="CharacterBody2D" groups=["enemies"]]
 collision_layer = 2
 script = ExtResource("1_u7ynv")
-damage = 5
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
 position = Vector2(0, 3.8147e-06)

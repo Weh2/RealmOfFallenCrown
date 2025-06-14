@@ -28,9 +28,10 @@ signal died
 
 
 func _ready():
+	add_to_group("player_weapons")
 	# Инициализация здоровья
 	if health_component:
-		health_component.max_health = 100  # Устанавливаем начальное значение
+		health_component.max_health = 100
 		health_component.health_changed.connect(_on_health_changed)
 		health_component.died.connect(_on_death)
 	else:
@@ -41,9 +42,8 @@ func _ready():
 		hitbox.disabled = true
 	else:
 		push_error("Hitbox not found!")
-	
 
-func _physics_process(delta):
+func _physics_process(_delta):
 	# Движение только если не атакуем
 	if not is_attacking:
 		var input_direction = Input.get_vector("ui_left", "ui_right", "ui_up", "ui_down")
@@ -74,16 +74,13 @@ func _start_attack():
 	is_attacking = true
 	
 	# Определяем направление атаки по последнему движению
-	if abs(velocity.x) > abs(velocity.y):
-		if velocity.x > 0:
-			animation_player.play("attack_right")
+	if velocity.length() > 0:
+		if abs(velocity.x) > abs(velocity.y):
+			animation_player.play("attack_right" if velocity.x > 0 else "attack_left")
 		else:
-			animation_player.play("attack_left")
+			animation_player.play("attack_down" if velocity.y > 0 else "attack_up")
 	else:
-		if velocity.y > 0:
-			animation_player.play("attack_down")
-		else:
-			animation_player.play("attack_up")
+		animation_player.play("attack_right")  # Анимация по умолчанию
 	
 	# Включаем хитбокс с задержкой
 	await get_tree().create_timer(0.2).timeout
@@ -100,22 +97,22 @@ func _start_attack():
 # Обработка попаданий
 func _on_hitbox_body_entered(body):
 	print("Hitbox collided with: ", body.name)
-	if body.has_method("take_damage"):
+	if body != self and body.has_method("take_damage"):
 		print("Damage applied to: ", body.name)
 		body.take_damage(attack_damage)
 	else:
-		print("Body has no take_damage() method!")
+		print("Body has no take_damage() method or is self!")
 
-
-# Обработчик изменения здоровья
-func _on_health_changed(current: float, max_health: float):
+# Обработчик здоровья
+func _on_health_changed(current: float, _max_health: float):
 	# Визуальные эффекты при получении урона
-	if current < health_component.current_health:
+	if health_component and current < health_component.current_health:
 		flash_sprite(Color.RED, 0.1, 3)
 		apply_knockback()
 		camera.apply_shake(shake_power, shake_duration)
 	
-	health_component.current_health = current
+	if health_component:
+		health_component.current_health = current
 	health_changed.emit(current)
 
 # Обработчик смерти
@@ -130,7 +127,7 @@ func _on_death():
 
 # Мигание спрайта
 func flash_sprite(color: Color, duration: float, times: int = 1):
-	if is_flashing:
+	if is_flashing or not sprite:
 		return
 		
 	is_flashing = true
@@ -146,7 +143,7 @@ func apply_knockback(power: float = 200.0):
 	velocity = -velocity.normalized() * power
 	move_and_slide()
 
-# Внешний интерфейс для работы с здоровьем
+# Методы здоровья
 func take_damage(damage: int):
 	if health_component:
 		health_component.take_damage(damage)
