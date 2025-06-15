@@ -1,10 +1,11 @@
-[gd_scene load_steps=20 format=3 uid="uid://buxurdmy5l22s"]
+[gd_scene load_steps=22 format=3 uid="uid://buxurdmy5l22s"]
 
 [ext_resource type="Script" uid="uid://7j2fxan644jx" path="res://Character/Warrior/character_body_2d.gd" id="1_ij6vw"]
 [ext_resource type="Texture2D" uid="uid://dhew1b12lb6yw" path="res://Character/merged-images-no-bg-preview (carve.photos).png" id="2_44cfe"]
 [ext_resource type="Script" uid="uid://cl74mr4y7gwpo" path="res://health_component.gd" id="3_ghijl"]
 [ext_resource type="Script" uid="uid://cdw5xqpa77fb6" path="res://camera_2d.gd" id="4_44cfe"]
 [ext_resource type="Script" uid="uid://dhk7lko5rrone" path="res://Character/Warrior/weapon.gd" id="5_dd465"]
+[ext_resource type="Script" uid="uid://crtgs854qluco" path="res://Character/Warrior/block_area.gd" id="6_b7jr5"]
 
 [sub_resource type="CapsuleShape2D" id="CapsuleShape2D_ij6vw"]
 radius = 12.0
@@ -175,6 +176,23 @@ tracks/0/keys = {
 "values": [Vector2i(0, 3), Vector2i(1, 3), Vector2i(2, 3), Vector2i(3, 3), Vector2i(4, 3), Vector2i(5, 3)]
 }
 
+[sub_resource type="Animation" id="Animation_b7jr5"]
+resource_name = "block"
+length = 0.3
+loop_mode = 1
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Sprite2D:frame_coords")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.0666667, 0.133333, 0.166667, 0.2, 0.266667),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1),
+"update": 1,
+"values": [Vector2i(0, 1), Vector2i(1, 1), Vector2i(2, 1), Vector2i(3, 1), Vector2i(4, 1), Vector2i(5, 1)]
+}
+
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_44cfe"]
 _data = {
 &"RESET": SubResource("Animation_ghijl"),
@@ -182,6 +200,7 @@ _data = {
 &"attack_left": SubResource("Animation_6ct3r"),
 &"attack_right": SubResource("Animation_qp52p"),
 &"attack_up": SubResource("Animation_1kp85"),
+&"block": SubResource("Animation_b7jr5"),
 &"idle": SubResource("Animation_4sjlk"),
 &"walk_down": SubResource("Animation_ij6vw"),
 &"walk_left": SubResource("Animation_dd465"),
@@ -206,7 +225,7 @@ hframes = 8
 vframes = 6
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
-position = Vector2(-4, -2)
+position = Vector2(-4, -8)
 shape = SubResource("CapsuleShape2D_ij6vw")
 
 [node name="AnimationPlayer" type="AnimationPlayer" parent="."]
@@ -231,7 +250,17 @@ position = Vector2(19, -2)
 shape = SubResource("CapsuleShape2D_44cfe")
 
 [node name="BlockArea" type="Area2D" parent="."]
+script = ExtResource("6_b7jr5")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="BlockArea"]
 position = Vector2(24, 1)
 shape = SubResource("CircleShape2D_uqe86")
+
+[node name="StaminaUI" type="Node2D" parent="."]
+
+[node name="TextureProgressBar" type="TextureProgressBar" parent="StaminaUI"]
+offset_top = 50.0
+offset_right = 100.0
+offset_bottom = 60.0
+tint_under = Color(0.70907, 0.687727, 0.667045, 1)
+tint_progress = Color(0.272681, 0.455002, 0.232609, 1)
