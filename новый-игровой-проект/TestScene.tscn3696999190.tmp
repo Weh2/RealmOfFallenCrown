@@ -1,0 +1,12 @@
+[gd_scene load_steps=3 format=3 uid="uid://dsaupngeyi5dw"]
+
+[ext_resource type="PackedScene" uid="uid://dc8qexmjly4ak" path="res://Character/enemies/Butcher.tscn" id="1_cguwc"]
+[ext_resource type="PackedScene" uid="uid://buxurdmy5l22s" path="res://Character/Warrior/character_body_2d.tscn" id="2_wicfy"]
+
+[node name="Node2D" type="Node2D"]
+
+[node name="Butcher" parent="." instance=ExtResource("1_cguwc")]
+position = Vector2(372, 2)
+
+[node name="CharacterBody2D" parent="." groups=["enemies"] instance=ExtResource("2_wicfy")]
+position = Vector2(-4, 0)

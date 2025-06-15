@@ -23,13 +23,24 @@ func _ready():
 	else:
 		push_error("HealthComponent not found!")
 
+var is_facing_left = false
+
 func _physics_process(_delta):
 	if weapon.is_attacking():
 		return
+
 		
 	var input_direction = Input.get_vector("ui_left", "ui_right", "ui_up", "ui_down")
-	velocity = input_direction * speed
+	# Разворот спрайта по горизонтали
+	# Разворот спрайта по горизонтали
+	if input_direction.x != 0:  # Проверяем только X-составляющую
+		sprite.flip_h = input_direction.x < 0  # Разворачиваем если движение влево
+		$Weapon.update_direction(input_direction.x < 0)
+	velocity = input_direction * speed   
 	move_and_slide()
+	
+	
+		
 
 	if velocity.length() > 0:
 		if abs(velocity.x) > abs(velocity.y):

@@ -1,4 +1,4 @@
-[gd_scene load_steps=19 format=3 uid="uid://buxurdmy5l22s"]
+[gd_scene load_steps=27 format=3 uid="uid://buxurdmy5l22s"]
 
 [ext_resource type="Script" uid="uid://7j2fxan644jx" path="res://Character/Warrior/character_body_2d.gd" id="1_ij6vw"]
 [ext_resource type="Texture2D" uid="uid://dhew1b12lb6yw" path="res://Character/merged-images-no-bg-preview (carve.photos).png" id="2_44cfe"]
@@ -191,7 +191,59 @@ _data = {
 
 [sub_resource type="CapsuleShape2D" id="CapsuleShape2D_44cfe"]
 
-[node name="CharacterBody2D" type="CharacterBody2D" groups=["player", "player_weapons"]]
+[sub_resource type="CircleShape2D" id="CircleShape2D_uqe86"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_b7jr5"]
+atlas = ExtResource("2_44cfe")
+region = Rect2(0, 160, 160, 160)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_jw0ga"]
+atlas = ExtResource("2_44cfe")
+region = Rect2(160, 160, 160, 160)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_06ixi"]
+atlas = ExtResource("2_44cfe")
+region = Rect2(320, 160, 160, 160)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_ebp8b"]
+atlas = ExtResource("2_44cfe")
+region = Rect2(480, 160, 160, 160)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_ba6fp"]
+atlas = ExtResource("2_44cfe")
+region = Rect2(640, 160, 160, 160)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_2xth5"]
+atlas = ExtResource("2_44cfe")
+region = Rect2(800, 160, 160, 160)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_qcdy4"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_b7jr5")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_jw0ga")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_06ixi")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_ebp8b")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_ba6fp")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_2xth5")
+}],
+"loop": true,
+"name": &"default",
+"speed": 10.0
+}]
+
+[node name="Warrior" type="CharacterBody2D" groups=["player", "player_weapons"]]
 script = ExtResource("1_ij6vw")
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
@@ -225,3 +277,13 @@ collision_mask = 2
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Weapon/Hitbox"]
 position = Vector2(30, -3)
 shape = SubResource("CapsuleShape2D_44cfe")
+
+[node name="BlockArea" type="Area2D" parent="."]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="BlockArea"]
+position = Vector2(22, -1)
+shape = SubResource("CircleShape2D_uqe86")
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="BlockArea"]
+position = Vector2(-3, -3)
+sprite_frames = SubResource("SpriteFrames_qcdy4")
