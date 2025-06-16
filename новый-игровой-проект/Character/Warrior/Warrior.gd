@@ -5,8 +5,9 @@ extends CharacterBody2D
 @onready var movement_animation_player = $AnimationPlayer
 @onready var camera = $Camera2D
 @onready var health_component = $HealthComponent
+@onready var health_ui = $HealthUI
 @onready var weapon = $Weapon
-@onready var stamina_bar = $StaminaUI/TextureProgressBar
+@onready var stamina_ui = $StaminaUI
 @onready var block_area = $BlockArea
 
 @export var shake_power: float = 5.0
@@ -14,7 +15,14 @@ extends CharacterBody2D
 
 # Stamina system
 @export var max_stamina: float = 100.0
-var current_stamina: float = max_stamina
+var current_stamina: float = max_stamina:
+	set(value):
+		current_stamina = clamp(value, 0, max_stamina)
+		stamina_ui.set_stamina(current_stamina)
+		stamina_changed.emit(current_stamina)
+		if current_stamina <= 0:
+			_on_stamina_depleted()
+			
 @export var stamina_regen_rate: float = 15.0
 @export var stamina_consumption_rate: float = 25.0
 @export var block_damage_reduction: float = 0.7
@@ -26,15 +34,19 @@ signal stamina_changed(new_stamina)
 signal died
 
 func _ready():
+	
+	# Инициализация компонентов здоровья
 	if health_component:
 		health_component.max_health = 100
+		health_ui.update_health(health_component.current_health, health_component.max_health)
 		health_component.health_changed.connect(_on_health_changed)
 		health_component.died.connect(_on_death)
 	else:
 		push_error("HealthComponent not found!")
 	
+	# Инициализация стамины
 	current_stamina = max_stamina
-	update_stamina_bar()
+	stamina_ui.setup(max_stamina)
 
 func _physics_process(delta):
 	if weapon.is_attacking():
@@ -59,9 +71,6 @@ func _physics_process(delta):
 	else:
 		current_stamina = min(current_stamina + stamina_regen_rate * delta, max_stamina)
 	
-	update_stamina_bar()
-	emit_signal("stamina_changed", current_stamina)
-	
 	# Movement only when not blocking
 	if !is_blocking:
 		var input_direction = Input.get_vector("ui_left", "ui_right", "ui_up", "ui_down")
@@ -83,29 +92,42 @@ func _physics_process(delta):
 		elif movement_animation_player.has_animation("idle"):
 			movement_animation_player.play("idle")
 
-func update_stamina_bar():
-	if stamina_bar:
-		stamina_bar.value = current_stamina
-		# Меняем цвет при низкой стамине
-		stamina_bar.tint_progress = Color.RED if current_stamina < 30 else Color.GREEN
+func _on_stamina_depleted():
+	is_blocking = false
+	block_area.is_blocking = false
+	if movement_animation_player.has_animation("idle"):
+		movement_animation_player.play("idle")
 
 func _input(event):
 	if event.is_action_pressed("attack") and !is_blocking:
 		weapon.start_attack(velocity)
 
-func _on_health_changed(current: float, _max_health: float):
-	if health_component and current < health_component.current_health:
-		# Apply reduced damage if blocking
-		var actual_damage = health_component.current_health - current
+func _on_health_changed(current: float, max_hp: float):
+	# Сохраняем предыдущее значение здоровья
+	var previous_health = health_component.current_health
+	
+	# Обновляем значение в компоненте
+	health_component.current_health = current
+	
+	# Обновляем UI
+	health_ui.update_health(current, max_hp)
+	
+	# Визуальные эффекты при получении урона
+	if current < previous_health:
 		if is_blocking:
-			actual_damage *= (1.0 - block_damage_reduction)
-			flash_sprite(Color.BLUE, 0.1, 1)  # Different color for blocked hit
+			flash_sprite(Color.ROYAL_BLUE, 0.1, 1)  # Эффект блока
+			camera.apply_shake(shake_power * 0.5, shake_duration * 0.7)
 		else:
-			flash_sprite(Color.RED, 0.1, 3)
+			flash_sprite(Color.RED, 0.1, 3)  # Стандартный красный Godot
 			apply_knockback()
 			camera.apply_shake(shake_power, shake_duration)
 	
+	# Эмитируем сигнал
 	health_changed.emit(current)
+	
+	# Критическое здоровье
+	if current <= max_hp * 0.3:
+		health_ui.show_critical_effect()
 
 func _on_death():
 	died.emit()
