@@ -261,7 +261,13 @@ shape = SubResource("CircleShape2D_uqe86")
 [node name="StaminaUI" type="CanvasLayer" parent="."]
 script = ExtResource("7_jw0ga")
 
-[node name="ProgressBar" type="ProgressBar" parent="StaminaUI"]
+[node name="UIRoot" type="Control" parent="StaminaUI"]
+layout_mode = 3
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="StaminaBar" type="ProgressBar" parent="StaminaUI/UIRoot"]
 offset_left = 2.0
 offset_top = -3.0
 offset_right = 202.0
@@ -273,12 +279,18 @@ value = 100.0
 [node name="HealthUI" type="CanvasLayer" parent="."]
 script = ExtResource("8_06ixi")
 
-[node name="HealthBar" type="ProgressBar" parent="HealthUI"]
+[node name="UIRoot" type="Control" parent="HealthUI"]
+layout_mode = 3
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="HealthBar" type="ProgressBar" parent="HealthUI/UIRoot"]
 offset_right = 200.0
 offset_bottom = 27.0
 value = 100.0
 
-[node name="Label" type="Label" parent="HealthUI/HealthBar"]
+[node name="Label" type="Label" parent="HealthUI/UIRoot/HealthBar"]
 layout_mode = 0
 offset_right = 40.0
 offset_bottom = 23.0

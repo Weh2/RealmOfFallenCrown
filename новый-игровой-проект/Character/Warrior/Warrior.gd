@@ -34,6 +34,12 @@ signal stamina_changed(new_stamina)
 signal died
 
 func _ready():
+	# Ждем полной инициализации
+	await get_tree().process_frame
+	
+	# Позиционирование UI элементов
+	health_ui.get_node("UIRoot").position = Vector2(20, 20)  # X: 20px, Y: 20px
+	stamina_ui.get_node("UIRoot").position = Vector2(20, 60)  # X: 20px, Y: 60px
 	
 	# Инициализация компонентов здоровья
 	if health_component:
