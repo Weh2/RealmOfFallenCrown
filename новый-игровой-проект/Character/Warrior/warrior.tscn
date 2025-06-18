@@ -1,4 +1,4 @@
-[gd_scene load_steps=24 format=3 uid="uid://buxurdmy5l22s"]
+[gd_scene load_steps=25 format=3 uid="uid://buxurdmy5l22s"]
 
 [ext_resource type="Script" uid="uid://7j2fxan644jx" path="res://Character/Warrior/Warrior.gd" id="1_ij6vw"]
 [ext_resource type="Texture2D" uid="uid://dhew1b12lb6yw" path="res://Character/merged-images-no-bg-preview (carve.photos).png" id="2_44cfe"]
@@ -195,6 +195,23 @@ tracks/0/keys = {
 "values": [Vector2i(0, 3), Vector2i(1, 3), Vector2i(2, 3), Vector2i(3, 3), Vector2i(4, 3), Vector2i(5, 3)]
 }
 
+[sub_resource type="Animation" id="Animation_4xojc"]
+resource_name = "dash"
+length = 0.5
+loop_mode = 1
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Sprite2D:frame_coords")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.0666667, 0.166667, 0.233333, 0.333333, 0.433333),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1),
+"update": 1,
+"values": [Vector2i(0, 3), Vector2i(1, 3), Vector2i(2, 3), Vector2i(3, 3), Vector2i(4, 3), Vector2i(5, 3)]
+}
+
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_44cfe"]
 _data = {
 &"RESET": SubResource("Animation_ghijl"),
@@ -203,6 +220,7 @@ _data = {
 &"attack_right": SubResource("Animation_qp52p"),
 &"attack_up": SubResource("Animation_1kp85"),
 &"block": SubResource("Animation_b7jr5"),
+&"dash": SubResource("Animation_4xojc"),
 &"idle": SubResource("Animation_4sjlk"),
 &"walk_down": SubResource("Animation_ij6vw"),
 &"walk_left": SubResource("Animation_dd465"),

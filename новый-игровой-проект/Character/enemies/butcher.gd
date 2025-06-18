@@ -1,7 +1,7 @@
 extends CharacterBody2D
 
 @export var speed = 120
-@export var attack_damage = 15  # Переименовали для ясности
+@export var attack_damage = 15
 @export var attack_cooldown = 1.5
 @export var attack_range = 50.0
 @export var health := 100
@@ -9,7 +9,7 @@ extends CharacterBody2D
 var target = null
 var can_attack = true
 
-func take_damage(incoming_damage: int):  # Исправленный параметр
+func take_damage(incoming_damage: int):
 	health -= incoming_damage
 	print("Enemy health: ", health)
 	
@@ -17,7 +17,7 @@ func take_damage(incoming_damage: int):  # Исправленный параме
 		queue_free()
 		print("Enemy died!")
 
-func _physics_process(_delta):  # Исправленный параметр
+func _physics_process(_delta):
 	if not target:
 		return
 	
@@ -37,13 +37,14 @@ func _physics_process(_delta):  # Исправленный параметр
 			_attack_player()
 
 func _is_target_alive(player):
-	if not player or not player.has_node("HealthComponent"):
+	if not player or not player.has_method("take_damage"):
 		return false
-	return player.get_node("HealthComponent").current_health > 0
+	return true
 
 func _attack_player():
 	can_attack = false
-	target.get_node("HealthComponent").take_damage(attack_damage)
+	if target.has_method("take_damage"):
+		target.take_damage(attack_damage, global_position)
 	await get_tree().create_timer(attack_cooldown).timeout
 	can_attack = true
 

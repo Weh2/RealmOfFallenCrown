@@ -29,19 +29,24 @@ var current_stamina: float = max_stamina:
 var is_blocking := false
 var is_flashing := false
 
+# Dash system
+@export var dash_speed_multiplier := 2.5
+@export var dash_duration := 0.20  # Изменено с 0.20 на 0.15 как во втором скрипте
+@export var dash_cooldown := 0.8
+@export var dash_stamina_cost := 25.0
+var is_dashing := false
+var can_dash := true
+
 signal health_changed(new_health)
 signal stamina_changed(new_stamina)
 signal died
 
 func _ready():
-	# Ждем полной инициализации
 	await get_tree().process_frame
 	
-	# Позиционирование UI элементов
-	health_ui.get_node("UIRoot").position = Vector2(20, 20)  # X: 20px, Y: 20px
-	stamina_ui.get_node("UIRoot").position = Vector2(20, 60)  # X: 20px, Y: 60px
+	health_ui.get_node("UIRoot").position = Vector2(20, 20)
+	stamina_ui.get_node("UIRoot").position = Vector2(20, 60)
 	
-	# Инициализация компонентов здоровья
 	if health_component:
 		health_component.max_health = 100
 		health_ui.update_health(health_component.current_health, health_component.max_health)
@@ -50,12 +55,12 @@ func _ready():
 	else:
 		push_error("HealthComponent not found!")
 	
-	# Инициализация стамины
 	current_stamina = max_stamina
 	stamina_ui.setup(max_stamina)
 
 func _physics_process(delta):
-	if weapon.is_attacking():
+	if weapon.is_attacking() or is_dashing:
+		move_and_slide()
 		return
 	
 	# Handle blocking
@@ -77,11 +82,10 @@ func _physics_process(delta):
 	else:
 		current_stamina = min(current_stamina + stamina_regen_rate * delta, max_stamina)
 	
-	# Movement only when not blocking
-	if !is_blocking:
+	# Movement only when not blocking and not dashing
+	if !is_blocking and !is_dashing:
 		var input_direction = Input.get_vector("ui_left", "ui_right", "ui_up", "ui_down")
 		
-		# Sprite flipping
 		if input_direction.x != 0:
 			sprite.flip_h = input_direction.x < 0
 			$Weapon.update_direction(input_direction.x < 0)
@@ -89,7 +93,6 @@ func _physics_process(delta):
 		velocity = input_direction * speed   
 		move_and_slide()
 		
-		# Animation handling
 		if velocity.length() > 0:
 			if abs(velocity.x) > abs(velocity.y):
 				movement_animation_player.play("walk_right" if velocity.x > 0 else "walk_left")
@@ -98,42 +101,69 @@ func _physics_process(delta):
 		elif movement_animation_player.has_animation("idle"):
 			movement_animation_player.play("idle")
 
+func _input(event):
+	if event.is_action_pressed("dash") and can_dash and current_stamina >= dash_stamina_cost and !is_blocking:
+		start_dash()
+	elif event.is_action_pressed("attack") and !is_blocking and !is_dashing:
+		weapon.start_attack(velocity)
+
+func start_dash():
+	can_dash = false
+	is_dashing = true
+	current_stamina -= dash_stamina_cost
+	
+	var dash_direction = Input.get_vector("ui_left", "ui_right", "ui_up", "ui_down")
+	if dash_direction == Vector2.ZERO:
+		dash_direction = Vector2.RIGHT if !sprite.flip_h else Vector2.LEFT
+	
+	velocity = dash_direction.normalized() * speed * dash_speed_multiplier
+	if movement_animation_player.has_animation("dash"):
+		movement_animation_player.play("dash")
+	
+	await get_tree().create_timer(dash_duration).timeout
+	is_dashing = false
+	await get_tree().create_timer(dash_cooldown).timeout
+	can_dash = true
+
+func take_damage(damage: int, source_position: Vector2 = Vector2.ZERO):
+	if is_dashing:  # Полная неуязвимость во время дэша (как во втором скрипте)
+		return
+	
+	if is_blocking and check_block_direction(source_position):
+		damage = int(damage * (1.0 - block_damage_reduction))  # Упрощенный расчет урона как во втором скрипте
+		flash_sprite(Color.ROYAL_BLUE, 0.1, 1)
+		camera.apply_shake(shake_power * 0.5, shake_duration * 0.7)
+	else:
+		flash_sprite(Color.RED, 0.1, 3)
+		camera.apply_shake(shake_power, shake_duration)
+	
+	if health_component:
+		health_component.take_damage(damage)
+	
+	# Отбрасывание
+	if source_position != Vector2.ZERO:
+		var knockback_direction = (global_position - source_position).normalized()
+		velocity = knockback_direction * 200
+		move_and_slide()
+
+func check_block_direction(source_position: Vector2) -> bool:
+	if source_position == Vector2.ZERO:
+		return false
+	
+	var attack_direction = (source_position - global_position).normalized()
+	var block_direction = Vector2(-1 if sprite.flip_h else 1, 0)
+	return attack_direction.dot(block_direction) > 0.7
+
 func _on_stamina_depleted():
 	is_blocking = false
 	block_area.is_blocking = false
 	if movement_animation_player.has_animation("idle"):
 		movement_animation_player.play("idle")
 
-func _input(event):
-	if event.is_action_pressed("attack") and !is_blocking:
-		weapon.start_attack(velocity)
-
 func _on_health_changed(current: float, max_hp: float):
-	# Сохраняем предыдущее значение здоровья
-	var previous_health = health_component.current_health
-	
-	# Обновляем значение в компоненте
-	health_component.current_health = current
-	
-	# Обновляем UI
 	health_ui.update_health(current, max_hp)
-	
-	# Визуальные эффекты при получении урона
-	if current < previous_health:
-		if is_blocking:
-			flash_sprite(Color.ROYAL_BLUE, 0.1, 1)  # Эффект блока
-			camera.apply_shake(shake_power * 0.5, shake_duration * 0.7)
-		else:
-			flash_sprite(Color.RED, 0.1, 3)  # Стандартный красный Godot
-			apply_knockback()
-			camera.apply_shake(shake_power, shake_duration)
-	
-	# Эмитируем сигнал
 	health_changed.emit(current)
 	
-	# Критическое здоровье
-	if current <= max_hp * 0.3:
-		health_ui.show_critical_effect()
 
 func _on_death():
 	died.emit()
@@ -157,14 +187,6 @@ func flash_sprite(color: Color, duration: float, times: int = 1):
 		tween.tween_property(sprite, "modulate", Color.WHITE, duration)
 		await tween.finished
 	is_flashing = false
-
-func apply_knockback(power: float = 200.0):
-	velocity = -velocity.normalized() * power
-	move_and_slide()
-
-func take_damage(damage: int):
-	if health_component:
-		health_component.take_damage(damage)
 
 func heal(amount: int):
 	if health_component:

@@ -9,12 +9,13 @@ var is_invincible: bool = false
 
 func _ready():
 	current_health = max_health
+	health_changed.emit(current_health, max_health)
 
 func take_damage(damage: float):
 	if is_invincible:
 		return
 	
-	current_health -= damage
+	current_health = max(current_health - damage, 0)
 	health_changed.emit(current_health, max_health)
 	
 	if current_health <= 0:
