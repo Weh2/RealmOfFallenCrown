@@ -268,6 +268,7 @@ offset_right = 40.0
 offset_bottom = 40.0
 
 [node name="StaminaBar" type="ProgressBar" parent="StaminaUI/UIRoot"]
+layout_mode = 0
 offset_left = 2.0
 offset_top = -3.0
 offset_right = 202.0
@@ -286,6 +287,7 @@ offset_right = 40.0
 offset_bottom = 40.0
 
 [node name="HealthBar" type="ProgressBar" parent="HealthUI/UIRoot"]
+layout_mode = 0
 offset_right = 200.0
 offset_bottom = 27.0
 value = 100.0
