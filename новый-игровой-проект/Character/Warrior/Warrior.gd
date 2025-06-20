@@ -9,6 +9,8 @@ extends CharacterBody2D
 @onready var weapon = $Weapon
 @onready var stamina_ui = $StaminaUI
 @onready var block_area = $BlockArea
+@onready var inventory_system = $InventorySystem
+@onready var inventory_ui = $InventoryUI
 
 @export var shake_power: float = 5.0
 @export var shake_duration: float = 0.5
@@ -31,7 +33,7 @@ var is_flashing := false
 
 # Dash system
 @export var dash_speed_multiplier := 2.5
-@export var dash_duration := 0.20  # Изменено с 0.20 на 0.15 как во втором скрипте
+@export var dash_duration := 0.20
 @export var dash_cooldown := 0.8
 @export var dash_stamina_cost := 25.0
 var is_dashing := false
@@ -57,9 +59,12 @@ func _ready():
 	
 	current_stamina = max_stamina
 	stamina_ui.setup(max_stamina)
+	
+	# Инициализация инвентаря
+	inventory_ui.visible = false
 
 func _physics_process(delta):
-	if weapon.is_attacking() or is_dashing:
+	if weapon.is_attacking() or is_dashing or inventory_ui.visible:
 		move_and_slide()
 		return
 	
@@ -102,6 +107,24 @@ func _physics_process(delta):
 			movement_animation_player.play("idle")
 
 func _input(event):
+	# Открытие инвентаря
+	if event.is_action_pressed("inventory"):
+		inventory_ui.visible = !inventory_ui.visible
+		if inventory_ui.visible:
+			Input.set_mouse_mode(Input.MOUSE_MODE_VISIBLE)
+		else:
+			Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)
+		return  # Прерываем другие обработчики при открытом инвентаре
+	
+	if inventory_ui.visible:
+		return  # Блокируем остальной ввод при открытом инвентаре
+	
+	# Использование предметов
+	for i in range(9):
+		if event.is_action_pressed("slot_%d" % (i+1)):
+			inventory_system.use_item(i, self)
+	
+	# Дэш и атака
 	if event.is_action_pressed("dash") and can_dash and current_stamina >= dash_stamina_cost and !is_blocking:
 		start_dash()
 	elif event.is_action_pressed("attack") and !is_blocking and !is_dashing:
@@ -126,11 +149,11 @@ func start_dash():
 	can_dash = true
 
 func take_damage(damage: int, source_position: Vector2 = Vector2.ZERO):
-	if is_dashing:  # Полная неуязвимость во время дэша (как во втором скрипте)
+	if is_dashing or inventory_ui.visible:
 		return
 	
 	if is_blocking and check_block_direction(source_position):
-		damage = int(damage * (1.0 - block_damage_reduction))  # Упрощенный расчет урона как во втором скрипте
+		damage = int(damage * (1.0 - block_damage_reduction))
 		flash_sprite(Color.ROYAL_BLUE, 0.1, 1)
 		camera.apply_shake(shake_power * 0.5, shake_duration * 0.7)
 	else:
@@ -163,7 +186,6 @@ func _on_stamina_depleted():
 func _on_health_changed(current: float, max_hp: float):
 	health_ui.update_health(current, max_hp)
 	health_changed.emit(current)
-	
 
 func _on_death():
 	died.emit()

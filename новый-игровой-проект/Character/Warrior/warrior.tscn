@@ -1,4 +1,4 @@
-[gd_scene load_steps=25 format=3 uid="uid://buxurdmy5l22s"]
+[gd_scene load_steps=27 format=3 uid="uid://buxurdmy5l22s"]
 
 [ext_resource type="Script" uid="uid://7j2fxan644jx" path="res://Character/Warrior/Warrior.gd" id="1_ij6vw"]
 [ext_resource type="Texture2D" uid="uid://dhew1b12lb6yw" path="res://Character/merged-images-no-bg-preview (carve.photos).png" id="2_44cfe"]
@@ -8,6 +8,8 @@
 [ext_resource type="Script" uid="uid://crtgs854qluco" path="res://Character/Warrior/block_area.gd" id="6_b7jr5"]
 [ext_resource type="Script" uid="uid://bge44xo1m7341" path="res://Character/Warrior/stamina_ui.gd" id="7_jw0ga"]
 [ext_resource type="Script" uid="uid://djpuh1ssx6b05" path="res://Character/Warrior/health_ui.gd" id="8_06ixi"]
+[ext_resource type="Script" uid="uid://bsoo7pyqlxldf" path="res://Character/Warrior/inventory_system.gd" id="9_cr365"]
+[ext_resource type="Script" uid="uid://d3ow1b6g62cj2" path="res://Character/Warrior/inventory_ui.gd" id="10_pxgkq"]
 
 [sub_resource type="CapsuleShape2D" id="CapsuleShape2D_ij6vw"]
 radius = 12.0
@@ -109,6 +111,23 @@ tracks/0/keys = {
 "values": [Vector2i(0, 1), Vector2i(1, 1), Vector2i(2, 1), Vector2i(3, 1), Vector2i(4, 1), Vector2i(5, 1)]
 }
 
+[sub_resource type="Animation" id="Animation_4xojc"]
+resource_name = "dash"
+length = 0.5
+loop_mode = 1
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Sprite2D:frame_coords")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.0666667, 0.166667, 0.233333, 0.333333, 0.433333),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1),
+"update": 1,
+"values": [Vector2i(0, 3), Vector2i(1, 3), Vector2i(2, 3), Vector2i(3, 3), Vector2i(4, 3), Vector2i(5, 3)]
+}
+
 [sub_resource type="Animation" id="Animation_4sjlk"]
 resource_name = "idle"
 length = 0.6
@@ -190,23 +209,6 @@ tracks/0/interp = 1
 tracks/0/loop_wrap = true
 tracks/0/keys = {
 "times": PackedFloat32Array(0, 0.1, 0.166667, 0.233333, 0.333333, 0.433333),
-"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1),
-"update": 1,
-"values": [Vector2i(0, 3), Vector2i(1, 3), Vector2i(2, 3), Vector2i(3, 3), Vector2i(4, 3), Vector2i(5, 3)]
-}
-
-[sub_resource type="Animation" id="Animation_4xojc"]
-resource_name = "dash"
-length = 0.5
-loop_mode = 1
-tracks/0/type = "value"
-tracks/0/imported = false
-tracks/0/enabled = true
-tracks/0/path = NodePath("Sprite2D:frame_coords")
-tracks/0/interp = 1
-tracks/0/loop_wrap = true
-tracks/0/keys = {
-"times": PackedFloat32Array(0, 0.0666667, 0.166667, 0.233333, 0.333333, 0.433333),
 "transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1),
 "update": 1,
 "values": [Vector2i(0, 3), Vector2i(1, 3), Vector2i(2, 3), Vector2i(3, 3), Vector2i(4, 3), Vector2i(5, 3)]
@@ -314,3 +316,23 @@ value = 100.0
 layout_mode = 0
 offset_right = 40.0
 offset_bottom = 23.0
+
+[node name="InventorySystem" type="Node" parent="."]
+script = ExtResource("9_cr365")
+
+[node name="InventoryUI" type="CanvasLayer" parent="."]
+script = ExtResource("10_pxgkq")
+
+[node name="Panel" type="Panel" parent="InventoryUI"]
+offset_left = 459.0
+offset_top = 114.0
+offset_right = 1103.0
+offset_bottom = 593.0
+
+[node name="GridContainer" type="GridContainer" parent="InventoryUI/Panel"]
+layout_mode = 0
+offset_left = 4.0
+offset_top = 2.0
+offset_right = 643.0
+offset_bottom = 477.0
+columns = 4
