@@ -38,18 +38,56 @@ func create_slot() -> Panel:
 	return panel
 
 func update_ui():
-	for i in range(inventory_system.items.size()):
+	# Проверяем, что grid и inventory_system существуют
+	if not is_instance_valid(grid) or not is_instance_valid(inventory_system):
+		push_error("Inventory UI not properly initialized!")
+		return
+	
+	# Убедимся, что количество слотов соответствует количеству предметов
+	var slots_to_process = min(inventory_system.items.size(), grid.get_child_count())
+	
+	for i in range(slots_to_process):
 		var item = inventory_system.items[i]
 		var slot = grid.get_child(i)
-		var icon = slot.get_node("Icon")
-		var label = slot.get_node("Quantity")
 		
-		if item:
-			icon.texture = item.icon
-			label.text = str(item.quantity) if item.max_stack > 1 else ""
+		# Безопасное получение иконки
+		var icon: TextureRect = null
+		if slot.has_node("Icon"):
+			icon = slot.get_node("Icon")
 		else:
+			push_error("Slot ", i, " is missing Icon node!")
+			continue
+			
+		# Безопасное получение лейбла количества
+		var label: Label = null
+		if slot.has_node("Quantity"):
+			label = slot.get_node("Quantity")
+		else:
+			push_error("Slot ", i, " is missing Quantity label!")
+			continue
+			
+		# Обновляем содержимое слота
+		if item and is_instance_valid(item):
+			# Устанавливаем иконку
+			if item.icon:
+				icon.texture = item.icon
+			else:
+				icon.texture = null
+				push_warning("Item ", item.name, " has no icon assigned!")
+			
+			# Устанавливаем количество
+			if item.max_stack > 1:
+				label.text = str(item.quantity)
+			else:
+				label.text = ""
+		else:
+			# Очищаем слот
 			icon.texture = null
 			label.text = ""
+	
+	# Отладочная информация
+	print("Inventory updated. Slots: ", slots_to_process, 
+		  " Items: ", inventory_system.items.size())
 
 func toggle_visibility():
 	visible = !visible
