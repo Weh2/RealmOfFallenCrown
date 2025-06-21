@@ -20,6 +20,7 @@ config/icon="res://icon.svg"
 folder_colors={
 "res://Character/": "purple",
 "res://assets/": "orange",
+"res://items/": "pink",
 "res://levels/": "green",
 "res://network/": "blue",
 "res://scripts/": "red",
