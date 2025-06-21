@@ -1,9 +1,10 @@
-[gd_scene load_steps=5 format=3 uid="uid://di2dvgsex66k0"]
+[gd_scene load_steps=6 format=3 uid="uid://di2dvgsex66k0"]
 
 [ext_resource type="PackedScene" uid="uid://buxurdmy5l22s" path="res://Character/Warrior/warrior.tscn" id="1_f3sb7"]
 [ext_resource type="Script" uid="uid://e1e2wt4yv510" path="res://world.gd" id="1_fj7yv"]
 [ext_resource type="PackedScene" uid="uid://bbkr4n78dcosl" path="res://canvas_layer.tscn" id="4_aqk2v"]
 [ext_resource type="PackedScene" uid="uid://dc8qexmjly4ak" path="res://Character/enemies/Butcher.tscn" id="5_036b0"]
+[ext_resource type="PackedScene" uid="uid://d2sa3ko7gfvg4" path="res://tile_map.tscn" id="5_dwbse"]
 
 [node name="World" type="Node2D"]
 script = ExtResource("1_fj7yv")
@@ -15,3 +16,5 @@ position = Vector2(2, 5)
 
 [node name="Butcher" parent="." instance=ExtResource("5_036b0")]
 position = Vector2(297, 24)
+
+[node name="TileMap" parent="." instance=ExtResource("5_dwbse")]
