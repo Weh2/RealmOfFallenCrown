@@ -196,3 +196,7 @@ func heal(amount: int):
 func set_invincible(time: float):
 	if health_component:
 		health_component.set_invincible(time)
+
+
+func collect(item):
+	inv.insert(item)

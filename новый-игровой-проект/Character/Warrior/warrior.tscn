@@ -319,3 +319,7 @@ offset_right = 40.0
 offset_bottom = 23.0
 
 [node name="Inv_UI" parent="." instance=ExtResource("10_pxgkq")]
+offset_left = 106.0
+offset_top = -321.0
+offset_right = 234.0
+offset_bottom = -173.0
