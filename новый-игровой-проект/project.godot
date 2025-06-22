@@ -20,11 +20,11 @@ config/icon="res://icon.svg"
 folder_colors={
 "res://Character/": "purple",
 "res://assets/": "orange",
-"res://items/": "pink",
 "res://levels/": "green",
 "res://network/": "blue",
 "res://scripts/": "red",
-"res://ui/": "yellow"
+"res://ui/": "yellow",
+"res://ui/inventory/items/": "yellow"
 }
 
 [input]
@@ -135,5 +135,6 @@ slot_9={
 
 [rendering]
 
+textures/canvas_textures/default_texture_filter=0
 renderer/rendering_method="gl_compatibility"
 renderer/rendering_method.mobile="gl_compatibility"

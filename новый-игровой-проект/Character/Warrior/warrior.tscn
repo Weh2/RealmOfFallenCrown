@@ -2,14 +2,14 @@
 
 [ext_resource type="Script" uid="uid://7j2fxan644jx" path="res://Character/Warrior/Warrior.gd" id="1_ij6vw"]
 [ext_resource type="Texture2D" uid="uid://dhew1b12lb6yw" path="res://Character/merged-images-no-bg-preview (carve.photos).png" id="2_44cfe"]
+[ext_resource type="Resource" uid="uid://ct3husp0sat75" path="res://ui/inventory/playerinv.tres" id="2_cr365"]
 [ext_resource type="Script" uid="uid://cl74mr4y7gwpo" path="res://health_component.gd" id="3_ghijl"]
 [ext_resource type="Script" uid="uid://cdw5xqpa77fb6" path="res://camera_2d.gd" id="4_44cfe"]
 [ext_resource type="Script" uid="uid://dhk7lko5rrone" path="res://Character/Warrior/weapon.gd" id="5_dd465"]
 [ext_resource type="Script" uid="uid://crtgs854qluco" path="res://Character/Warrior/block_area.gd" id="6_b7jr5"]
 [ext_resource type="Script" uid="uid://bge44xo1m7341" path="res://Character/Warrior/stamina_ui.gd" id="7_jw0ga"]
 [ext_resource type="Script" uid="uid://djpuh1ssx6b05" path="res://Character/Warrior/health_ui.gd" id="8_06ixi"]
-[ext_resource type="Script" uid="uid://bftb7co4vn5u4" path="res://systems/inventory_system.gd" id="9_cr365"]
-[ext_resource type="PackedScene" uid="uid://brv3v5sd6p0og" path="res://ui/inventory/InventoryUI.tscn" id="10_pxgkq"]
+[ext_resource type="PackedScene" uid="uid://cxt6p8d10u8wp" path="res://ui/inventory/inv_ui.tscn" id="10_pxgkq"]
 
 [sub_resource type="CapsuleShape2D" id="CapsuleShape2D_ij6vw"]
 radius = 12.0
@@ -238,6 +238,7 @@ height = 40.0
 
 [node name="Warrior" type="CharacterBody2D" groups=["player", "player_weapons"]]
 script = ExtResource("1_ij6vw")
+inv = ExtResource("2_cr365")
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
 position = Vector2(-1, -5)
@@ -317,7 +318,4 @@ layout_mode = 0
 offset_right = 40.0
 offset_bottom = 23.0
 
-[node name="InventorySystem" type="Node" parent="."]
-script = ExtResource("9_cr365")
-
-[node name="InventoryUi" parent="." instance=ExtResource("10_pxgkq")]
+[node name="Inv_UI" parent="." instance=ExtResource("10_pxgkq")]

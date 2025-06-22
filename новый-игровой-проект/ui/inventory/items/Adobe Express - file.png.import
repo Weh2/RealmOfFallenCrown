@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://d2n8ky73cij3a"
-path="res://.godot/imported/Health-potion.png-09a9218703dca90ea91a88dbf11da985.ctex"
+uid="uid://c7qlj4vf5j16s"
+path="res://.godot/imported/Adobe Express - file.png-4d5b5de5ed38b9dcffac4fbe6b7e5bd1.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://items/Health-potion.png"
-dest_files=["res://.godot/imported/Health-potion.png-09a9218703dca90ea91a88dbf11da985.ctex"]
+source_file="res://ui/inventory/items/Adobe Express - file.png"
+dest_files=["res://.godot/imported/Adobe Express - file.png-4d5b5de5ed38b9dcffac4fbe6b7e5bd1.ctex"]
 
 [params]
 

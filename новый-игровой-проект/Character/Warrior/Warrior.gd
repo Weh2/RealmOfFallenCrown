@@ -9,6 +9,7 @@ extends CharacterBody2D
 @onready var weapon = $Weapon
 @onready var stamina_ui = $StaminaUI
 @onready var block_area = $BlockArea
+@export var inv: Inv
 
 @export var shake_power: float = 5.0
 @export var shake_duration: float = 0.5

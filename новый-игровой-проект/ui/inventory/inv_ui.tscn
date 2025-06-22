@@ -1,0 +1,21 @@
+[gd_scene load_steps=3 format=3 uid="uid://cxt6p8d10u8wp"]
+
+[ext_resource type="Script" uid="uid://c3idmpsoip5mi" path="res://ui/inventory/inv_ui.gd" id="1_iawu1"]
+[ext_resource type="Texture2D" uid="uid://bdlh8wyti5kl3" path="res://ui/inventory/Inventory_background.png" id="2_o6pvg"]
+
+[node name="Inv_UI" type="Control"]
+layout_mode = 3
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 40.0
+script = ExtResource("1_iawu1")
+
+[node name="NinePatchRect" type="NinePatchRect" parent="."]
+layout_mode = 0
+offset_right = 108.0
+offset_bottom = 72.0
+texture = ExtResource("2_o6pvg")
+patch_margin_left = 5
+patch_margin_top = 5
+patch_margin_right = 5
+patch_margin_bottom = 5
