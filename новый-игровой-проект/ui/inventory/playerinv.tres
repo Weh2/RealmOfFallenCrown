@@ -1,12 +1,7 @@
-[gd_resource type="Resource" script_class="Inv" load_steps=18 format=3 uid="uid://ct3husp0sat75"]
+[gd_resource type="Resource" script_class="Inv" load_steps=17 format=3 uid="uid://ct3husp0sat75"]
 
 [ext_resource type="Script" uid="uid://d0yc8g6ebdn1y" path="res://Inv_slot.gd" id="2_cd5lx"]
 [ext_resource type="Script" uid="uid://byfi7kn7084p7" path="res://inventory.gd" id="3_xke3u"]
-
-[sub_resource type="Resource" id="Resource_x3n5q"]
-script = ExtResource("2_cd5lx")
-amount = 0
-metadata/_custom_type_script = "uid://d0yc8g6ebdn1y"
 
 [sub_resource type="Resource" id="Resource_cd5lx"]
 script = ExtResource("2_cd5lx")
@@ -80,5 +75,5 @@ metadata/_custom_type_script = "uid://d0yc8g6ebdn1y"
 
 [resource]
 script = ExtResource("3_xke3u")
-slots = Array[ExtResource("2_cd5lx")]([SubResource("Resource_x3n5q"), SubResource("Resource_cd5lx"), SubResource("Resource_ggfln"), SubResource("Resource_xke3u"), SubResource("Resource_36re1"), SubResource("Resource_6uujq"), SubResource("Resource_gdnbk"), SubResource("Resource_ft4nd"), SubResource("Resource_qi2bd"), SubResource("Resource_p7pkr"), SubResource("Resource_erauh"), SubResource("Resource_lho7y"), SubResource("Resource_weieo"), SubResource("Resource_dj7ht"), SubResource("Resource_ffkjl")])
+slots = Array[ExtResource("2_cd5lx")]([SubResource("Resource_cd5lx"), SubResource("Resource_ggfln"), SubResource("Resource_xke3u"), SubResource("Resource_36re1"), SubResource("Resource_6uujq"), SubResource("Resource_gdnbk"), SubResource("Resource_ft4nd"), SubResource("Resource_qi2bd"), SubResource("Resource_p7pkr"), SubResource("Resource_erauh"), SubResource("Resource_lho7y"), SubResource("Resource_weieo"), SubResource("Resource_dj7ht"), SubResource("Resource_ffkjl")])
 metadata/_custom_type_script = "uid://byfi7kn7084p7"
