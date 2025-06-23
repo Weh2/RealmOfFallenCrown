@@ -4,8 +4,8 @@ extends StaticBody2D
 var player = null
 
 
-func _on_interactable_area_body_entered(body: Node2D) -> void:
-	if body.has_mathod("Player"):
+func _on_interactable_area_body_entered(body):
+	if body.has_method("Player"):
 		player = body
 		playercollect()
 		await get_tree().create_timer(0.1).timeout

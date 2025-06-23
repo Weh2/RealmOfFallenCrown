@@ -1,13 +1,15 @@
-[gd_scene load_steps=4 format=3 uid="uid://b7vqcpgdfygvm"]
+[gd_scene load_steps=5 format=3 uid="uid://b7vqcpgdfygvm"]
 
 [ext_resource type="Script" uid="uid://co6ql66c568pe" path="res://ui/inventory/items/HealthPotion.gd" id="1_tcab0"]
 [ext_resource type="Texture2D" uid="uid://c045homu842yy" path="res://ui/inventory/items/Red Potion.png" id="2_smrom"]
+[ext_resource type="Resource" uid="uid://udhfwgdpyany" path="res://ui/inventory/items/HealthPotion.tres" id="2_vvnpw"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_kv0aj"]
 radius = 20.025
 
 [node name="HealthPotion" type="StaticBody2D"]
 script = ExtResource("1_tcab0")
+item = ExtResource("2_vvnpw")
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
 texture = ExtResource("2_smrom")
