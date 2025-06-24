@@ -200,3 +200,4 @@ func set_invincible(time: float):
 
 func collect(item):
 	inv.insert(item)
+	
