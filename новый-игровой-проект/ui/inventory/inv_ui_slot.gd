@@ -2,6 +2,8 @@ extends Panel
 
 @onready var item_visual: Sprite2D = $CenterContainer/Panel/item_display
 @onready var amount_text: Label = $CenterContainer/Panel/Label
+@onready var selectSprite: Sprite2D = $CenterContainer/Panel/select
+
 
 var current_slot: InvSlot  # Текущий слот, связанный с этим UI
 
@@ -81,3 +83,11 @@ func _drop_data(_pos, data):
 	# Обновляем оба слота
 	data["origin_slot"].update(source_slot)
 	update(target_slot)
+
+
+func _on_mouse_entered() -> void:
+	selectSprite.visible = true
+
+
+func _on_mouse_exited() -> void:
+	selectSprite.visible = false
