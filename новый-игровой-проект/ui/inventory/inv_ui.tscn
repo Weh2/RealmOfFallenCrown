@@ -8,6 +8,7 @@
 [ext_resource type="Texture2D" uid="uid://b2wowno27hy7d" path="res://ui/inventory/TopPatternPanel_01_33x15.png" id="6_mwi2l"]
 
 [node name="Inv_UI" type="Control"]
+z_index = 1
 custom_minimum_size = Vector2(460, 519)
 layout_mode = 3
 anchors_preset = 1
@@ -19,6 +20,7 @@ grow_horizontal = 0
 script = ExtResource("1_iawu1")
 
 [node name="NinePatchRect" type="NinePatchRect" parent="."]
+layout_mode = 0
 offset_right = 462.0
 offset_bottom = 522.0
 texture = ExtResource("2_o6pvg")
