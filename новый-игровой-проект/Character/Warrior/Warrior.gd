@@ -102,6 +102,8 @@ func _physics_process(delta):
 		elif movement_animation_player.has_animation("idle"):
 			movement_animation_player.play("idle")
 
+
+
 func _input(event):
 	if event.is_action_pressed("dash") and can_dash and current_stamina >= dash_stamina_cost and !is_blocking:
 		start_dash()
