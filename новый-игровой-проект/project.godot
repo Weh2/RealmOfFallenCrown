@@ -15,6 +15,10 @@ run/main_scene="uid://di2dvgsex66k0"
 config/features=PackedStringArray("4.4", "GL Compatibility")
 config/icon="res://icon.svg"
 
+[autoload]
+
+InvUI="*res://ui/inventory/inv_ui.tscn"
+
 [file_customization]
 
 folder_colors={
