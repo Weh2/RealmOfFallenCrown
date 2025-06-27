@@ -1,0 +1,56 @@
+[gd_scene load_steps=4 format=3 uid="uid://bfew3uuicwhpx"]
+
+[ext_resource type="Script" uid="uid://dyhr4h83668je" path="res://ui/inventory/hotbar.gd" id="1_1ewyk"]
+[ext_resource type="Texture2D" uid="uid://dfs8okhxxm8l4" path="res://ui/inventory/hotbar frame.png" id="1_r783g"]
+[ext_resource type="Script" uid="uid://ciylm05xu67sy" path="res://ui/inventory/inv_ui_slot.gd" id="2_lur8n"]
+
+[node name="Hotbar" type="Node"]
+script = ExtResource("1_1ewyk")
+
+[node name="TextureRect" type="TextureRect" parent="."]
+offset_left = -225.0
+offset_top = 214.0
+offset_right = 225.0
+offset_bottom = 313.0
+texture = ExtResource("1_r783g")
+expand_mode = 1
+
+[node name="GridContainer" type="GridContainer" parent="TextureRect"]
+custom_minimum_size = Vector2(50, 18)
+layout_mode = 0
+offset_left = 17.0
+offset_top = 17.0
+offset_right = 437.0
+offset_bottom = 82.0
+theme_override_constants/h_separation = 6
+columns = 6
+
+[node name="Panel" type="Panel" parent="TextureRect/GridContainer"]
+custom_minimum_size = Vector2(63.345, 65)
+layout_mode = 2
+script = ExtResource("2_lur8n")
+
+[node name="Panel2" type="Panel" parent="TextureRect/GridContainer"]
+custom_minimum_size = Vector2(65, 65)
+layout_mode = 2
+script = ExtResource("2_lur8n")
+
+[node name="Panel3" type="Panel" parent="TextureRect/GridContainer"]
+custom_minimum_size = Vector2(65, 65)
+layout_mode = 2
+script = ExtResource("2_lur8n")
+
+[node name="Panel4" type="Panel" parent="TextureRect/GridContainer"]
+custom_minimum_size = Vector2(65, 65)
+layout_mode = 2
+script = ExtResource("2_lur8n")
+
+[node name="Panel5" type="Panel" parent="TextureRect/GridContainer"]
+custom_minimum_size = Vector2(65, 65)
+layout_mode = 2
+script = ExtResource("2_lur8n")
+
+[node name="Panel6" type="Panel" parent="TextureRect/GridContainer"]
+custom_minimum_size = Vector2(64.405, 65.38)
+layout_mode = 2
+script = ExtResource("2_lur8n")
