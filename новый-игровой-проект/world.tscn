@@ -1,4 +1,4 @@
-[gd_scene load_steps=7 format=3 uid="uid://di2dvgsex66k0"]
+[gd_scene load_steps=8 format=3 uid="uid://di2dvgsex66k0"]
 
 [ext_resource type="PackedScene" uid="uid://buxurdmy5l22s" path="res://Character/Warrior/Warrior.tscn" id="1_f3sb7"]
 [ext_resource type="Script" uid="uid://e1e2wt4yv510" path="res://world.gd" id="1_fj7yv"]
@@ -6,6 +6,7 @@
 [ext_resource type="PackedScene" uid="uid://dc8qexmjly4ak" path="res://Character/enemies/Butcher.tscn" id="5_036b0"]
 [ext_resource type="PackedScene" uid="uid://d2sa3ko7gfvg4" path="res://tile_map.tscn" id="5_dwbse"]
 [ext_resource type="PackedScene" uid="uid://b7vqcpgdfygvm" path="res://ui/inventory/items/HealthPotion.tscn" id="6_dwbse"]
+[ext_resource type="PackedScene" uid="uid://ywp8upqpudw5" path="res://ui/inventory/items/stamina_potion.tscn" id="7_pkg7o"]
 
 [node name="World" type="Node2D"]
 script = ExtResource("1_fj7yv")
@@ -28,3 +29,9 @@ position = Vector2(-169, -78)
 
 [node name="HealthPotion3" parent="." instance=ExtResource("6_dwbse")]
 position = Vector2(-151, -172)
+
+[node name="StaminaPotion" parent="." instance=ExtResource("7_pkg7o")]
+position = Vector2(-272, -131)
+
+[node name="StaminaPotion2" parent="." instance=ExtResource("7_pkg7o")]
+position = Vector2(-80, -176)

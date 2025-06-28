@@ -1,0 +1,22 @@
+[gd_scene load_steps=5 format=3 uid="uid://ywp8upqpudw5"]
+
+[ext_resource type="Script" uid="uid://curao4l1ucgtc" path="res://ui/inventory/items/stamina_potion.gd" id="1_jar2d"]
+[ext_resource type="Texture2D" uid="uid://yrf7obxaehac" path="res://ui/inventory/items/Green Potion.png" id="1_lisxt"]
+[ext_resource type="Resource" uid="uid://dpgnve0me3e02" path="res://ui/inventory/items/Stamina Potion.tres" id="2_qwoa7"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_jar2d"]
+radius = 19.0263
+
+[node name="StaminaPotion" type="StaticBody2D"]
+script = ExtResource("1_jar2d")
+item = ExtResource("2_qwoa7")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+texture = ExtResource("1_lisxt")
+
+[node name="interactable_area" type="Area2D" parent="."]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="interactable_area"]
+shape = SubResource("CircleShape2D_jar2d")
+
+[connection signal="body_entered" from="interactable_area" to="." method="_on_interactable_area_body_entered"]

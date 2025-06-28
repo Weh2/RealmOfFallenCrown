@@ -39,8 +39,14 @@ func _get_drag_data(_pos):
 	return null
 
 func _can_drop_data(_pos, data):
-	# Проверяем, что перетаскивается предмет
-	return data is Dictionary and data.has("item")
+	if not (data is Dictionary and data.has("item")):
+		return false
+	
+	# Если это хотбар-слот, разрешаем только зелья
+	if get_parent().name == "HBoxContainer":
+		return data["item"].name in ["Health Potion", "Stamina Potion"]
+	
+	return true
 
 func _drop_data(_pos, data):
 	if not (data is Dictionary and data.has("slot_data")):
@@ -61,7 +67,7 @@ func _drop_data(_pos, data):
 		source_slot.amount = 0
 	
 	# Если предметы одинаковые и стакаемые - объединяем
-	elif (target_slot.item.id == source_slot.item.id 
+	elif (target_slot.item.name == source_slot.item.name 
 		  and target_slot.item.stackable 
 		  and source_slot.item.stackable):
 		var total = target_slot.amount + source_slot.amount
@@ -83,6 +89,7 @@ func _drop_data(_pos, data):
 	# Обновляем оба слота
 	data["origin_slot"].update(source_slot)
 	update(target_slot)
+	
 
 
 func _on_mouse_entered() -> void:

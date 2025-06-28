@@ -10,9 +10,11 @@ extends CharacterBody2D
 @onready var stamina_ui = $StaminaUI
 @onready var block_area = $BlockArea
 @export var inv: Inv
+@onready var hotbar_ui = $HotbarUI
 
 @export var shake_power: float = 5.0
 @export var shake_duration: float = 0.5
+
 
 # Stamina system
 @export var max_stamina: float = 100.0
@@ -58,6 +60,8 @@ func _ready():
 	
 	current_stamina = max_stamina
 	stamina_ui.setup(max_stamina)
+
+
 
 func _physics_process(delta):
 	if weapon.is_attacking() or is_dashing:
@@ -105,11 +109,16 @@ func _physics_process(delta):
 
 
 func _input(event):
+	if event.is_action_pressed("hotbar_1"):
+		inv.use_hotbar_slot(0, self)
+	elif event.is_action_pressed("hotbar_2"):
+		inv.use_hotbar_slot(1, self)
+	
 	if event.is_action_pressed("dash") and can_dash and current_stamina >= dash_stamina_cost and !is_blocking:
 		start_dash()
 	elif event.is_action_pressed("attack") and !is_blocking and !is_dashing:
 		weapon.start_attack(velocity)
-
+	
 func start_dash():
 	can_dash = false
 	is_dashing = true

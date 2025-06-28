@@ -1,0 +1,72 @@
+[gd_scene load_steps=4 format=3 uid="uid://dqehlqbyueb8y"]
+
+[ext_resource type="Script" uid="uid://ciylm05xu67sy" path="res://ui/inventory/inv_ui_slot.gd" id="1_1bivx"]
+[ext_resource type="Script" uid="uid://bunyoxvsqykvy" path="res://ui/inventory/hotbar_ui.gd" id="1_mkn2p"]
+[ext_resource type="Texture2D" uid="uid://c81vlsp7cmjag" path="res://ui/inventory/HotkeyBox_34x34.png" id="1_st2al"]
+
+[node name="hotbar_ui" type="Control"]
+layout_mode = 3
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 40.0
+script = ExtResource("1_mkn2p")
+
+[node name="HBoxContainer" type="HBoxContainer" parent="."]
+layout_mode = 0
+offset_right = 134.0
+offset_bottom = 65.0
+
+[node name="TextureRect" type="TextureRect" parent="HBoxContainer"]
+layout_mode = 2
+
+[node name="Slot1" type="Panel" parent="HBoxContainer"]
+custom_minimum_size = Vector2(65, 65)
+layout_mode = 2
+script = ExtResource("1_1bivx")
+
+[node name="TextureRect" type="TextureRect" parent="HBoxContainer/Slot1"]
+layout_mode = 0
+offset_right = 65.0
+offset_bottom = 64.0
+texture = ExtResource("1_st2al")
+
+[node name="CenterContainer" type="CenterContainer" parent="HBoxContainer/Slot1"]
+layout_mode = 0
+offset_right = 65.0
+offset_bottom = 66.0
+
+[node name="Panel" type="Panel" parent="HBoxContainer/Slot1/CenterContainer"]
+layout_mode = 2
+
+[node name="item_display" type="Sprite2D" parent="HBoxContainer/Slot1/CenterContainer/Panel"]
+
+[node name="Label" type="Label" parent="HBoxContainer/Slot1/CenterContainer/Panel"]
+layout_mode = 0
+offset_left = -8.0
+offset_top = 7.0
+offset_right = 32.0
+offset_bottom = 30.0
+horizontal_alignment = 2
+
+[node name="Slot2" type="Panel" parent="HBoxContainer"]
+custom_minimum_size = Vector2(65, 65)
+layout_mode = 2
+script = ExtResource("1_1bivx")
+
+[node name="CenterContainer" type="CenterContainer" parent="HBoxContainer/Slot2"]
+layout_mode = 0
+offset_right = 65.0
+offset_bottom = 66.0
+
+[node name="Panel" type="Panel" parent="HBoxContainer/Slot2/CenterContainer"]
+layout_mode = 2
+
+[node name="item_display" type="Sprite2D" parent="HBoxContainer/Slot2/CenterContainer/Panel"]
+
+[node name="Label" type="Label" parent="HBoxContainer/Slot2/CenterContainer/Panel"]
+layout_mode = 0
+offset_left = -8.0
+offset_top = 7.0
+offset_right = 32.0
+offset_bottom = 30.0
+horizontal_alignment = 2

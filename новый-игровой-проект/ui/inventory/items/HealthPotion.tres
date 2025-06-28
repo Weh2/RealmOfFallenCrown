@@ -5,6 +5,8 @@
 
 [resource]
 script = ExtResource("1_4dkxa")
-name = "HealthPotion"
+name = "Health Potion"
 texture = ExtResource("2_a72dy")
+stackable = true
+max_stack = 99
 metadata/_custom_type_script = "uid://ddvqv4vy8efxo"
