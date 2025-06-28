@@ -10,7 +10,7 @@
 [ext_resource type="Script" uid="uid://bge44xo1m7341" path="res://Character/Warrior/stamina_ui.gd" id="7_jw0ga"]
 [ext_resource type="Script" uid="uid://djpuh1ssx6b05" path="res://Character/Warrior/health_ui.gd" id="8_06ixi"]
 [ext_resource type="PackedScene" uid="uid://cxt6p8d10u8wp" path="res://ui/inventory/inv_ui.tscn" id="10_pxgkq"]
-[ext_resource type="PackedScene" uid="uid://bfew3uuicwhpx" path="res://ui/inventory/hotbar.tscn" id="11_8qwps"]
+[ext_resource type="PackedScene" uid="uid://jyj57qxrdnkg" path="res://ui/inventory/Hotbar.tscn" id="11_8qwps"]
 
 [sub_resource type="CapsuleShape2D" id="CapsuleShape2D_ij6vw"]
 radius = 12.0
