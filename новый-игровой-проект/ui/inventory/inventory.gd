@@ -1,18 +1,77 @@
 extends Resource
 class_name Inv
 
-signal update
+signal inventory_updated
 signal hotbar_updated
+signal equipment_updated  # Новый сигнал
 
-@export var slots: Array[InvSlot]
+# Основной инвентарь
+@export var slots: Array[InvSlot] = []
+# Хотбар
 @export var hotbar_slots: Array[InvSlot] = []
-@export var hotbar_size: int = 2  # Меняем на 2 слота
+# Слоты экипировки
+@export var equipment_slots: Dictionary = {
+	"main_hand": null,
+	"off_hand": null,
+	"body": null,
+	"head": null,
+	"hands": null,
+	"legs": null,
+	"ring_1": null,
+	"ring_2": null,
+	"amulet": null
+}
 
 func _init():
-	slots = []
-	hotbar_slots.resize(hotbar_size)
-	for i in hotbar_size:
+	# Инициализация обычных слотов (24 слота)
+	slots.resize(24)
+	for i in 24:
+		slots[i] = InvSlot.new()
+	
+	# Инициализация хотбара (2 слота)
+	hotbar_slots.resize(2)
+	for i in 2:
 		hotbar_slots[i] = InvSlot.new()
+	
+	# Инициализация слотов экипировки
+	for slot in equipment_slots.keys():
+		equipment_slots[slot] = InvSlot.new()
+
+# Метод для экипировки предмета
+func equip_item(item: InvItem, slot_type: String):
+	var slot = equipment_slots.get(slot_type)
+	if slot and _can_equip(item, slot_type):
+		# Возвращаем текущий экипированный предмет в инвентарь
+		if slot.item:
+			add_item(slot.item)
+		
+		slot.item = item
+		slot.amount = 1
+		equipment_updated.emit()
+		return true
+	return false
+
+# Проверка можно ли экипировать предмет в слот
+func _can_equip(item: InvItem, slot_type: String) -> bool:
+	match slot_type:
+		"main_hand":
+			return item.item_type == InvItem.ItemType.WEAPON
+		"off_hand":
+			return item.item_type in [InvItem.ItemType.WEAPON, InvItem.ItemType.SHIELD]
+		"body":
+			return item.item_type == InvItem.ItemType.BODY
+		"head":
+			return item.item_type == InvItem.ItemType.HEAD
+		"hands":
+			return item.item_type == InvItem.ItemType.HANDS
+		"legs":
+			return item.item_type == InvItem.ItemType.LEGS
+		"ring_1", "ring_2":
+			return item.item_type == InvItem.ItemType.RING
+		"amulet":
+			return item.item_type == InvItem.ItemType.AMULET
+		_:
+			return false
 
 func insert(item: InvItem):
 	# Сначала пробуем добавить в хотбар (только для зелий)
