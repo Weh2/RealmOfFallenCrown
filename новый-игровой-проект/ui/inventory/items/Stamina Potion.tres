@@ -9,4 +9,11 @@ name = "Stamina Potion"
 texture = ExtResource("2_gsepb")
 stackable = true
 max_stack = 5
+item_type = 8
+stats = {
+"attack": 0,
+"defense": 0,
+"health": 0,
+"stamina": 0
+}
 metadata/_custom_type_script = "uid://ddvqv4vy8efxo"
