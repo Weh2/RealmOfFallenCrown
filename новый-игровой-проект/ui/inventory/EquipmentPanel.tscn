@@ -1,8 +1,11 @@
-[gd_scene load_steps=4 format=3 uid="uid://dhiqgip2tiqir"]
+[gd_scene load_steps=7 format=3 uid="uid://dhiqgip2tiqir"]
 
 [ext_resource type="Script" uid="uid://cfslkoyxiachk" path="res://ui/inventory/EquipmentSlot.gd" id="1_mxcdu"]
 [ext_resource type="Texture2D" uid="uid://cndyuhoba7185" path="res://ui/inventory/RectangleBox_96x96.png" id="1_r433t"]
 [ext_resource type="Texture2D" uid="uid://7m560re6ciki" path="res://ui/inventory/ItemBox_24x24.png" id="3_p7nnk"]
+[ext_resource type="Texture2D" uid="uid://dps2m4tppflu5" path="res://ui/inventory/TopPatternPanel_02_33x15.png" id="4_2tw57"]
+[ext_resource type="Texture2D" uid="uid://u8y1tpb8fp0w" path="res://ui/inventory/PatternMiddleBottomBG_199x48.png" id="5_mmvxd"]
+[ext_resource type="Texture2D" uid="uid://bqv10no61ype4" path="res://ui/inventory/BottomPatternPanel_119x17.png" id="6_syoqe"]
 
 [node name="EquipmentPanel" type="PanelContainer"]
 offset_top = 4.0
@@ -33,10 +36,10 @@ script = ExtResource("1_mxcdu")
 
 [node name="TextureRect" type="TextureRect" parent="VBoxContainer/MainHandSlot"]
 layout_mode = 0
-offset_left = 242.0
+offset_left = 245.0
 offset_top = -241.0
-offset_right = 287.0
-offset_bottom = -198.0
+offset_right = 300.0
+offset_bottom = -186.0
 texture = ExtResource("3_p7nnk")
 
 [node name="Sprite2D" type="Sprite2D" parent="VBoxContainer/MainHandSlot"]
@@ -49,8 +52,8 @@ script = ExtResource("1_mxcdu")
 layout_mode = 0
 offset_left = 245.0
 offset_top = -173.0
-offset_right = 285.0
-offset_bottom = -133.0
+offset_right = 300.0
+offset_bottom = -118.0
 texture = ExtResource("3_p7nnk")
 
 [node name="Sprite2D" type="Sprite2D" parent="VBoxContainer/OffHandSlot"]
@@ -63,8 +66,8 @@ script = ExtResource("1_mxcdu")
 layout_mode = 0
 offset_left = 56.0
 offset_top = -176.0
-offset_right = 96.0
-offset_bottom = -136.0
+offset_right = 111.0
+offset_bottom = -121.0
 texture = ExtResource("3_p7nnk")
 
 [node name="Sprite2D" type="Sprite2D" parent="VBoxContainer/BodySlot"]
@@ -77,8 +80,8 @@ script = ExtResource("1_mxcdu")
 layout_mode = 0
 offset_left = 55.0
 offset_top = -252.0
-offset_right = 95.0
-offset_bottom = -212.0
+offset_right = 110.0
+offset_bottom = -197.0
 texture = ExtResource("3_p7nnk")
 
 [node name="Sprite2D" type="Sprite2D" parent="VBoxContainer/HeadSlot"]
@@ -91,11 +94,17 @@ script = ExtResource("1_mxcdu")
 layout_mode = 0
 offset_left = 126.0
 offset_top = -256.0
-offset_right = 166.0
-offset_bottom = -216.0
+offset_right = 181.0
+offset_bottom = -201.0
 texture = ExtResource("3_p7nnk")
 
 [node name="Sprite2D" type="Sprite2D" parent="VBoxContainer/HandsSlot"]
+
+[node name="TopPatternPanel0233x15" type="Sprite2D" parent="VBoxContainer/HandsSlot"]
+position = Vector2(79.996, -192.379)
+rotation = -1.56439
+scale = Vector2(0.201373, 1)
+texture = ExtResource("4_2tw57")
 
 [node name="LegsSlot" type="Panel" parent="VBoxContainer"]
 layout_mode = 2
@@ -103,10 +112,10 @@ script = ExtResource("1_mxcdu")
 
 [node name="TextureRect" type="TextureRect" parent="VBoxContainer/LegsSlot"]
 layout_mode = 0
-offset_left = 131.0
-offset_top = -186.0
-offset_right = 171.0
-offset_bottom = -146.0
+offset_left = 127.0
+offset_top = -188.0
+offset_right = 182.0
+offset_bottom = -133.0
 texture = ExtResource("3_p7nnk")
 
 [node name="Sprite2D" type="Sprite2D" parent="VBoxContainer/LegsSlot"]
@@ -120,10 +129,10 @@ script = ExtResource("1_mxcdu")
 
 [node name="TextureRect" type="TextureRect" parent="VBoxContainer/HBoxContainer/Ring1Slot"]
 layout_mode = 0
-offset_left = 81.0
-offset_top = -102.0
-offset_right = 121.0
-offset_bottom = -62.0
+offset_left = 55.0
+offset_top = -98.0
+offset_right = 103.0
+offset_bottom = -50.0
 texture = ExtResource("3_p7nnk")
 
 [node name="Sprite2D" type="Sprite2D" parent="VBoxContainer/HBoxContainer/Ring1Slot"]
@@ -135,9 +144,9 @@ script = ExtResource("1_mxcdu")
 [node name="TextureRect" type="TextureRect" parent="VBoxContainer/HBoxContainer/Ring2Slot"]
 layout_mode = 0
 offset_left = 200.0
-offset_top = -102.0
-offset_right = 240.0
-offset_bottom = -62.0
+offset_top = -97.0
+offset_right = 248.0
+offset_bottom = -49.0
 texture = ExtResource("3_p7nnk")
 
 [node name="Sprite2D" type="Sprite2D" parent="VBoxContainer/HBoxContainer/Ring2Slot"]
@@ -148,10 +157,57 @@ script = ExtResource("1_mxcdu")
 
 [node name="TextureRect" type="TextureRect" parent="VBoxContainer/AmuletSlot"]
 layout_mode = 0
-offset_left = 143.0
-offset_top = -104.0
-offset_right = 183.0
-offset_bottom = -64.0
+offset_left = 128.0
+offset_top = -101.0
+offset_right = 176.0
+offset_bottom = -53.0
 texture = ExtResource("3_p7nnk")
 
 [node name="Sprite2D" type="Sprite2D" parent="VBoxContainer/AmuletSlot"]
+
+[node name="TopPatternPanel0233x15" type="Sprite2D" parent="."]
+position = Vector2(155.007, 161.193)
+rotation = -1.57627
+scale = Vector2(0.19738, 1)
+texture = ExtResource("4_2tw57")
+
+[node name="TopPatternPanel0233x16" type="Sprite2D" parent="."]
+position = Vector2(119.25, 196)
+scale = Vector2(0.186747, 2)
+texture = ExtResource("4_2tw57")
+
+[node name="TopPatternPanel0233x17" type="Sprite2D" parent="."]
+position = Vector2(114.5, 289)
+scale = Vector2(0.277108, 1)
+texture = ExtResource("4_2tw57")
+
+[node name="TopPatternPanel0233x18" type="Sprite2D" parent="."]
+position = Vector2(189, 286)
+scale = Vector2(0.313253, 1)
+texture = ExtResource("4_2tw57")
+
+[node name="TopPatternPanel0233x19" type="Sprite2D" parent="."]
+position = Vector2(117.5, 123)
+scale = Vector2(0.204819, 1)
+texture = ExtResource("4_2tw57")
+
+[node name="TopPatternPanel0233x20" type="Sprite2D" parent="."]
+position = Vector2(273.999, 160.575)
+rotation = -1.57019
+scale = Vector2(0.227204, 1)
+texture = ExtResource("4_2tw57")
+
+[node name="TopPatternPanel0233x21" type="Sprite2D" parent="."]
+position = Vector2(173, 65)
+scale = Vector2(3.25301, 3.125)
+texture = ExtResource("4_2tw57")
+
+[node name="PatternMiddleBottomBg199x48" type="Sprite2D" parent="."]
+position = Vector2(171, 24)
+scale = Vector2(1.63819, 1.16667)
+texture = ExtResource("5_mmvxd")
+
+[node name="BottomPatternPanel119x17" type="Sprite2D" parent="."]
+position = Vector2(171, 340.75)
+scale = Vector2(2.72269, 1.67647)
+texture = ExtResource("6_syoqe")

@@ -9,9 +9,14 @@ var is_open = false
 
 func _ready():
 	# Инициализация
-	inv.update.connect(update_main_slots)
+	inv.inventory_updated.connect(update_main_slots)
 	inv.equipment_updated.connect(update_equipment)
 	inv.hotbar_updated.connect(update_hotbar)
+	
+	# Инициализация слотов
+	update_main_slots()
+	update_equipment()
+	update_hotbar()
 	
 	# Скрываем при старте
 	equipment_panel.visible = false
@@ -28,7 +33,10 @@ func update_equipment():
 			slot.update(inv.equipment_slots[slot.slot_type])
 
 func update_hotbar():
-	hotbar_ui.update_slots()
+	if hotbar_ui:
+		hotbar_ui.update_slots()
+	else:
+		push_error("HotbarUI is not initialized!")
 
 func _process(delta):
 	if Input.is_action_just_pressed("inventory"):

@@ -213,3 +213,20 @@ func collect(item):
 	inv.insert(item)
 	
 	
+func calculate_stats():
+	var total_stats = {
+		"attack": 0,
+		"defense": 0,
+		"health": 0,
+		"stamina": 0
+	}
+	
+	# Суммируем статы со всей экипировки
+	for slot in inv.equipment_slots.values():
+		if slot and slot.item:
+			for stat in slot.item.stats:
+				total_stats[stat] += slot.item.stats[stat]
+	
+	# Применяем статы к игроку
+	health_component.max_health = 100 + total_stats["health"]
+	max_stamina = 100 + total_stats["stamina"]

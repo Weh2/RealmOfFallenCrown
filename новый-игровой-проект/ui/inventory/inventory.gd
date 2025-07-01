@@ -3,7 +3,7 @@ class_name Inv
 
 signal inventory_updated
 signal hotbar_updated
-signal equipment_updated  # Новый сигнал
+signal equipment_updated
 
 # Основной инвентарь
 @export var slots: Array[InvSlot] = []
@@ -43,7 +43,7 @@ func equip_item(item: InvItem, slot_type: String):
 	if slot and _can_equip(item, slot_type):
 		# Возвращаем текущий экипированный предмет в инвентарь
 		if slot.item:
-			add_item(slot.item)
+			insert(slot.item)  # Заменили add_item на insert
 		
 		slot.item = item
 		slot.amount = 1
@@ -100,7 +100,7 @@ func insert(item: InvItem):
 		if !emptyslots.is_empty():
 			emptyslots[0].item = item
 			emptyslots[0].amount = 1
-	update.emit()
+	inventory_updated.emit()  # Заменили update на inventory_updated
 
 func use_hotbar_slot(index: int, player: Node):
 	if index < 0 or index >= hotbar_slots.size():
