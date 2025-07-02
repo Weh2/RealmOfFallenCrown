@@ -8,7 +8,8 @@ var inventory: Inv
 
 func setup(p_inventory: Inv):
 	inventory = p_inventory
-	inventory.equipment_updated.connect(update_slot)
+	if inventory:
+		inventory.equipment_updated.connect(update_slot)
 	update_slot()
 
 func update_slot():
@@ -39,8 +40,14 @@ func _get_drag_data(_pos):
 func _can_drop_data(_pos, data):
 	if not data is Dictionary: return false
 	if not data.has("item"): return false
+	if not inventory:  # Добавляем проверку
+		return false
 	
-	return inventory._can_equip(data["item"], slot_type)
-
+	# Проверяем наличие метода
+	if inventory.has_method("_can_equip"):
+		return inventory._can_equip(data["item"], slot_type)
+	else:
+		push_error("Method _can_equip not found in inventory!")
+		return false
 func _drop_data(_pos, data):
 	inventory.equip_item(data["item"], slot_type)

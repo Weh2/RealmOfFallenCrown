@@ -3,24 +3,28 @@ extends Control
 @onready var inv: Inv = preload("res://ui/inventory/playerinv.tres")
 @onready var main_slots: Array = $NinePatchRect/GridContainer.get_children()
 @onready var equipment_panel = $EquipmentPanel
-@onready var hotbar_ui = $HotbarUI
 
 var is_open = false
 
 func _ready():
-	# Инициализация
+
+	# Убедитесь, что inventory загружен
+	if not inv:
+		push_error("Inventory resource not loaded!")
+		return
+	
+	# Правильно инициализируем слоты экипировки
+	for slot in equipment_panel.get_children():
+		if slot is EquipmentSlot:
+			slot.setup(inv)  # Передаем инвентарь
+	# Подключаем только нужные сигналы
 	inv.inventory_updated.connect(update_main_slots)
 	inv.equipment_updated.connect(update_equipment)
-	inv.hotbar_updated.connect(update_hotbar)
 	
-	# Инициализация слотов
 	update_main_slots()
 	update_equipment()
-	update_hotbar()
 	
-	# Скрываем при старте
 	equipment_panel.visible = false
-	hotbar_ui.visible = true
 	close()
 
 func update_main_slots():
@@ -32,11 +36,7 @@ func update_equipment():
 		if slot is EquipmentSlot:
 			slot.update(inv.equipment_slots[slot.slot_type])
 
-func update_hotbar():
-	if hotbar_ui:
-		hotbar_ui.update_slots()
-	else:
-		push_error("HotbarUI is not initialized!")
+
 
 func _process(delta):
 	if Input.is_action_just_pressed("inventory"):

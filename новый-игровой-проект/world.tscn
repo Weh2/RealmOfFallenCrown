@@ -17,7 +17,7 @@ script = ExtResource("1_fj7yv")
 position = Vector2(297, 24)
 
 [node name="Warrior" parent="." instance=ExtResource("1_f3sb7")]
-position = Vector2(2, 5)
+position = Vector2(37, 6)
 
 [node name="canvas_layer" parent="Warrior" instance=ExtResource("4_aqk2v")]
 

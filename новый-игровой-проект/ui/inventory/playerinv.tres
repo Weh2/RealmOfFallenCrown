@@ -92,5 +92,15 @@ metadata/_custom_type_script = "uid://d0yc8g6ebdn1y"
 script = ExtResource("3_xke3u")
 slots = Array[ExtResource("1_cd5lx")]([SubResource("Resource_cd5lx"), SubResource("Resource_ggfln"), SubResource("Resource_xke3u"), SubResource("Resource_36re1"), SubResource("Resource_6uujq"), SubResource("Resource_gdnbk"), SubResource("Resource_ft4nd"), SubResource("Resource_qi2bd"), SubResource("Resource_p7pkr"), SubResource("Resource_erauh"), SubResource("Resource_lho7y"), SubResource("Resource_weieo"), SubResource("Resource_dj7ht"), SubResource("Resource_ffkjl"), SubResource("Resource_x3n5q")])
 hotbar_slots = Array[ExtResource("1_cd5lx")]([SubResource("Resource_2hcye"), SubResource("Resource_ythcf")])
-hotbar_size = 2
+equipment_slots = {
+"amulet": null,
+"body": null,
+"hands": null,
+"head": null,
+"legs": null,
+"main_hand": null,
+"off_hand": null,
+"ring_1": null,
+"ring_2": null
+}
 metadata/_custom_type_script = "uid://byfi7kn7084p7"
