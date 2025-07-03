@@ -255,3 +255,7 @@ func calculate_stats():
 	# Обновляем UI
 	health_ui.update_health(health_component.current_health, health_component.max_health)
 	stamina_ui.set_stamina(current_stamina)
+	
+	
+func get_inventory():
+	return $Inv_UI.inv

@@ -53,6 +53,19 @@ func equip_item(item: InvItem, slot_type: String) -> bool:
 	return false
 
 func _can_equip(item: InvItem, slot_type: String) -> bool:
+	if !item:
+		push_error("Пустой предмет")
+		return false
+		
+	print("Проверка экипировки ", item.name, " (тип: ", item.item_type, ") в ", slot_type)
+	
+	match slot_type:
+		"main_hand":
+			return item.item_type == InvItem.ItemType.WEAPON
+		"off_hand":
+			return item.item_type in [InvItem.ItemType.WEAPON, InvItem.ItemType.SHIELD]
+		_:
+			return false
 	if not item: return false
 	match slot_type:
 		"main_hand":

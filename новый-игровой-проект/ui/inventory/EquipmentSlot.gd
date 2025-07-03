@@ -7,14 +7,32 @@ class_name EquipmentSlot
 var inventory: Inv
 var player: Node
 
-func setup(p_inventory: Inv, p_player: Node):
-	inventory = p_inventory
-	player = p_player
-	if inventory:
-		if not inventory.equipment_updated.is_connected(update_slot):
-			inventory.equipment_updated.connect(update_slot)
-	update_slot()
+func _ready():
+	# Получаем инвентарь из глобального скрипта
+	inventory = GlobalInventory.inventory
+	
+	if !inventory:
+		push_error("Глобальный инвентарь не доступен!")
+		return
+	
+	inventory.equipment_updated.connect(update_slot)
+	print("Слот", slot_type, "инициализирован")
 
+
+func _find_inventory():
+	# Ищем инвентарь в родителях
+	var parent = get_parent()
+	while parent:
+		if parent.has_method("get_inventory"):
+			inventory = parent.get_inventory()
+			break
+		parent = parent.get_parent()
+	
+	if !inventory:
+		printerr("Не удалось найти инвентарь для слота ", slot_type)
+
+	
+	
 func update_slot():
 	var slot = inventory.equipment_slots.get(slot_type)
 	if slot and slot.item:
@@ -52,18 +70,28 @@ func _get_drag_data(_pos):
 	return drag_data
 
 func _can_drop_data(_pos, data):
-	if not data is Dictionary or not data.has("item") or not inventory:
-		print("Проверка drop: невалидные данные")
+	if !inventory:
+		printerr("Инвентарь не инициализирован в слоте ", slot_type)
 		return false
-	
-	var can_equip = inventory._can_equip(data["item"], slot_type)
-	print("Можно ли экипировать", data["item"].name, "в", slot_type, ":", can_equip)
-	return can_equip
 
 func _drop_data(_pos, data):
-	print("Пытаемся экипировать", data["item"].name, "в слот", slot_type)
+	if !inventory:
+		push_error("Инвентарь отсутствует при попытке экипировки")
+		return
+		
 	if inventory.equip_item(data["item"], slot_type):
-		print("Предмет успешно экипирован!")
+		print(data["item"].name, " успешно экипирован в ", slot_type)
 		update_slot()
+		# Принудительно обновляем статистики игрока
+		if player.has_method("calculate_stats"):
+			player.calculate_stats()
 	else:
-		print("Ошибка экипировки!")
+		print("Ошибка экипировки ", data["item"].name)
+
+	
+	inventory.equip_item(data["item"], slot_type)
+	update_slot()
+	
+func setup(p_player: Node):
+	player = p_player
+	update_slot()

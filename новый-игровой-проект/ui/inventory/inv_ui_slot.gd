@@ -21,22 +21,23 @@ func update(slot: InvSlot):
 
 # --- Drag & Drop система ---
 func _get_drag_data(_pos):
-	if current_slot and current_slot.item:
-		# Создаем превью для перетаскивания
-		var drag_preview = TextureRect.new()
-		drag_preview.texture = item_visual.texture
-		drag_preview.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
-		drag_preview.size = Vector2(32, 32)
-		set_drag_preview(drag_preview)
-		
-		# Возвращаем данные о перетаскиваемом предмете
-		return {
-			"origin_slot": self,
-			"slot_data": current_slot,
-			"item": current_slot.item,
-			"amount": current_slot.amount
-		}
-	return null
+	if !current_slot or !current_slot.item:
+		return null
+	
+	var drag_data = {
+		"origin_slot": self,
+		"item": current_slot.item,  # Обязательное поле
+		"amount": current_slot.amount,
+		"slot_data": current_slot,
+		# Добавляем тип для совместимости с EquipmentSlot
+		"origin_type": "inventory"  
+	}
+	
+	var drag_preview = TextureRect.new()
+	drag_preview.texture = item_visual.texture
+	set_drag_preview(drag_preview)
+	
+	return drag_data
 
 func _can_drop_data(_pos, data):
 	if not (data is Dictionary and data.has("item")):

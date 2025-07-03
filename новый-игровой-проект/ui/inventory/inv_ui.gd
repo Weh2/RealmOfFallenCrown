@@ -6,15 +6,19 @@ extends Control
 
 var is_open = false
 
+func get_inventory():
+	return inv
+	
 func _ready():
-	# Убедитесь, что передаете игрока при setup слотов экипировки
+	# Явная инициализация
+	if !inv:
+		inv = preload("res://ui/inventory/playerinv.tres")
+	
+	# Инициализируем слоты
 	for slot in equipment_panel.get_children():
 		if slot is EquipmentSlot:
-			slot.setup(inv, get_parent())  # Предполагаем, что родитель - игрок
-	# Убедитесь, что inventory загружен
-	if not inv:
-		push_error("Inventory resource not loaded!")
-		return
+			slot.setup(inv, get_parent())
+			print("Слот ", slot.slot_type, " инициализирован")
 	
 	# Правильно инициализируем слоты экипировки
 	for slot in equipment_panel.get_children():
