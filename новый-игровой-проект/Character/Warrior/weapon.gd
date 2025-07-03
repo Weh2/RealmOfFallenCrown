@@ -1,13 +1,13 @@
 extends Node2D
 
-@export var damage := 40  # Используем новый экспорт с типизацией
 @onready var hitbox = $Hitbox/CollisionShape2D
 @onready var player_anim = $"../AnimationPlayer"
 @onready var weapon_sprite = $Sprite2D
 
 var is_attack_active := false
 var current_attack_dir = Vector2.RIGHT
-var attack_duration := 0.3  # Новая переменная для длительности атаки
+var attack_duration := 0.3
+var current_weapon: InvItem = null  # Добавляем ссылку на текущее оружие
 
 func _ready():
 	assert(hitbox != null, "Hitbox not found!")
@@ -15,10 +15,19 @@ func _ready():
 	hitbox.disabled = true
 	$Hitbox.body_entered.connect(_on_hitbox_body_entered)
 
+# Обновляем оружие при экипировке
+func update_weapon(weapon_data: InvItem):
+	current_weapon = weapon_data
+	if weapon_sprite:
+		weapon_sprite.texture = weapon_data.texture
+		weapon_sprite.visible = true
+	
+	# Можно добавить изменение размера хитбокса в зависимости от оружия
+	# hitbox.shape.extents = Vector2(weapon_data.range, 10)
+
 func update_direction(facing_left: bool):
-	# Обновленная версия с reset_vertical_position
 	if facing_left:
-		position = Vector2(-30, 0)  # Комбинируем оба подхода
+		position = Vector2(-30, 0)
 		if weapon_sprite:
 			weapon_sprite.flip_h = true
 	else:
@@ -27,7 +36,7 @@ func update_direction(facing_left: bool):
 			weapon_sprite.flip_h = false
 
 func start_attack(move_direction: Vector2):
-	if is_attack_active: 
+	if is_attack_active or not current_weapon: 
 		return
 		
 	is_attack_active = true
@@ -36,10 +45,7 @@ func start_attack(move_direction: Vector2):
 	if move_direction.length() > 0:
 		current_attack_dir = move_direction.normalized()
 		rotation = current_attack_dir.angle()
-		
-		# Обновляем позицию хитбокса на основе направления
-		var facing_left = current_attack_dir.x < 0
-		update_direction(facing_left)
+		update_direction(current_attack_dir.x < 0)
 	
 	# Определяем анимацию
 	var anim_name = "attack_right"
@@ -52,7 +58,6 @@ func start_attack(move_direction: Vector2):
 	player_anim.play(anim_name)
 	hitbox.disabled = false
 	
-	# Используем новую переменную длительности атаки
 	await get_tree().create_timer(attack_duration).timeout
 	
 	hitbox.disabled = true
@@ -63,5 +68,12 @@ func is_attacking() -> bool:
 
 func _on_hitbox_body_entered(body):
 	if body != get_parent() and body.has_method("take_damage"):
-		body.take_damage(damage)
-		print("Нанесен урон ", damage, " врагу ", body.name)
+		var final_damage = current_weapon.stats["attack"] if current_weapon else 40
+		body.take_damage(final_damage)
+		print("Нанесен урон ", final_damage, " врагу ", body.name)
+
+# Добавляем функцию для сброса оружия (при снятии)
+func unequip_weapon():
+	current_weapon = null
+	if weapon_sprite:
+		weapon_sprite.visible = false

@@ -7,7 +7,10 @@ extends Control
 var is_open = false
 
 func _ready():
-
+	# Убедитесь, что передаете игрока при setup слотов экипировки
+	for slot in equipment_panel.get_children():
+		if slot is EquipmentSlot:
+			slot.setup(inv, get_parent())  # Предполагаем, что родитель - игрок
 	# Убедитесь, что inventory загружен
 	if not inv:
 		push_error("Inventory resource not loaded!")

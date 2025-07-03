@@ -38,20 +38,20 @@ func _init():
 		equipment_slots[slot] = InvSlot.new()
 
 # Метод для экипировки предмета
-func equip_item(item: InvItem, slot_type: String):
+func equip_item(item: InvItem, slot_type: String) -> bool:
 	var slot = equipment_slots.get(slot_type)
 	if slot and _can_equip(item, slot_type):
 		# Возвращаем текущий экипированный предмет в инвентарь
 		if slot.item:
-			insert(slot.item)  # Заменили add_item на insert
+			insert(slot.item)
 		
+		# Экипируем новый предмет
 		slot.item = item
 		slot.amount = 1
 		equipment_updated.emit()
 		return true
 	return false
 
-# Проверка можно ли экипировать предмет в слот
 func _can_equip(item: InvItem, slot_type: String) -> bool:
 	if not item: return false
 	match slot_type:

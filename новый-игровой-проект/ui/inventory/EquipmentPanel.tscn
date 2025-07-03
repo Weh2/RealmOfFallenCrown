@@ -144,9 +144,9 @@ script = ExtResource("1_mxcdu")
 
 [node name="TextureRect" type="TextureRect" parent="VBoxContainer/HBoxContainer/Ring2Slot"]
 layout_mode = 0
-offset_left = 200.0
+offset_left = 241.0
 offset_top = -97.0
-offset_right = 248.0
+offset_right = 289.0
 offset_bottom = -49.0
 texture = ExtResource("3_p7nnk")
 
@@ -159,9 +159,9 @@ script = ExtResource("1_mxcdu")
 
 [node name="TextureRect" type="TextureRect" parent="VBoxContainer/AmuletSlot"]
 layout_mode = 0
-offset_left = 128.0
+offset_left = 151.0
 offset_top = -101.0
-offset_right = 176.0
+offset_right = 199.0
 offset_bottom = -53.0
 texture = ExtResource("3_p7nnk")
 
@@ -175,18 +175,18 @@ scale = Vector2(0.19738, 1)
 texture = ExtResource("4_2tw57")
 
 [node name="TopPatternPanel0233x16" type="Sprite2D" parent="."]
-position = Vector2(119.25, 196)
-scale = Vector2(0.186747, 2)
+position = Vector2(119.25, 199.5)
+scale = Vector2(0.186747, 1.125)
 texture = ExtResource("4_2tw57")
 
 [node name="TopPatternPanel0233x17" type="Sprite2D" parent="."]
-position = Vector2(114.5, 289)
-scale = Vector2(0.277108, 1)
+position = Vector2(127, 287)
+scale = Vector2(0.578313, 1)
 texture = ExtResource("4_2tw57")
 
 [node name="TopPatternPanel0233x18" type="Sprite2D" parent="."]
-position = Vector2(189, 286)
-scale = Vector2(0.313253, 1)
+position = Vector2(221.5, 286)
+scale = Vector2(0.542169, 1)
 texture = ExtResource("4_2tw57")
 
 [node name="TopPatternPanel0233x19" type="Sprite2D" parent="."]

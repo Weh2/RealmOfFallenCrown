@@ -44,7 +44,19 @@ signal health_changed(new_health)
 signal stamina_changed(new_stamina)
 signal died
 
+
+
 func _ready():
+	calculate_stats()
+	# Удаляем старый висячий инвентарь
+	var old_inv = get_node_or_null("/root/InvUI")
+	if old_inv:
+		old_inv.queue_free()
+	
+	# Гарантируем, что используется только правильный инвентарь
+	var inv_ui = $Inv_UI  # Или правильный путь к вашему инвентарю
+	inv_ui.add_to_group("player_inventory")
+	
 	await get_tree().process_frame
 	
 	health_ui.get_node("UIRoot").position = Vector2(20, 20)
@@ -62,7 +74,11 @@ func _ready():
 	stamina_ui.setup(max_stamina)
 
 
-
+func equip_weapon(new_weapon: InvItem):
+	if new_weapon.item_type == InvItem.ItemType.WEAPON:
+		$Weapon.update_weapon(new_weapon)
+		calculate_stats()
+		
 func _physics_process(delta):
 	if weapon.is_attacking() or is_dashing:
 		move_and_slide()
@@ -214,19 +230,28 @@ func collect(item):
 	
 	
 func calculate_stats():
-	var total_stats = {
-		"attack": 0,
-		"defense": 0,
-		"health": 0,
-		"stamina": 0
-	}
+	# Сбрасываем базовые значения
+	var base_health = 100
+	var base_stamina = 100
+	var base_attack = 0
+	var base_defense = 0
 	
-	# Суммируем статы со всей экипировки
-	for slot in inv.equipment_slots.values():
-		if slot and slot.item:
-			for stat in slot.item.stats:
-				total_stats[stat] += slot.item.stats[stat]
+	# Проверяем экипированное оружие
+	var weapon_slot = inv.equipment_slots.get("main_hand")
+	if weapon_slot and weapon_slot.item:
+		base_attack += weapon_slot.item.stats.get("attack", 0)
+		base_defense += weapon_slot.item.stats.get("defense", 0)
 	
-	# Применяем статы к игроку
-	health_component.max_health = 100 + total_stats["health"]
-	max_stamina = 100 + total_stats["stamina"]
+	# Проверяем броню (пример для других слотов)
+	var body_slot = inv.equipment_slots.get("body")
+	if body_slot and body_slot.item:
+		base_defense += body_slot.item.stats.get("defense", 0)
+	
+	# Применяем характеристики
+	health_component.max_health = base_health
+	max_stamina = base_stamina
+	# Здесь можно добавить применение attack и defense к вашему оружию
+	
+	# Обновляем UI
+	health_ui.update_health(health_component.current_health, health_component.max_health)
+	stamina_ui.set_stamina(current_stamina)

@@ -1,13 +1,15 @@
 extends Panel
 class_name EquipmentSlot
 
-@export var slot_type: String = "main_hand"  # Устанавливается в инспекторе для каждого слота
+@export var slot_type: String = "main_hand"
 @onready var item_texture = $TextureRect/Sprite2D
 
 var inventory: Inv
+var player: Node  # Добавляем ссылку на игрока
 
-func setup(p_inventory: Inv):
+func setup(p_inventory: Inv, p_player: Node):
 	inventory = p_inventory
+	player = p_player
 	if inventory:
 		inventory.equipment_updated.connect(update_slot)
 	update_slot()
@@ -17,8 +19,14 @@ func update_slot():
 	if slot and slot.item:
 		item_texture.texture = slot.item.texture
 		item_texture.visible = true
+		# Обновляем оружие на персонаже
+		if slot_type == "main_hand" and player.has_node("Weapon"):
+			player.get_node("Weapon").update_weapon(slot.item)
 	else:
 		item_texture.visible = false
+		# Снимаем оружие если слот пуст
+		if slot_type == "main_hand" and player.has_node("Weapon"):
+			player.get_node("Weapon").unequip_weapon()
 
 func _get_drag_data(_pos):
 	var slot = inventory.equipment_slots[slot_type]
@@ -40,14 +48,11 @@ func _get_drag_data(_pos):
 func _can_drop_data(_pos, data):
 	if not data is Dictionary: return false
 	if not data.has("item"): return false
-	if not inventory:  # Добавляем проверку
-		return false
+	if not inventory: return false
 	
-	# Проверяем наличие метода
-	if inventory.has_method("_can_equip"):
-		return inventory._can_equip(data["item"], slot_type)
-	else:
-		push_error("Method _can_equip not found in inventory!")
-		return false
+	return inventory._can_equip(data["item"], slot_type)
+
 func _drop_data(_pos, data):
-	inventory.equip_item(data["item"], slot_type)
+	if inventory.equip_item(data["item"], slot_type):
+		# Если предмет успешно экипирован, обновляем слот
+		update_slot()
