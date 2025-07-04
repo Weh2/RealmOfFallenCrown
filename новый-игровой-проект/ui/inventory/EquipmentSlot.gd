@@ -10,15 +10,17 @@ func _ready():
 
 func update_slot():
 	var slot = GlobalInventory.inventory.equipment_slots.get(slot_type)
-	print("Обновление слота ", slot_type, " | Предмет: ", 
-		  slot.item.name if slot and slot.item else "пусто")
+	print("--- Обновление слота ---")
+	print("Слот:", slot_type)
+	print("Содержимое:", slot.item.name if slot and slot.item else "пусто")
 	
 	if slot and slot.item:
 		item_texture.texture = slot.item.texture
 		item_texture.visible = true
 	else:
 		item_texture.visible = false
-
+		
+		
 func _get_drag_data(_pos):
 	var slot = GlobalInventory.inventory.equipment_slots.get(slot_type)
 	if not slot or not slot.item:
@@ -37,13 +39,13 @@ func _can_drop_data(_pos, data):
 	return GlobalInventory.inventory._can_equip(data["item"], slot_type)
 
 func _drop_data(_pos, data):
-	print("=== Попытка экипировки ===")
-	print("Данные предмета:", data)
+	if not data is Dictionary or not data.has("item"):
+		return
+		
+	# Создаем полностью новый объект для предмета
+	var item_copy = data["item"].duplicate()
 	
-	if GlobalInventory.inventory.equip_item(data["item"], slot_type):
-		print("Успешная экипировка!")
-		update_slot()
-	else:
-		print("Ошибка экипировки!")
-		# Принудительное обновление
+	if GlobalInventory.inventory.equip_item(item_copy, slot_type):
+		# Принудительное обновление через таймер
+		await get_tree().process_frame
 		update_slot()
