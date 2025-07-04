@@ -9,4 +9,11 @@ name = "Health Potion"
 texture = ExtResource("2_a72dy")
 stackable = true
 max_stack = 99
+item_type = 8
+stats = {
+"attack": 0,
+"defense": 0,
+"health": 0,
+"stamina": 0
+}
 metadata/_custom_type_script = "uid://ddvqv4vy8efxo"

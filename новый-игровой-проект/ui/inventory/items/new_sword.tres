@@ -1,17 +1,16 @@
-[gd_resource type="Resource" script_class="InvItem" load_steps=2 format=3 uid="uid://ds6u3v53gt15k"]
+[gd_resource type="Resource" script_class="InvItem" load_steps=3 format=3]
 
-[ext_resource type="Script" uid="uid://ddvqv4vy8efxo" path="res://ui/inventory/scripts/inventory_item.gd" id="1_m6u5v"]
+[ext_resource type="Script" path="res://ui/inventory/scripts/inventory_item.gd" id="1_u358a"]
+[ext_resource type="Texture2D" path="res://ui/inventory/items/Iron Sword.png" id="2_mo2wp"]
 
 [resource]
-script = ExtResource("1_m6u5v")
-name = "Предмет"
+script = ExtResource("1_u358a")
+name = "Iron Sword"
+texture = ExtResource("2_mo2wp")
 stackable = false
 max_stack = 1
 item_type = 0
 stats = {
-"attack": 0,
-"defense": 0,
-"health": 0,
-"stamina": 0
+"attack": 15,
+"defense": 3
 }
-metadata/_custom_type_script = "uid://ddvqv4vy8efxo"

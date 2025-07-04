@@ -1,7 +1,7 @@
 [gd_resource type="Resource" script_class="Inv" load_steps=21 format=3 uid="uid://ct3husp0sat75"]
 
 [ext_resource type="Script" uid="uid://d0yc8g6ebdn1y" path="res://Inv_slot.gd" id="1_cd5lx"]
-[ext_resource type="Resource" uid="uid://3jel5fi8yb67" path="res://ui/inventory/items/sword.tres" id="3_x3n5q"]
+[ext_resource type="Resource" path="res://ui/inventory/items/new_sword.tres" id="3_x3n5q"]
 [ext_resource type="Script" uid="uid://byfi7kn7084p7" path="res://ui/inventory/inventory.gd" id="3_xke3u"]
 
 [sub_resource type="Resource" id="Resource_2hcye"]

@@ -5,14 +5,14 @@
 
 [resource]
 script = ExtResource("1_hxccp")
-name = "sword"
+name = "Iron Sword"
 texture = ExtResource("2_ecqj4")
 stackable = false
 max_stack = 1
-item_type = 8
+item_type = 0
 stats = {
-"attack": 15,
-"defense": 3,
+"attack": 0,
+"defense": 0,
 "health": 0,
 "stamina": 0
 }
