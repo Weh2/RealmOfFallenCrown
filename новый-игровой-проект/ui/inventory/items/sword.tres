@@ -9,7 +9,7 @@ name = "sword"
 texture = ExtResource("2_ecqj4")
 stackable = false
 max_stack = 1
-item_type = 0
+item_type = 8
 stats = {
 "attack": 15,
 "defense": 3,
