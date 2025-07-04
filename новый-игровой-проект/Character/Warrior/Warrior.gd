@@ -47,6 +47,7 @@ signal died
 
 
 func _ready():
+
 	calculate_stats()
 	# Удаляем старый висячий инвентарь
 	var old_inv = get_node_or_null("/root/InvUI")
@@ -259,3 +260,24 @@ func calculate_stats():
 	
 func get_inventory():
 	return $Inv_UI.inv
+	
+func update_equipment():
+	var weapon_slot = GlobalInventory.inventory.equipment_slots["main_hand"]
+	if weapon_slot and weapon_slot.item:
+		$Weapon.update_weapon(weapon_slot.item)
+	else:
+		$Weapon.unequip_weapon()
+	
+	calculate_stats()
+
+func collect_item(item: InvItem) -> void:
+	if GlobalInventory.inventory.insert(item):
+		print("Предмет добавлен в инвентарь: ", item.name)
+		
+		# Автоматически экипируем оружие если слот пуст
+		if item.item_type == InvItem.ItemType.WEAPON:
+			var weapon_slot = GlobalInventory.inventory.equipment_slots["main_hand"]
+			if not weapon_slot.item:
+				GlobalInventory.inventory.equip_item(item, "main_hand")
+	else:
+		print("Не удалось добавить предмет в инвентарь")

@@ -5,68 +5,55 @@ signal inventory_updated
 signal hotbar_updated
 signal equipment_updated
 
-# Основной инвентарь
 @export var slots: Array[InvSlot] = []
-# Хотбар
 @export var hotbar_slots: Array[InvSlot] = []
-# Слоты экипировки
 @export var equipment_slots: Dictionary = {
-	"main_hand": null,
-	"off_hand": null,
-	"body": null,
-	"head": null,
-	"hands": null,
-	"legs": null,
-	"ring_1": null,
-	"ring_2": null,
-	"amulet": null
+	"main_hand": InvSlot.new(),
+	"off_hand": InvSlot.new(),
+	"body": InvSlot.new(),
+	"head": InvSlot.new(),
+	"hands": InvSlot.new(),
+	"legs": InvSlot.new(),
+	"ring_1": InvSlot.new(),
+	"ring_2": InvSlot.new(),
+	"amulet": InvSlot.new()
 }
 
 func _init():
-	# Инициализация обычных слотов (24 слота)
 	slots.resize(24)
-	for i in 24:
+	for i in slots.size():
 		slots[i] = InvSlot.new()
 	
-	# Инициализация хотбара (2 слота)
 	hotbar_slots.resize(2)
-	for i in 2:
+	for i in hotbar_slots.size():
 		hotbar_slots[i] = InvSlot.new()
-	
-	# Инициализация слотов экипировки
-	for slot in equipment_slots.keys():
-		equipment_slots[slot] = InvSlot.new()
 
-# Метод для экипировки предмета
 func equip_item(item: InvItem, slot_type: String) -> bool:
+	if not _can_equip(item, slot_type):
+		print("Предмет не может быть экипирован")
+		return false
+	
 	var slot = equipment_slots.get(slot_type)
-	if slot and _can_equip(item, slot_type):
-		# Возвращаем текущий экипированный предмет в инвентарь
-		if slot.item:
-			insert(slot.item)
-		
-		# Экипируем новый предмет
-		slot.item = item
-		slot.amount = 1
-		equipment_updated.emit()
-		return true
-	return false
+	if not slot:
+		push_error("Слот не найден: ", slot_type)
+		return false
+	
+	# Возвращаем текущий предмет в инвентарь
+	if slot.item:
+		if not insert(slot.item):
+			push_error("Не удалось вернуть предмет в инвентарь")
+			return false
+	
+	# Экипируем новый предмет
+	slot.item = item
+	slot.amount = 1
+	equipment_updated.emit()
+	return true
 
 func _can_equip(item: InvItem, slot_type: String) -> bool:
-	if !item:
-		push_error("Пустой предмет")
+	if not item:
 		return false
-		
-	print("Проверка экипировки ", item.name, " (тип: ", item.item_type, ") в ", slot_type)
 	
-	match slot_type:
-		"main_hand":
-			return item.item_type == InvItem.ItemType.WEAPON
-		"off_hand":
-			return item.item_type in [InvItem.ItemType.WEAPON, InvItem.ItemType.SHIELD]
-		_:
-			return false
-	if not item: return false
 	match slot_type:
 		"main_hand":
 			return item.item_type == InvItem.ItemType.WEAPON
@@ -85,6 +72,7 @@ func _can_equip(item: InvItem, slot_type: String) -> bool:
 		"amulet":
 			return item.item_type == InvItem.ItemType.AMULET
 		_:
+
 			return false
 
 func insert(item: InvItem):

@@ -2,6 +2,10 @@ extends Node
 
 var inventory: Inv
 
-func _ready():
+func _enter_tree():
+	# Загружаем инвентарь при добавлении в дерево
 	inventory = preload("res://ui/inventory/playerinv.tres")
-	print("GlobalInventory готов. Инвентарь загружен:", inventory != null)
+	if !inventory:
+		push_error("Не удалось загрузить инвентарь!")
+	else:
+		print("GlobalInventory: инвентарь загружен")
