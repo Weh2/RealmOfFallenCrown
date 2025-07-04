@@ -10,13 +10,14 @@ func _ready():
 
 func update_slot():
 	var slot = GlobalInventory.inventory.equipment_slots.get(slot_type)
+	print("Обновление слота ", slot_type, " | Предмет: ", 
+		  slot.item.name if slot and slot.item else "пусто")
+	
 	if slot and slot.item:
 		item_texture.texture = slot.item.texture
 		item_texture.visible = true
-		print(slot_type, ": предмет установлен - ", slot.item.name)
 	else:
 		item_texture.visible = false
-		print(slot_type, ": слот пуст")
 
 func _get_drag_data(_pos):
 	var slot = GlobalInventory.inventory.equipment_slots.get(slot_type)
@@ -36,12 +37,13 @@ func _can_drop_data(_pos, data):
 	return GlobalInventory.inventory._can_equip(data["item"], slot_type)
 
 func _drop_data(_pos, data):
-	print("Попытка экипировать ", data["item"].name, " в ", slot_type)
+	print("=== Попытка экипировки ===")
+	print("Данные предмета:", data)
 	
 	if GlobalInventory.inventory.equip_item(data["item"], slot_type):
-		print("Успешно экипировано")
+		print("Успешная экипировка!")
+		update_slot()
 	else:
-		print("Ошибка экипировки")
-	
-	# Принудительное обновление
-	update_slot()
+		print("Ошибка экипировки!")
+		# Принудительное обновление
+		update_slot()

@@ -2,15 +2,15 @@ extends Resource
 class_name InvItem
 
 enum ItemType {
-	WEAPON,
-	SHIELD,
-	BODY,
-	HANDS,
-	LEGS,
-	HEAD,
-	RING,
-	AMULET,
-	CONSUMABLE
+	WEAPON = 0,  # Должно быть 0
+	SHIELD = 1,
+	BODY = 2,
+	HEAD = 3,
+	HANDS = 4,
+	LEGS = 5,
+	RING = 6,
+	AMULET = 7,
+	CONSUMABLE = 8
 }
 
 @export var name: String = "Предмет"

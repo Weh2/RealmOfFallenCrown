@@ -10,6 +10,7 @@ func get_inventory():
 	return inv
 	
 func _ready():
+	GlobalInventory.inventory.equipment_updated.connect(update_equipment)
 	# Явная инициализация
 	if !inv:
 		inv = preload("res://ui/inventory/playerinv.tres")

@@ -20,6 +20,10 @@ signal equipment_updated
 }
 
 func _init():
+	print("Инициализация Inv")
+	print("Слоты экипировки: ", equipment_slots.keys())
+	for slot in equipment_slots:
+		print(slot, ": ", equipment_slots[slot].item)
 	slots.resize(24)
 	for i in slots.size():
 		slots[i] = InvSlot.new()
@@ -28,52 +32,74 @@ func _init():
 	for i in hotbar_slots.size():
 		hotbar_slots[i] = InvSlot.new()
 
+
+func _can_equip(item: InvItem, slot_type: String) -> bool:
+	if item == null:
+		print("Ошибка: предмет не существует")
+		return false
+	
+	print("Проверка экипировки:", item.name, "| Тип:", item.item_type, "| Слот:", slot_type)
+	
+	var result = false
+	match slot_type:
+		"main_hand":
+			result = (item.item_type == InvItem.ItemType.WEAPON)
+		"off_hand":
+			result = (item.item_type in [InvItem.ItemType.WEAPON, InvItem.ItemType.SHIELD])
+		"body":
+			result = (item.item_type == InvItem.ItemType.BODY)
+		"head":
+			result = (item.item_type == InvItem.ItemType.HEAD)
+		"hands":
+			result = (item.item_type == InvItem.ItemType.HANDS)
+		"legs":
+			result = (item.item_type == InvItem.ItemType.LEGS)
+		"ring_1", "ring_2":
+			result = (item.item_type == InvItem.ItemType.RING)
+		"amulet":
+			result = (item.item_type == InvItem.ItemType.AMULET)
+		_:
+			print("Неизвестный тип слота:", slot_type)
+	
+	print("Результат проверки:", result)
+	return result
+
 func equip_item(item: InvItem, slot_type: String) -> bool:
+	print("=== Начало экипировки ===")
+	print("Предмет:", item.name, "| Тип:", item.item_type)
+	print("Целевой слот:", slot_type)
+	
 	if not _can_equip(item, slot_type):
-		print("Предмет не может быть экипирован")
+		print("Предмет не может быть экипирован в этот слот")
 		return false
 	
-	var slot = equipment_slots.get(slot_type)
-	if not slot:
-		push_error("Слот не найден: ", slot_type)
+	var slot = equipment_slots[slot_type]
+	if slot == null:
+		push_error("Слот не инициализирован!")
 		return false
 	
-	# Возвращаем текущий предмет в инвентарь
-	if slot.item:
-		if not insert(slot.item):
-			push_error("Не удалось вернуть предмет в инвентарь")
-			return false
+	# Временное сохранение текущего предмета
+	var previous_item = slot.item
+	print("Текущий предмет в слоте:", previous_item.name if previous_item else "пусто")
 	
-	# Экипируем новый предмет
+	# Экипировка нового предмета
 	slot.item = item
 	slot.amount = 1
+	print("Предмет временно установлен в слот")
+	
+	# Возврат предыдущего предмета
+	if previous_item:
+		print("Попытка вернуть в инвентарь:", previous_item.name)
+		if not insert(previous_item):
+			# Откат изменений при ошибке
+			slot.item = previous_item
+			print("Ошибка: не удалось вернуть предмет в инвентарь")
+			return false
+	
+	print("Экипировка успешно завершена")
 	equipment_updated.emit()
 	return true
 
-func _can_equip(item: InvItem, slot_type: String) -> bool:
-	if not item:
-		return false
-	
-	match slot_type:
-		"main_hand":
-			return item.item_type == InvItem.ItemType.WEAPON
-		"off_hand":
-			return item.item_type in [InvItem.ItemType.WEAPON, InvItem.ItemType.SHIELD]
-		"body":
-			return item.item_type == InvItem.ItemType.BODY
-		"head":
-			return item.item_type == InvItem.ItemType.HEAD
-		"hands":
-			return item.item_type == InvItem.ItemType.HANDS
-		"legs":
-			return item.item_type == InvItem.ItemType.LEGS
-		"ring_1", "ring_2":
-			return item.item_type == InvItem.ItemType.RING
-		"amulet":
-			return item.item_type == InvItem.ItemType.AMULET
-		_:
-
-			return false
 
 func insert(item: InvItem):
 	# Сначала пробуем добавить в хотбар (только для зелий)
