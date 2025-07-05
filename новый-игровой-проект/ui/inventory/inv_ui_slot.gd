@@ -4,20 +4,26 @@ extends Panel
 @onready var amount_text: Label = $CenterContainer/Panel/Label
 @onready var selectSprite: Sprite2D = $CenterContainer/Panel/select
 
-
+var inv: Inv = null 
 var current_slot: InvSlot  # Текущий слот, связанный с этим UI
 
 # Обновление отображения слота
 func update(slot: InvSlot):
-	current_slot = slot  # Сохраняем ссылку на слот
-	if !slot.item:
+	if slot == null:
+		push_warning("Attempted to update slot with null")
+		item_visual.visible = false
+		amount_text.visible = false
+		return
+	
+	current_slot = slot
+	if slot.item == null:
 		item_visual.visible = false
 		amount_text.visible = false
 	else:
 		item_visual.visible = true
 		item_visual.texture = slot.item.texture
 		amount_text.text = str(slot.amount)
-		amount_text.visible = slot.amount > 1  # Показываем количество только если > 1
+		amount_text.visible = slot.amount > 1
 
 # --- Drag & Drop система ---
 func _get_drag_data(_pos):
@@ -49,6 +55,19 @@ func _drop_data(_pos, data):
 	var source_slot: InvSlot = data["slot_data"]
 	var target_slot: InvSlot = current_slot
 	
+	if get_parent().get_parent().name == "EquipmentPanel":
+		var slot_index = get_index()
+		
+		# Проверяем тип предмета
+		if source_slot.item and source_slot.item.item_type != slot_index:
+			print("Нельзя экипировать ", source_slot.item.name, " в этот слот")
+			
+			return
+			
+		if inv.equip_item(slot_index, source_slot.item):
+			source_slot.item = null
+			source_slot.amount = 0
+			return
 	# Если слоты одинаковые - ничего не делаем
 	if source_slot == target_slot:
 		return

@@ -18,7 +18,6 @@ config/icon="res://icon.svg"
 [autoload]
 
 InvUI="*res://ui/inventory/inv_ui.tscn"
-GlobalInventory="res://ui/inventory/GlobalInventory.gd"
 
 [file_customization]
 

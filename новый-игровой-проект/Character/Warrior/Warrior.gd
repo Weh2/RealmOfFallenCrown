@@ -45,6 +45,8 @@ signal stamina_changed(new_stamina)
 signal died
 
 func _ready():
+	inv.equipment_updated.connect(_update_equipment_stats)
+	_update_equipment_stats()
 	# Удаляем старый висячий инвентарь
 	var old_inv = get_node_or_null("/root/InvUI")
 	if old_inv:
@@ -69,7 +71,44 @@ func _ready():
 	current_stamina = max_stamina
 	stamina_ui.setup(max_stamina)
 
-
+func _update_equipment_stats():
+	if not inv or inv.equipment_slots.size() < 8:
+		return
+	
+	# Обновляем оружие
+	var weapon_slot = inv.equipment_slots[InvItem.ItemType.WEAPON]
+	if weapon_slot and weapon_slot.item:
+		$Weapon.update_weapon(weapon_slot.item)
+		print("Оружие экипировано: ", weapon_slot.item.name)
+	else:
+		$Weapon.unequip_weapon()
+		print("Оружие снято")
+	
+	# Рассчитываем бонусы
+	var bonuses = {
+		"attack": 0,
+		"defense": 0,
+		"health": 0,
+		"stamina": 0
+	}
+	
+	for slot in inv.equipment_slots:
+		if slot and slot.item:
+			for stat in bonuses:
+				bonuses[stat] += slot.item.stats.get(stat, 0)
+	
+	# Применяем бонусы
+	if health_component:
+		var new_max_health = 100 + bonuses["health"]
+		if health_component.max_health != new_max_health:
+			var health_percent = health_component.current_health / health_component.max_health
+			health_component.max_health = new_max_health
+			health_component.current_health = health_percent * new_max_health
+			print("Макс. здоровье обновлено: ", new_max_health)
+	
+	max_stamina = 100 + bonuses["stamina"]
+	current_stamina = min(current_stamina, max_stamina)
+	print("Бонусы применены: ", bonuses)
 
 func _physics_process(delta):
 	if weapon.is_attacking() or is_dashing:
