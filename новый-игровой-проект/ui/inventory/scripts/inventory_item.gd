@@ -11,7 +11,7 @@ enum ItemType {
 	RING = 6,
 	AMULET = 7,
 	CONSUMABLE = 8
-}
+}	
 
 @export_category("Item Properties")
 @export var name: String = "Item"

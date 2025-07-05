@@ -7,9 +7,8 @@ var is_open = false
 
 
 func _ready():
-	inv.update.connect(update_slots)
+	inv.inventory_updated.connect(update_slots)  # БЫЛО: inv.update.connect
 	update_slots()
-	close()
 
 func update_slots():
 	for i in range(min(inv.slots.size(), slots.size())):

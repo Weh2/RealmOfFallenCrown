@@ -11,7 +11,7 @@ extends CharacterBody2D
 @onready var block_area = $BlockArea
 @export var inv: Inv
 @onready var hotbar_ui = $HotbarUI
-
+@onready var inventory_manager: InventoryManager = get_node("/root/InventoryManager")
 @export var shake_power: float = 5.0
 @export var shake_duration: float = 0.5
 
@@ -45,6 +45,11 @@ signal stamina_changed(new_stamina)
 signal died
 
 func _ready():
+	if inventory_manager and inventory_manager.inventory:
+		inventory_manager.inventory.equipment_updated.connect(_update_equipment)
+		_update_equipment()  # Первоначальное обновление
+	else:
+		push_error("InventoryManager not found!")
 	# Удаляем старый висячий инвентарь
 	var old_inv = get_node_or_null("/root/InvUI")
 	if old_inv:
@@ -69,6 +74,24 @@ func _ready():
 	current_stamina = max_stamina
 	stamina_ui.setup(max_stamina)
 
+func _update_equipment():
+	if !inventory_manager or !inventory_manager.inventory:
+		return
+	
+	# Обновляем оружие
+	var weapon_slot = inventory_manager.inventory.equipment_slots.get("main_hand")
+	if weapon_slot and weapon_slot.item:
+		$Weapon.update_weapon(weapon_slot.item)
+	else:
+		$Weapon.unequip_weapon()
+	
+	# Обновляем показатели защиты
+	var total_defense = 0
+	for slot in inventory_manager.inventory.equipment_slots.values():
+		if slot and slot.item and slot.item.stats.has("defense"):
+			total_defense += slot.item.stats["defense"]
+	
+	print("Total defense:", total_defense)
 
 
 func _physics_process(delta):
