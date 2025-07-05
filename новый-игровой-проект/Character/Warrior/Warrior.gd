@@ -10,7 +10,7 @@ extends CharacterBody2D
 @onready var stamina_ui = $StaminaUI
 @onready var block_area = $BlockArea
 @export var inv: Inv
-@onready var hotbar_ui = get_node("hotbar_ui")
+@onready var hotbar_ui = $HotbarUI
 
 @export var shake_power: float = 5.0
 @export var shake_duration: float = 0.5
@@ -44,11 +44,7 @@ signal health_changed(new_health)
 signal stamina_changed(new_stamina)
 signal died
 
-
-
 func _ready():
-	GlobalInventory.inventory.equipment_updated.connect(_on_equipment_updated)
-	calculate_stats()
 	# Удаляем старый висячий инвентарь
 	var old_inv = get_node_or_null("/root/InvUI")
 	if old_inv:
@@ -57,7 +53,6 @@ func _ready():
 	# Гарантируем, что используется только правильный инвентарь
 	var inv_ui = $Inv_UI  # Или правильный путь к вашему инвентарю
 	inv_ui.add_to_group("player_inventory")
-	
 	await get_tree().process_frame
 	
 	health_ui.get_node("UIRoot").position = Vector2(20, 20)
@@ -75,11 +70,7 @@ func _ready():
 	stamina_ui.setup(max_stamina)
 
 
-func equip_weapon(new_weapon: InvItem):
-	if new_weapon.item_type == InvItem.ItemType.Weapon:
-		$Weapon.update_weapon(new_weapon)
-		calculate_stats()
-		
+
 func _physics_process(delta):
 	if weapon.is_attacking() or is_dashing:
 		move_and_slide()
@@ -228,61 +219,3 @@ func set_invincible(time: float):
 
 func collect(item):
 	inv.insert(item)
-	
-	
-func calculate_stats():
-	# Сбрасываем базовые значения
-	var base_health = 100
-	var base_stamina = 100
-	var base_attack = 0
-	var base_defense = 0
-	
-	# Проверяем экипированное оружие
-	var weapon_slot = inv.equipment_slots.get("main_hand")
-	if weapon_slot and weapon_slot.item:
-		base_attack += weapon_slot.item.stats.get("attack", 0)
-		base_defense += weapon_slot.item.stats.get("defense", 0)
-	
-	# Проверяем броню (пример для других слотов)
-	var body_slot = inv.equipment_slots.get("body")
-	if body_slot and body_slot.item:
-		base_defense += body_slot.item.stats.get("defense", 0)
-	
-	# Применяем характеристики
-	health_component.max_health = base_health
-	max_stamina = base_stamina
-	# Здесь можно добавить применение attack и defense к вашему оружию
-	
-	# Обновляем UI
-	health_ui.update_health(health_component.current_health, health_component.max_health)
-	stamina_ui.set_stamina(current_stamina)
-	
-	
-func get_inventory():
-	return $Inv_UI.inv
-	
-func update_equipment():
-	var weapon_slot = GlobalInventory.inventory.equipment_slots["main_hand"]
-	if weapon_slot and weapon_slot.item:
-		$Weapon.update_weapon(weapon_slot.item)
-	else:
-		$Weapon.unequip_weapon()
-	
-	calculate_stats()
-
-func collect_item(item: InvItem) -> void:
-	if GlobalInventory.inventory.insert(item):
-		print("Предмет добавлен в инвентарь: ", item.name)
-		
-		# Автоматически экипируем оружие если слот пуст
-		if item.item_type == InvItem.ItemType.Weapon:
-			var weapon_slot = GlobalInventory.inventory.equipment_slots["main_hand"]
-			if not weapon_slot.item:
-				GlobalInventory.inventory.equip_item(item, "main_hand")
-	else:
-		print("Не удалось добавить предмет в инвентарь")
-
-
-func _on_equipment_updated():
-	print("Сигнал equipment_updated получен!")
-	$Inv_UI.update_equipment()

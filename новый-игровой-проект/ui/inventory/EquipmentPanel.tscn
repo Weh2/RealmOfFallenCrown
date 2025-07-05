@@ -48,7 +48,6 @@ position = Vector2(-245, 241)
 [node name="OffHandSlot" type="Panel" parent="VBoxContainer"]
 layout_mode = 2
 script = ExtResource("1_mxcdu")
-slot_type = "OffHandSlot"
 
 [node name="TextureRect" type="TextureRect" parent="VBoxContainer/OffHandSlot"]
 layout_mode = 0
@@ -64,7 +63,6 @@ position = Vector2(-245, 173)
 [node name="BodySlot" type="Panel" parent="VBoxContainer"]
 layout_mode = 2
 script = ExtResource("1_mxcdu")
-slot_type = "BodySlot"
 
 [node name="TextureRect" type="TextureRect" parent="VBoxContainer/BodySlot"]
 layout_mode = 0
@@ -80,7 +78,6 @@ position = Vector2(-56, 176)
 [node name="HeadSlot" type="Panel" parent="VBoxContainer"]
 layout_mode = 2
 script = ExtResource("1_mxcdu")
-slot_type = "HeadSlot"
 
 [node name="TextureRect" type="TextureRect" parent="VBoxContainer/HeadSlot"]
 layout_mode = 0
@@ -96,7 +93,6 @@ position = Vector2(-55, 252)
 [node name="HandsSlot" type="Panel" parent="VBoxContainer"]
 layout_mode = 2
 script = ExtResource("1_mxcdu")
-slot_type = "HandsSlot"
 
 [node name="TextureRect" type="TextureRect" parent="VBoxContainer/HandsSlot"]
 layout_mode = 0
@@ -112,7 +108,6 @@ position = Vector2(-126, 256)
 [node name="LegsSlot" type="Panel" parent="VBoxContainer"]
 layout_mode = 2
 script = ExtResource("1_mxcdu")
-slot_type = "LegsSlot"
 
 [node name="TextureRect" type="TextureRect" parent="VBoxContainer/LegsSlot"]
 layout_mode = 0
@@ -131,7 +126,6 @@ layout_mode = 2
 [node name="Ring1Slot" type="Panel" parent="VBoxContainer/HBoxContainer"]
 layout_mode = 2
 script = ExtResource("1_mxcdu")
-slot_type = "Ring1Slot"
 
 [node name="TextureRect" type="TextureRect" parent="VBoxContainer/HBoxContainer/Ring1Slot"]
 layout_mode = 0
@@ -147,7 +141,6 @@ position = Vector2(-55, 98)
 [node name="Ring2Slot" type="Panel" parent="VBoxContainer/HBoxContainer"]
 layout_mode = 2
 script = ExtResource("1_mxcdu")
-slot_type = "Ring2Slot"
 
 [node name="TextureRect" type="TextureRect" parent="VBoxContainer/HBoxContainer/Ring2Slot"]
 layout_mode = 0
@@ -163,7 +156,6 @@ position = Vector2(-200, 97)
 [node name="AmuletSlot" type="Panel" parent="VBoxContainer"]
 layout_mode = 2
 script = ExtResource("1_mxcdu")
-slot_type = "AmuletSlot"
 
 [node name="TextureRect" type="TextureRect" parent="VBoxContainer/AmuletSlot"]
 layout_mode = 0

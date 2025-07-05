@@ -18,8 +18,10 @@ func _ready():
 # Обновляем оружие при экипировке
 func update_weapon(weapon_data: InvItem):
 	current_weapon = weapon_data
-	weapon_sprite.texture = weapon_data.texture
-	weapon_sprite.visible = true
+	if weapon_sprite:
+		weapon_sprite.texture = weapon_data.texture
+		weapon_sprite.visible = true
+	
 	# Можно добавить изменение размера хитбокса в зависимости от оружия
 	# hitbox.shape.extents = Vector2(weapon_data.range, 10)
 
@@ -65,10 +67,13 @@ func is_attacking() -> bool:
 	return is_attack_active
 
 func _on_hitbox_body_entered(body):
-	if body != get_parent() and body.has_method("take_damage") and current_weapon:
-		body.take_damage(current_weapon).stats.get("attack", 0)
+	if body != get_parent() and body.has_method("take_damage"):
+		var final_damage = current_weapon.stats["attack"] if current_weapon else 40
+		body.take_damage(final_damage)
+		print("Нанесен урон ", final_damage, " врагу ", body.name)
 
 # Добавляем функцию для сброса оружия (при снятии)
 func unequip_weapon():
 	current_weapon = null
-	weapon_sprite.visible = false
+	if weapon_sprite:
+		weapon_sprite.visible = false
