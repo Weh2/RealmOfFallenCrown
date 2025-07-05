@@ -61,7 +61,7 @@ func _drop_data(_pos, data):
 		source_slot.amount = 0
 	
 	# Если предметы одинаковые и стакаемые - объединяем
-	elif (target_slot.item.id == source_slot.item.id 
+	elif (target_slot.item.get_id() == source_slot.item.get_id() 
 		  and target_slot.item.stackable 
 		  and source_slot.item.stackable):
 		var total = target_slot.amount + source_slot.amount

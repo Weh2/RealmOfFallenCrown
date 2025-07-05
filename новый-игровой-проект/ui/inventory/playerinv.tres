@@ -1,8 +1,6 @@
 [gd_resource type="Resource" script_class="Inv" load_steps=22 format=3 uid="uid://ct3husp0sat75"]
 
 [ext_resource type="Script" uid="uid://d0yc8g6ebdn1y" path="res://Inv_slot.gd" id="1_cd5lx"]
-[ext_resource type="Resource" uid="uid://cyl5skt2xthja" path="res://ui/inventory/items/armor.tres" id="3_ggfln"]
-[ext_resource type="Resource" uid="uid://b1i0260c5550l" path="res://ui/inventory/items/sword.tres" id="3_x3n5q"]
 [ext_resource type="Script" uid="uid://byfi7kn7084p7" path="res://ui/inventory/inventory.gd" id="3_xke3u"]
 
 [sub_resource type="Resource" id="Resource_2hcye"]
@@ -15,15 +13,21 @@ script = ExtResource("1_cd5lx")
 amount = 0
 metadata/_custom_type_script = "uid://d0yc8g6ebdn1y"
 
+[sub_resource type="Resource" id="Resource_xb081"]
+metadata/__load_path__ = "res://ui/inventory/items/armor.tres"
+
 [sub_resource type="Resource" id="Resource_cd5lx"]
 script = ExtResource("1_cd5lx")
-item = ExtResource("3_ggfln")
+item = SubResource("Resource_xb081")
 amount = 0
 metadata/_custom_type_script = "uid://d0yc8g6ebdn1y"
 
+[sub_resource type="Resource" id="Resource_8eyvw"]
+metadata/__load_path__ = "res://ui/inventory/items/sword.tres"
+
 [sub_resource type="Resource" id="Resource_ggfln"]
 script = ExtResource("1_cd5lx")
-item = ExtResource("3_x3n5q")
+item = SubResource("Resource_8eyvw")
 amount = 0
 metadata/_custom_type_script = "uid://d0yc8g6ebdn1y"
 
