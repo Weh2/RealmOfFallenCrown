@@ -1,9 +1,10 @@
-[gd_resource type="Resource" script_class="Inv" load_steps=22 format=3 uid="uid://ct3husp0sat75"]
+[gd_resource type="Resource" script_class="Inv" load_steps=23 format=3 uid="uid://ct3husp0sat75"]
 
 [ext_resource type="Script" uid="uid://d0yc8g6ebdn1y" path="res://Inv_slot.gd" id="1_cd5lx"]
 [ext_resource type="Resource" uid="uid://c12jn4sfgllya" path="res://ui/inventory/items/iron_sword.tres" id="3_x3n5q"]
 [ext_resource type="Script" uid="uid://byfi7kn7084p7" path="res://ui/inventory/inventory.gd" id="3_xke3u"]
 [ext_resource type="Resource" uid="uid://bqbrgl13bf4ki" path="res://ui/inventory/items/iron_armor.tres" id="4_ggfln"]
+[ext_resource type="Resource" uid="uid://dpx1q6qy0p4ty" path="res://ui/inventory/items/test_armor.tres" id="5_xke3u"]
 
 [sub_resource type="Resource" id="Resource_2hcye"]
 script = ExtResource("1_cd5lx")
@@ -29,6 +30,7 @@ metadata/_custom_type_script = "uid://d0yc8g6ebdn1y"
 
 [sub_resource type="Resource" id="Resource_xke3u"]
 script = ExtResource("1_cd5lx")
+item = ExtResource("5_xke3u")
 amount = 0
 metadata/_custom_type_script = "uid://d0yc8g6ebdn1y"
 

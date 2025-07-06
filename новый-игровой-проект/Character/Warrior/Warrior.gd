@@ -44,9 +44,14 @@ signal health_changed(new_health)
 signal stamina_changed(new_stamina)
 signal died
 
+
 func _ready():
-	inv.equipment_updated.connect(_update_equipment_stats)
-	_update_equipment_stats()
+	# Подключаем сигналы
+	if inv:
+		inv.equipment_updated.connect(_update_equipment_stats)
+		print("DEBUG: Сигналы подключены")  # Проверка подключения
+		
+	call_deferred("_update_equipment_stats")
 	# Удаляем старый висячий инвентарь
 	var old_inv = get_node_or_null("/root/InvUI")
 	if old_inv:
@@ -70,25 +75,25 @@ func _ready():
 	
 	current_stamina = max_stamina
 	stamina_ui.setup(max_stamina)
-
+	
 func _update_equipment_stats():
+	print("DEBUG: Вызов _update_equipment_stats")  # Должно появляться при любом изменении
 	if not inv or inv.equipment_slots.size() < 8:
 		return
 	
-	# Обновляем оружие
-	var weapon_slot = inv.equipment_slots[InvItem.ItemType.WEAPON]
-	if weapon_slot and weapon_slot.item:
-		$Weapon.update_weapon(weapon_slot.item)
-		print("Оружие экипировано: ", weapon_slot.item.name)
-	else:
-		$Weapon.unequip_weapon()
-		print("Оружие снято")
+	# Базовые значения без экипировки
+	var base_stats = {
+		"health": 100,
+		"attack": 10,
+		"defense": 0,
+		"stamina": 100
+	}
 	
-	# Рассчитываем бонусы
+	# Считаем ТОЛЬКО бонусы от экипировки
 	var bonuses = {
+		"health": 0,
 		"attack": 0,
 		"defense": 0,
-		"health": 0,
 		"stamina": 0
 	}
 	
@@ -97,18 +102,29 @@ func _update_equipment_stats():
 			for stat in bonuses:
 				bonuses[stat] += slot.item.stats.get(stat, 0)
 	
-	# Применяем бонусы
+	# Применяем к здоровью (важно: сначала сброс к базе)
 	if health_component:
-		var new_max_health = 100 + bonuses["health"]
-		if health_component.max_health != new_max_health:
-			var health_percent = health_component.current_health / health_component.max_health
-			health_component.max_health = new_max_health
-			health_component.current_health = health_percent * new_max_health
-			print("Макс. здоровье обновлено: ", new_max_health)
+		health_component.max_health = base_stats["health"] + bonuses["health"]
+		health_component.current_health = min(health_component.current_health, health_component.max_health)
+		health_ui.update_health(health_component.current_health, health_component.max_health)
 	
-	max_stamina = 100 + bonuses["stamina"]
+	# Обновляем оружие
+	var weapon_slot = inv.equipment_slots[InvItem.ItemType.WEAPON]
+	if weapon_slot and weapon_slot.item:
+		$Weapon.update_weapon(weapon_slot.item)
+	else:
+		$Weapon.unequip_weapon()
+	
+	# Стамина (сначала сброс к базе)
+	max_stamina = base_stats["stamina"] + bonuses["stamina"]
 	current_stamina = min(current_stamina, max_stamina)
-	print("Бонусы применены: ", bonuses)
+	stamina_ui.set_stamina(current_stamina)
+	
+	# Отладочный вывод
+	print("=== Статы после обновления ===")
+	print("Здоровье: ", health_component.max_health)
+	print("Урон: ", $Weapon.get_attack_damage())
+	print("Стамина: ", max_stamina)
 
 func _physics_process(delta):
 	if weapon.is_attacking() or is_dashing:

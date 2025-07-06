@@ -1,0 +1,19 @@
+[gd_resource type="Resource" script_class="InvItem" load_steps=3 format=3 uid="uid://dpx1q6qy0p4ty"]
+
+[ext_resource type="Script" uid="uid://ddvqv4vy8efxo" path="res://ui/inventory/scripts/inventory_item.gd" id="1_mybg6"]
+[ext_resource type="Texture2D" uid="uid://b625no1t5u6kb" path="res://ui/inventory/items/Iron Armor.png" id="2_p307r"]
+
+[resource]
+script = ExtResource("1_mybg6")
+name = "Item"
+texture = ExtResource("2_p307r")
+item_type = 2
+stackable = false
+max_stack = 1
+stats = {
+"attack": 0,
+"defense": 40,
+"health": 40,
+"stamina": 0
+}
+metadata/_custom_type_script = "uid://ddvqv4vy8efxo"

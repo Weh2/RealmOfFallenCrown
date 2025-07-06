@@ -32,3 +32,9 @@ func set_invincible(time: float):
 	is_invincible = true
 	await get_tree().create_timer(time).timeout
 	is_invincible = false
+
+func reset_health(new_max: float):
+	var ratio = current_health / max_health
+	max_health = new_max
+	current_health = min(ratio * new_max, new_max)
+	health_changed.emit(current_health, max_health)

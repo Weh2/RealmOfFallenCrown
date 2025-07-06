@@ -78,39 +78,66 @@ func use_hotbar_slot(index: int, player: Node):
 
 
 # Экипировка предмета
-func equip_item(slot_index: int, item: InvItem):
+func equip_item(slot_index: int, item: InvItem) -> bool:
 	if slot_index < 0 or slot_index >= equipment_slots.size():
 		return false
 	
-	# Запрещаем экипировать зелья
-
-		
-	# Проверяем соответствие типа
+	# Проверяем тип предмета
 	if item.item_type != slot_index:
-		print("Тип предмета не соответствует слоту")
+		print("Нельзя экипировать ", item.name, " в этот слот")
 		return false
-	# Если в слоте уже есть предмет - сначала снимаем его
-	if equipment_slots[slot_index].item:
-		unequip_item(slot_index)
 	
-	# Экипируем предмет
-	equipment_slots[slot_index].item = item
-	equipment_slots[slot_index].amount = 1
-	equipment_updated.emit()
-	return true
-
+	# Если в слоте уже есть предмет - сначала снимаем его
+	var unequipped_item = unequip_item(slot_index)
+	
+	# Находим слот с этим предметом в инвентаре
+	var item_slot_index = -1
+	for i in range(slots.size()):
+		if slots[i].item == item:
+			item_slot_index = i
+			break
+	
+	if item_slot_index != -1:
+		# Переносим предмет в слот экипировки
+		equipment_slots[slot_index].item = slots[item_slot_index].item
+		equipment_slots[slot_index].amount = 1
+		slots[item_slot_index].item = null  # Удаляем из инвентаря
+		
+		# Обновляем статы
+		equipment_updated.emit()
+		update.emit()
+		return true
+	print("Предмет не найден в инвентаре")
+	return false
 # Снятие предмета
-func unequip_item(slot_index: int):
+
+func unequip_item(slot_index: int) -> InvItem:
 	if slot_index < 0 or slot_index >= equipment_slots.size():
 		return null
 	
 	var item = equipment_slots[slot_index].item
-	if item:
-		equipment_slots[slot_index].item = null
-		equipment_slots[slot_index].amount = 0
-		equipment_updated.emit()
-		return item
-	return null
+	if not item:
+		return null
+	
+	# Создаем временную копию предмета
+	var unequipped_item = item
+	
+	# Очищаем слот экипировки
+	equipment_slots[slot_index].item = null
+	equipment_slots[slot_index].amount = 0
+	
+	print("DEBUG: Предмет снят из слота", slot_index)  # Должно появиться в консоли
+	
+	# Форсируем обновление
+	equipment_updated.emit()
+	update.emit()
+	
+	# Пытаемся вернуть предмет в инвентарь
+	if insert(unequipped_item):
+		return unequipped_item
+	else:
+		print("В инвентаре нет места!")
+		return null
 
 # Получение бонусов от всей экипировки
 func get_equipment_bonuses() -> Dictionary:
