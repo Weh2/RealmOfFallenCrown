@@ -1,4 +1,4 @@
-[gd_scene load_steps=8 format=3 uid="uid://cxt6p8d10u8wp"]
+[gd_scene load_steps=12 format=3 uid="uid://cxt6p8d10u8wp"]
 
 [ext_resource type="Script" uid="uid://c3idmpsoip5mi" path="res://ui/inventory/inv_ui.gd" id="1_iawu1"]
 [ext_resource type="Texture2D" uid="uid://cndyuhoba7185" path="res://ui/inventory/RectangleBox_96x96.png" id="2_o6pvg"]
@@ -6,7 +6,14 @@
 [ext_resource type="Texture2D" uid="uid://bqv10no61ype4" path="res://ui/inventory/BottomPatternPanel_119x17.png" id="4_64ild"]
 [ext_resource type="Texture2D" uid="uid://gyh820xcfe2w" path="res://ui/inventory/TopPatternBG_116x67.png" id="5_656ak"]
 [ext_resource type="Texture2D" uid="uid://b2wowno27hy7d" path="res://ui/inventory/TopPatternPanel_01_33x15.png" id="6_mwi2l"]
+[ext_resource type="Texture2D" uid="uid://dhimvca7boih3" path="res://ui/inventory/TitleBox_64x16.png" id="8_egwaa"]
+[ext_resource type="Texture2D" uid="uid://g7fl00irpa6f" path="res://fonts/i (1).png" id="8_ferii"]
 [ext_resource type="Texture2D" uid="uid://bbks2drirv2qv" path="res://ui/inventory/Pipe_36x11.png" id="8_fqce0"]
+[ext_resource type="FontVariation" uid="uid://f4x4doy5kxmh" path="res://fonts/main_font.variation.tres" id="9_egwaa"]
+
+[sub_resource type="LabelSettings" id="LabelSettings_ferii"]
+font = ExtResource("9_egwaa")
+font_color = Color(1, 1, 0.556863, 1)
 
 [node name="Inv_UI" type="Control"]
 z_index = 1
@@ -143,14 +150,48 @@ theme_override_constants/h_separation = 100
 theme_override_constants/v_separation = 100
 columns = 2
 
+[node name="I(1)" type="Sprite2D" parent="EquipmentPanel/GridContainer"]
+position = Vector2(90.6, 195.062)
+scale = Vector2(1.21, 1.605)
+texture = ExtResource("8_ferii")
+
 [node name="inv_UI_slot" parent="EquipmentPanel/GridContainer" instance=ExtResource("3_hxx7b")]
 layout_mode = 2
+
+[node name="TitleBox64x16" type="Sprite2D" parent="EquipmentPanel/GridContainer/inv_UI_slot"]
+position = Vector2(38.6, -14.938)
+scale = Vector2(1.65625, 1.71875)
+texture = ExtResource("8_egwaa")
+
+[node name="Label" type="Label" parent="EquipmentPanel/GridContainer/inv_UI_slot"]
+offset_left = -6.39999
+offset_top = -25.938
+offset_right = 79.6
+offset_bottom = -2.938
+text = "WEAPON"
+label_settings = SubResource("LabelSettings_ferii")
+vertical_alignment = 1
 
 [node name="inv_UI_slot2" parent="EquipmentPanel/GridContainer" instance=ExtResource("3_hxx7b")]
 layout_mode = 2
 
 [node name="inv_UI_slot3" parent="EquipmentPanel/GridContainer" instance=ExtResource("3_hxx7b")]
 layout_mode = 2
+
+[node name="TitleBox64x16" type="Sprite2D" parent="EquipmentPanel/GridContainer/inv_UI_slot3"]
+position = Vector2(38.6, -14.938)
+scale = Vector2(1.65625, 1.71875)
+texture = ExtResource("8_egwaa")
+
+[node name="Label" type="Label" parent="EquipmentPanel/GridContainer/inv_UI_slot3"]
+offset_left = -6.39999
+offset_top = -25.938
+offset_right = 79.6
+offset_bottom = -2.938
+text = "ARMOR"
+label_settings = SubResource("LabelSettings_ferii")
+horizontal_alignment = 1
+vertical_alignment = 1
 
 [node name="inv_UI_slot4" parent="EquipmentPanel/GridContainer" instance=ExtResource("3_hxx7b")]
 layout_mode = 2

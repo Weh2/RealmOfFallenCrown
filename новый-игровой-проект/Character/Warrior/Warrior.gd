@@ -10,7 +10,7 @@ extends CharacterBody2D
 @onready var stamina_ui = $StaminaUI
 @onready var block_area = $BlockArea
 @export var inv: Inv
-@onready var hotbar_ui = $HotbarUI
+@onready var hotbar_ui = $hotbar_ui
 
 @export var shake_power: float = 5.0
 @export var shake_duration: float = 0.5
