@@ -1,0 +1,19 @@
+[gd_resource type="Resource" script_class="InvItem" load_steps=3 format=3 uid="uid://bqxjcy20r8k31"]
+
+[ext_resource type="Script" uid="uid://ddvqv4vy8efxo" path="res://ui/inventory/scripts/inventory_item.gd" id="1_7ttnm"]
+[ext_resource type="Texture2D" uid="uid://ypn5g5rbft50" path="res://ui/inventory/items/Adobe Express - file (10).png" id="2_its3l"]
+
+[resource]
+script = ExtResource("1_7ttnm")
+name = "hands"
+texture = ExtResource("2_its3l")
+item_type = 4
+stackable = false
+max_stack = 1
+stats = {
+"attack": 0,
+"defense": 5,
+"health": 5,
+"stamina": 0
+}
+metadata/_custom_type_script = "uid://ddvqv4vy8efxo"

@@ -1,0 +1,19 @@
+[gd_resource type="Resource" script_class="InvItem" load_steps=3 format=3 uid="uid://kb3v1qh3tl7g"]
+
+[ext_resource type="Script" uid="uid://ddvqv4vy8efxo" path="res://ui/inventory/scripts/inventory_item.gd" id="1_bxjyo"]
+[ext_resource type="Texture2D" uid="uid://paqkd3nyqiur" path="res://ui/inventory/items/Helm.png" id="2_yyfhs"]
+
+[resource]
+script = ExtResource("1_bxjyo")
+name = "helm"
+texture = ExtResource("2_yyfhs")
+item_type = 3
+stackable = false
+max_stack = 1
+stats = {
+"attack": 0,
+"defense": 10,
+"health": 10,
+"stamina": 0
+}
+metadata/_custom_type_script = "uid://ddvqv4vy8efxo"

@@ -1,10 +1,16 @@
-[gd_resource type="Resource" script_class="Inv" load_steps=23 format=3 uid="uid://ct3husp0sat75"]
+[gd_resource type="Resource" script_class="Inv" load_steps=29 format=3 uid="uid://ct3husp0sat75"]
 
 [ext_resource type="Script" uid="uid://d0yc8g6ebdn1y" path="res://Inv_slot.gd" id="1_cd5lx"]
 [ext_resource type="Resource" uid="uid://c12jn4sfgllya" path="res://ui/inventory/items/iron_sword.tres" id="3_x3n5q"]
 [ext_resource type="Script" uid="uid://byfi7kn7084p7" path="res://ui/inventory/inventory.gd" id="3_xke3u"]
 [ext_resource type="Resource" uid="uid://bqbrgl13bf4ki" path="res://ui/inventory/items/iron_armor.tres" id="4_ggfln"]
 [ext_resource type="Resource" uid="uid://dpx1q6qy0p4ty" path="res://ui/inventory/items/test_armor.tres" id="5_xke3u"]
+[ext_resource type="Resource" uid="uid://chf3a3cst4yvv" path="res://ui/inventory/items/shield.tres" id="6_36re1"]
+[ext_resource type="Resource" uid="uid://b8g4vokpxs7xo" path="res://ui/inventory/items/ring.tres" id="7_p7pkr"]
+[ext_resource type="Resource" uid="uid://kb3v1qh3tl7g" path="res://ui/inventory/items/helm.tres" id="8_erauh"]
+[ext_resource type="Resource" uid="uid://bqxjcy20r8k31" path="res://ui/inventory/items/hands.tres" id="9_lho7y"]
+[ext_resource type="Resource" uid="uid://elwwje3vcsfs" path="res://ui/inventory/items/boot.tres" id="10_weieo"]
+[ext_resource type="Resource" uid="uid://cl6p1754d7jn8" path="res://ui/inventory/items/amulet.tres" id="11_dj7ht"]
 
 [sub_resource type="Resource" id="Resource_2hcye"]
 script = ExtResource("1_cd5lx")
@@ -36,31 +42,37 @@ metadata/_custom_type_script = "uid://d0yc8g6ebdn1y"
 
 [sub_resource type="Resource" id="Resource_36re1"]
 script = ExtResource("1_cd5lx")
+item = ExtResource("6_36re1")
 amount = 0
 metadata/_custom_type_script = "uid://d0yc8g6ebdn1y"
 
 [sub_resource type="Resource" id="Resource_6uujq"]
 script = ExtResource("1_cd5lx")
+item = ExtResource("7_p7pkr")
 amount = 0
 metadata/_custom_type_script = "uid://d0yc8g6ebdn1y"
 
 [sub_resource type="Resource" id="Resource_gdnbk"]
 script = ExtResource("1_cd5lx")
+item = ExtResource("8_erauh")
 amount = 0
 metadata/_custom_type_script = "uid://d0yc8g6ebdn1y"
 
 [sub_resource type="Resource" id="Resource_ft4nd"]
 script = ExtResource("1_cd5lx")
+item = ExtResource("9_lho7y")
 amount = 0
 metadata/_custom_type_script = "uid://d0yc8g6ebdn1y"
 
 [sub_resource type="Resource" id="Resource_qi2bd"]
 script = ExtResource("1_cd5lx")
+item = ExtResource("10_weieo")
 amount = 0
 metadata/_custom_type_script = "uid://d0yc8g6ebdn1y"
 
 [sub_resource type="Resource" id="Resource_p7pkr"]
 script = ExtResource("1_cd5lx")
+item = ExtResource("11_dj7ht")
 amount = 0
 metadata/_custom_type_script = "uid://d0yc8g6ebdn1y"
 

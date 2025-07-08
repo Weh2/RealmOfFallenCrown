@@ -1,0 +1,19 @@
+[gd_resource type="Resource" script_class="InvItem" load_steps=3 format=3 uid="uid://b8g4vokpxs7xo"]
+
+[ext_resource type="Script" uid="uid://ddvqv4vy8efxo" path="res://ui/inventory/scripts/inventory_item.gd" id="1_30rdk"]
+[ext_resource type="Texture2D" uid="uid://cr37krfxjfct8" path="res://ui/inventory/items/2025-07-09_00-09-02 (1).png" id="2_pmakx"]
+
+[resource]
+script = ExtResource("1_30rdk")
+name = "ring"
+texture = ExtResource("2_pmakx")
+item_type = 6
+stackable = false
+max_stack = 1
+stats = {
+"attack": 0,
+"defense": 0,
+"health": 5,
+"stamina": 20
+}
+metadata/_custom_type_script = "uid://ddvqv4vy8efxo"

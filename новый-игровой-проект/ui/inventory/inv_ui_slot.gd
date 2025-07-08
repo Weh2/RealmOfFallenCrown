@@ -4,6 +4,7 @@ extends Panel
 @onready var amount_text: Label = $CenterContainer/Panel/Label
 @onready var selectSprite: Sprite2D = $CenterContainer/Panel/select
 
+
 var inv: Inv = null 
 var current_slot: InvSlot  # Текущий слот, связанный с этим UI
 

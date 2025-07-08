@@ -1,0 +1,19 @@
+[gd_resource type="Resource" script_class="InvItem" load_steps=3 format=3 uid="uid://cl6p1754d7jn8"]
+
+[ext_resource type="Script" uid="uid://ddvqv4vy8efxo" path="res://ui/inventory/scripts/inventory_item.gd" id="1_p7iwh"]
+[ext_resource type="Texture2D" uid="uid://c5b10ef8pnto6" path="res://ui/inventory/items/d2f8e7c2-3f5e-4d15-b4c1-6d44a8db7b7e_removalai_preview.png" id="2_34pu5"]
+
+[resource]
+script = ExtResource("1_p7iwh")
+name = "amulet"
+texture = ExtResource("2_34pu5")
+item_type = 7
+stackable = false
+max_stack = 1
+stats = {
+"attack": 0,
+"defense": 0,
+"health": 5,
+"stamina": 20
+}
+metadata/_custom_type_script = "uid://ddvqv4vy8efxo"
