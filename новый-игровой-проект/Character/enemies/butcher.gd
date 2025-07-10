@@ -14,8 +14,16 @@ func take_damage(incoming_damage: int):
 	print("Enemy health: ", health)
 	
 	if health <= 0:
+		_drop_loot()  # Вызываем перед удалением
 		queue_free()
 		print("Enemy died!")
+
+func _drop_loot():
+	if has_node("LootComponent"):
+		var loot = $LootComponent.get_loot()
+		if loot.size() > 0:
+			# Передаём лут в сцену (можно доработать для визуализации)
+			get_tree().call_group("loot_handlers", "_on_enemy_loot_dropped", loot, global_position)
 
 func _physics_process(_delta):
 	if not target:

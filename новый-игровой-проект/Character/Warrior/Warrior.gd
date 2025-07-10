@@ -46,6 +46,8 @@ signal died
 
 
 func _ready():
+	add_to_group("loot_handlers")
+
 	# Подключаем сигналы
 	if inv:
 		inv.equipment_updated.connect(_update_equipment_stats)
@@ -274,3 +276,10 @@ func set_invincible(time: float):
 
 func collect(item):
 	inv.insert(item)
+
+func _on_enemy_loot_dropped(items: Array[InvItem], drop_position: Vector2):
+	for item in items:
+		# Проверяем расстояние до лута (опционально)
+		if global_position.distance_to(drop_position) < 100.0:
+			collect(item)  # Используем существующий метод
+			print("Получен предмет: ", item.name)
