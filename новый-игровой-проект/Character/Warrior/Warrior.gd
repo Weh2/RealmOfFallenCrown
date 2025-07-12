@@ -14,7 +14,7 @@ extends CharacterBody2D
 
 @export var shake_power: float = 5.0
 @export var shake_duration: float = 0.5
-
+var invincible := false
 
 # Stamina system
 @export var max_stamina: float = 100.0
@@ -203,16 +203,21 @@ func start_dash():
 	can_dash = true
 
 func take_damage(damage: int, source_position: Vector2 = Vector2.ZERO):
-	if is_dashing:  # Полная неуязвимость во время дэша (как во втором скрипте)
+	if invincible or is_dashing:
 		return
 	
+	# При блокировке
 	if is_blocking and check_block_direction(source_position):
-		damage = int(damage * (1.0 - block_damage_reduction))  # Упрощенный расчет урона как во втором скрипте
+		damage = int(damage * (1.0 - block_damage_reduction))
 		flash_sprite(Color.ROYAL_BLUE, 0.1, 1)
 		camera.apply_shake(shake_power * 0.5, shake_duration * 0.7)
 	else:
 		flash_sprite(Color.RED, 0.1, 3)
 		camera.apply_shake(shake_power, shake_duration)
+	
+	# Включаем неуязвимость на короткое время
+	invincible = true
+	get_tree().create_timer(0.5).timeout.connect(func(): invincible = false)
 	
 	if health_component:
 		health_component.take_damage(damage)
@@ -222,7 +227,6 @@ func take_damage(damage: int, source_position: Vector2 = Vector2.ZERO):
 		var knockback_direction = (global_position - source_position).normalized()
 		velocity = knockback_direction * 200
 		move_and_slide()
-
 func check_block_direction(source_position: Vector2) -> bool:
 	if source_position == Vector2.ZERO:
 		return false

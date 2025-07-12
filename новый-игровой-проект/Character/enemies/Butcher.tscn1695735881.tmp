@@ -261,6 +261,11 @@ animations = [{
 [node name="Butcher" type="CharacterBody2D" groups=["enemies"]]
 collision_layer = 2
 script = ExtResource("1_u7ynv")
+speed = null
+attack_damage = null
+attack_cooldown = null
+attack_range = null
+health = null
 corpse_texture = ExtResource("2_56yyb")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]

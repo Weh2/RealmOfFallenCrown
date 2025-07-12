@@ -47,13 +47,8 @@ func die():
 	# 3. Ждем завершения анимации
 	await sprite.animation_finished
 	
-	# 4. Полностью переключаем на статичную текстуру
-	sprite.stop()
-	sprite.sprite_frames = null  # Важно: полностью отключаем анимации!
-	sprite.texture = corpse_texture
 	
 	# 5. Активируем лут
-	$LootArea/CollisionShape2D.disabled = false
 	add_to_group("corpses")
 	_drop_loot()
 
