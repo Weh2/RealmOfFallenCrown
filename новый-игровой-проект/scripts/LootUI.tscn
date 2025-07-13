@@ -1,5 +1,41 @@
-[gd_scene format=3 uid="uid://bt220h7jrsmoi"]
+[gd_scene load_steps=4 format=3 uid="uid://bt220h7jrsmoi"]
+
+[ext_resource type="Texture2D" uid="uid://cndyuhoba7185" path="res://ui/inventory/RectangleBox_96x96.png" id="1_2tlkf"]
+
+[sub_resource type="Theme" id="Theme_7qs66"]
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_1g7jf"]
+texture = ExtResource("1_2tlkf")
+texture_margin_left = 15.0
+texture_margin_top = 15.0
+texture_margin_right = 15.0
+texture_margin_bottom = 15.0
 
 [node name="Panel" type="Panel"]
-offset_right = 40.0
-offset_bottom = 40.0
+offset_right = 416.0
+offset_bottom = 309.0
+theme = SubResource("Theme_7qs66")
+theme_override_styles/panel = SubResource("StyleBoxTexture_1g7jf")
+
+[node name="ItemList" type="VBoxContainer" parent="."]
+layout_mode = 0
+offset_left = 1.0
+offset_top = -5.0
+offset_right = 412.0
+offset_bottom = 300.0
+alignment = 1
+
+[node name="Button" type="Button" parent="."]
+layout_mode = 0
+offset_left = 62.0
+offset_top = 264.0
+offset_right = 154.0
+offset_bottom = 293.0
+text = "Take All"
+
+[node name="Button2" type="Button" parent="."]
+offset_left = 274.0
+offset_top = 263.0
+offset_right = 367.0
+offset_bottom = 286.0
+text = "Close"
