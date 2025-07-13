@@ -25,24 +25,33 @@ func _ready():
 	play_animation("idle")
 
 func take_damage(incoming_damage: int):
-	if is_dead: return
+	if is_dead: 
+		return  # Уже мёртв
 	
 	health -= incoming_damage
 	play_animation("hurt")
-	print("Enemy health: ", health)
 	
 	if health <= 0:
 		die()
 
 func die():
-	if is_dead: return
+	if is_dead: 
+		return
+	
 	is_dead = true
 	
-	# Отключаем физику и коллайдеры
+	# Останавливаем всё
 	set_physics_process(false)
+	attack_timer.stop()  # Останавливаем таймер атаки
+	
+	# Отключаем все коллайдеры
 	$CollisionShape2D.set_deferred("disabled", true)
 	$DetectionArea/CollisionShape2D.set_deferred("disabled", true)
 	$AttackArea/CollisionShape2D.set_deferred("disabled", true)
+	$Hitbox/CollisionShape2D.set_deferred("disabled", true)  # Если есть хитбокс
+	
+	# Принудительно останавливаем текущую анимацию
+	sprite.stop()
 	
 	# Проигрываем анимацию смерти
 	play_animation("death")
@@ -52,7 +61,7 @@ func die():
 	sprite.stop()
 	sprite.frame = sprite.sprite_frames.get_frame_count("death") - 1
 	
-	# Включаем область лута (только если нода существует)
+	# Включаем область лута (если есть)
 	if has_node("LootArea"):
 		$LootArea/CollisionShape2D.disabled = false
 	
@@ -137,15 +146,17 @@ func _attack_player():
 	# Ждем момент для нанесения урона (0.3 секунды)
 	await get_tree().create_timer(0.3).timeout
 	
-	if target and _is_target_alive(target) and global_position.distance_to(target.global_position) <= attack_range * 1.1:
+	# Проверяем, жив ли враг и цель ещё существует
+	if not is_dead and target and _is_target_alive(target) and global_position.distance_to(target.global_position) <= attack_range * 1.1:
 		target.take_damage(attack_damage, global_position)
 	
 	# Ждем окончания анимации атаки
 	await sprite.animation_finished
 	
-	# Сбрасываем анимацию после атаки
-	play_animation("idle")  # Или "walk" в зависимости от ситуации
-	attack_in_progress = false
+	if not is_dead:  # Только если ещё не умер
+		play_animation("idle")
+		attack_in_progress = false
+		attack_timer.start(attack_cooldown)
 	
 	# Запускаем кулдаун
 	attack_timer.start(attack_cooldown)

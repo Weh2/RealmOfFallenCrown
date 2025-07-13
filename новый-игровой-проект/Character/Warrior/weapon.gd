@@ -71,8 +71,8 @@ func is_attacking() -> bool:
 	return is_attack_active
 
 func _on_hitbox_body_entered(body):
-	if body != get_parent() and body.has_method("take_damage"):
-		var final_damage = get_attack_damage()  # Используем новую систему расчета урона
+	if body != get_parent() and body.has_method("take_damage") and is_attack_active:
+		var final_damage = get_attack_damage()
 		body.take_damage(final_damage)
 		print("Нанесен урон ", final_damage, " врагу ", body.name)
 
