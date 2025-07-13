@@ -183,5 +183,6 @@ func _on_detection_area_body_exited(body):
 		current_state = State.IDLE
 
 func _on_attack_area_body_entered(body):
+	# Только устанавливаем цель, но не наносим урон
 	if body.is_in_group("player") and _is_target_alive(body) and not target:
 		target = body
