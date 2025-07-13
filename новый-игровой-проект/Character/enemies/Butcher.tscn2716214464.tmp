@@ -1,4 +1,4 @@
-[gd_scene load_steps=44 format=3 uid="uid://dc8qexmjly4ak"]
+[gd_scene load_steps=43 format=3 uid="uid://dc8qexmjly4ak"]
 
 [ext_resource type="Script" uid="uid://doed4m7bqefde" path="res://Character/enemies/butcher.gd" id="1_u7ynv"]
 [ext_resource type="Texture2D" uid="uid://oj8xoe440e3b" path="res://Character/enemies/2025-07-12_22-43-57 (1).png" id="2_56yyb"]
@@ -258,9 +258,6 @@ animations = [{
 "speed": 10.0
 }]
 
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_56yyb"]
-size = Vector2(29, 20)
-
 [node name="Butcher" type="CharacterBody2D" groups=["enemies"]]
 collision_layer = 2
 script = ExtResource("1_u7ynv")
@@ -305,18 +302,12 @@ loot_table = Array[ExtResource("5_so0dp")]([ExtResource("6_00hqe"), ExtResource(
 position = Vector2(1, -2)
 scale = Vector2(1.91, 1.93)
 sprite_frames = SubResource("SpriteFrames_2gfau")
-animation = &"death"
-frame = 3
-frame_progress = 1.0
+animation = &"attack"
+frame = 2
+frame_progress = 0.243553
 
 [node name="AttackTimer" type="Timer" parent="."]
 one_shot = true
-
-[node name="LootArea" type="Area2D" parent="."]
-
-[node name="CollisionShape2D" type="CollisionShape2D" parent="LootArea"]
-position = Vector2(-11.5, 0)
-shape = SubResource("RectangleShape2D_56yyb")
 
 [connection signal="body_entered" from="DetectionArea" to="." method="_on_detection_area_body_entered"]
 [connection signal="body_entered" from="AttackArea" to="." method="_on_attack_area_body_entered"]
