@@ -239,7 +239,18 @@ height = 40.0
 
 [node name="Warrior" type="CharacterBody2D" groups=["player", "player_weapons"]]
 script = ExtResource("1_ij6vw")
+speed = null
 inv = ExtResource("2_cr365")
+shake_power = null
+shake_duration = null
+max_stamina = null
+stamina_regen_rate = null
+stamina_consumption_rate = null
+block_damage_reduction = null
+dash_speed_multiplier = null
+dash_duration = null
+dash_cooldown = null
+dash_stamina_cost = null
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
 position = Vector2(-1, -5)

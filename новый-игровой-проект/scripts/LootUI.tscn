@@ -1,8 +1,9 @@
-[gd_scene load_steps=7 format=3 uid="uid://bt220h7jrsmoi"]
+[gd_scene load_steps=8 format=3 uid="uid://bt220h7jrsmoi"]
 
 [ext_resource type="Texture2D" uid="uid://cndyuhoba7185" path="res://ui/inventory/RectangleBox_96x96.png" id="1_2tlkf"]
 [ext_resource type="Texture2D" uid="uid://bn3pmw24iml86" path="res://ui/inventory/QuitIcon.png" id="2_1g7jf"]
 [ext_resource type="PackedScene" uid="uid://ds6tq2yxqeqpr" path="res://ui/inventory/inv_ui_slot.tscn" id="2_c7r38"]
+[ext_resource type="Script" uid="uid://46gqcblekb4n" path="res://scripts/loot_ui.gd" id="2_l2vls"]
 [ext_resource type="Texture2D" uid="uid://dhimvca7boih3" path="res://ui/inventory/TitleBox_64x16.png" id="2_xe5h3"]
 
 [sub_resource type="Theme" id="Theme_7qs66"]
@@ -19,6 +20,7 @@ offset_right = 381.0
 offset_bottom = 309.0
 theme = SubResource("Theme_7qs66")
 theme_override_styles/panel = SubResource("StyleBoxTexture_1g7jf")
+script = ExtResource("2_l2vls")
 
 [node name="MarginContainer" type="MarginContainer" parent="."]
 layout_mode = 0

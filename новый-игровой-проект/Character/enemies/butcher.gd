@@ -13,7 +13,23 @@ extends CharacterBody2D
 @onready var attack_timer := $AttackTimer  # Изменено с AttackCooldownTimer на AttackTimer
 @onready var loot_area := $LootArea # Добавляем ссылку на LootArea
 
+signal loot_opened(items)   
+var loot_items = []
 
+func get_loot():
+	return loot_items.duplicate()
+
+func take_item(item):
+	loot_items.erase(item)
+	return item
+
+func take_all_items():
+	var items = loot_items.duplicate()
+	loot_items.clear()
+	return items
+
+func open_loot():
+	emit_signal("loot_opened", get_loot())
 # Состояния
 enum State {IDLE, CHASE, ATTACK, DEAD}
 var current_state = State.IDLE
