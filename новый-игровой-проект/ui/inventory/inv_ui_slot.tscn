@@ -47,5 +47,18 @@ position = Vector2(4.5, -2.99999)
 scale = Vector2(2.88462, 2.84615)
 texture = ExtResource("3_iowq5")
 
+[node name="TooltipPanel" type="Panel" parent="."]
+visible = false
+layout_mode = 0
+offset_right = 70.0
+offset_bottom = 67.0
+
+[node name="RichTextLabel" type="RichTextLabel" parent="TooltipPanel"]
+layout_mode = 0
+offset_right = 40.0
+offset_bottom = 40.0
+text = "
+"
+
 [connection signal="mouse_entered" from="." to="." method="_on_mouse_entered"]
 [connection signal="mouse_exited" from="." to="." method="_on_mouse_exited"]

@@ -1,6 +1,9 @@
-[gd_scene load_steps=4 format=3 uid="uid://bt220h7jrsmoi"]
+[gd_scene load_steps=7 format=3 uid="uid://bt220h7jrsmoi"]
 
 [ext_resource type="Texture2D" uid="uid://cndyuhoba7185" path="res://ui/inventory/RectangleBox_96x96.png" id="1_2tlkf"]
+[ext_resource type="Texture2D" uid="uid://bn3pmw24iml86" path="res://ui/inventory/QuitIcon.png" id="2_1g7jf"]
+[ext_resource type="PackedScene" uid="uid://ds6tq2yxqeqpr" path="res://ui/inventory/inv_ui_slot.tscn" id="2_c7r38"]
+[ext_resource type="Texture2D" uid="uid://dhimvca7boih3" path="res://ui/inventory/TitleBox_64x16.png" id="2_xe5h3"]
 
 [sub_resource type="Theme" id="Theme_7qs66"]
 
@@ -12,30 +15,81 @@ texture_margin_right = 15.0
 texture_margin_bottom = 15.0
 
 [node name="Panel" type="Panel"]
-offset_right = 416.0
+offset_right = 381.0
 offset_bottom = 309.0
 theme = SubResource("Theme_7qs66")
 theme_override_styles/panel = SubResource("StyleBoxTexture_1g7jf")
 
-[node name="ItemList" type="VBoxContainer" parent="."]
+[node name="MarginContainer" type="MarginContainer" parent="."]
 layout_mode = 0
-offset_left = 1.0
-offset_top = -5.0
-offset_right = 412.0
-offset_bottom = 300.0
-alignment = 1
+offset_left = 10.0
+offset_top = 11.0
+offset_right = 373.0
+offset_bottom = 304.0
 
-[node name="Button" type="Button" parent="."]
-layout_mode = 0
-offset_left = 62.0
-offset_top = 264.0
-offset_right = 154.0
-offset_bottom = 293.0
-text = "Take All"
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer"]
+layout_mode = 2
+
+[node name="TitleBox64x17" type="Sprite2D" parent="MarginContainer/VBoxContainer"]
+position = Vector2(179, 262.5)
+scale = Vector2(1.1875, 2.5625)
+texture = ExtResource("2_xe5h3")
+
+[node name="TitleBox64x16" type="Sprite2D" parent="MarginContainer/VBoxContainer"]
+position = Vector2(181.5, 11)
+scale = Vector2(1.29688, 1.875)
+texture = ExtResource("2_xe5h3")
+
+[node name="Label" type="Label" parent="MarginContainer/VBoxContainer"]
+layout_mode = 2
+text = "L O O T"
+horizontal_alignment = 1
+
+[node name="GridContainer" type="GridContainer" parent="MarginContainer/VBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 0
+theme_override_constants/h_separation = 80
+theme_override_constants/v_separation = 80
+columns = 4
+
+[node name="inv_UI_slot" parent="MarginContainer/VBoxContainer/GridContainer" instance=ExtResource("2_c7r38")]
+layout_mode = 2
+
+[node name="inv_UI_slot2" parent="MarginContainer/VBoxContainer/GridContainer" instance=ExtResource("2_c7r38")]
+layout_mode = 2
+
+[node name="inv_UI_slot3" parent="MarginContainer/VBoxContainer/GridContainer" instance=ExtResource("2_c7r38")]
+layout_mode = 2
+
+[node name="inv_UI_slot4" parent="MarginContainer/VBoxContainer/GridContainer" instance=ExtResource("2_c7r38")]
+layout_mode = 2
+
+[node name="inv_UI_slot5" parent="MarginContainer/VBoxContainer/GridContainer" instance=ExtResource("2_c7r38")]
+layout_mode = 2
+
+[node name="inv_UI_slot6" parent="MarginContainer/VBoxContainer/GridContainer" instance=ExtResource("2_c7r38")]
+layout_mode = 2
+
+[node name="inv_UI_slot7" parent="MarginContainer/VBoxContainer/GridContainer" instance=ExtResource("2_c7r38")]
+layout_mode = 2
+
+[node name="inv_UI_slot8" parent="MarginContainer/VBoxContainer/GridContainer" instance=ExtResource("2_c7r38")]
+layout_mode = 2
 
 [node name="Button2" type="Button" parent="."]
-offset_left = 274.0
-offset_top = 263.0
-offset_right = 367.0
-offset_bottom = 286.0
-text = "Close"
+layout_mode = 2
+offset_left = 343.0
+offset_top = 8.0
+offset_right = 372.0
+offset_bottom = 37.0
+icon = ExtResource("2_1g7jf")
+flat = true
+
+[node name="Button" type="Button" parent="."]
+layout_mode = 2
+offset_left = 156.0
+offset_top = 257.0
+offset_right = 221.0
+offset_bottom = 294.0
+text = "Take All"
+flat = true
