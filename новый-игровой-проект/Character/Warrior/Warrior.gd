@@ -12,12 +12,12 @@ extends CharacterBody2D
 @export var inv: Inv
 @onready var hotbar_ui = $hotbar_ui
 @onready var loot_ui = $LootUI
-var current_loot_source = null
-
-
+@onready var loot_detection_area = $LootDetectionArea
 @export var shake_power: float = 5.0
 @export var shake_duration: float = 0.5
 var invincible := false
+
+
 
 # Stamina system
 @export var max_stamina: float = 100.0
@@ -79,40 +79,11 @@ func _ready():
 		push_error("HealthComponent not found!")
 	
 	current_stamina = max_stamina
-	stamina_ui.setup(max_stamina)
-	
-	# Подключаем сигналы UI к методам игрока
-	loot_ui.item_taken.connect(_on_item_taken)
-	loot_ui.all_items_taken.connect(_on_all_items_taken)
-	loot_ui.loot_closed.connect(_on_loot_closed)
-	
-	# Ищем врагов с лутом при взаимодействии
-	set_process_input(true)
-	
-func _on_loot_detection_area_body_entered(body):
-	if body.has_method("open_loot"):
-		current_loot_source = body
-		show_interact_prompt(true)
+	stamina_ui.setup(max_stamina)	
 
-func _on_loot_detection_area_body_exited(body):
-	if body == current_loot_source:
-		current_loot_source = null
-		show_interact_prompt(false)
 
-func _on_item_taken(item):
-	inventory.add_item(item)
 
-func _on_all_items_taken(items):
-	for item in items:
-		inventory.add_item(item)
 
-func _on_loot_closed():
-	# Дополнительные действия при закрытии
-	pass
-
-func show_interact_prompt(show: bool):
-	# Показываем/скрываем подсказку (например, "[E] Loot")
-	pass
 func _update_equipment_stats():
 	print("DEBUG: Вызов _update_equipment_stats")  # Должно появляться при любом изменении
 	if not inv or inv.equipment_slots.size() < 8:
@@ -209,8 +180,6 @@ func _physics_process(delta):
 
 
 func _input(event):
-	if event.is_action_pressed("interact") and current_loot_source:
-		current_loot_source.open_loot()
 	if event.is_action_pressed("hotbar_1"):
 		inv.use_hotbar_slot(0, self)
 	elif event.is_action_pressed("hotbar_2"):

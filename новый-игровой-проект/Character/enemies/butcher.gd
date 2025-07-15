@@ -1,6 +1,6 @@
 extends CharacterBody2D
 
-# Настройки
+# Настройки врага
 @export var speed := 120
 @export var attack_damage := 15
 @export var attack_cooldown := 1.5
@@ -8,41 +8,36 @@ extends CharacterBody2D
 @export var health := 100
 @export var corpse_texture: Texture2D
 
-# Ссылки на ноды
-@onready var sprite := $AnimatedSprite2D
-@onready var attack_timer := $AttackTimer  # Изменено с AttackCooldownTimer на AttackTimer
-@onready var loot_area := $LootArea # Добавляем ссылку на LootArea
-
-signal loot_opened(items)   
-var loot_items = []
-
-func get_loot():
-	return loot_items.duplicate()
-
-func take_item(item):
-	loot_items.erase(item)
-	return item
-
-func take_all_items():
-	var items = loot_items.duplicate()
-	loot_items.clear()
-	return items
-
-func open_loot():
-	emit_signal("loot_opened", get_loot())
-# Состояния
+# Состояния врага
 enum State {IDLE, CHASE, ATTACK, DEAD}
 var current_state = State.IDLE
 var target = null
 var is_dead := false
 var attack_in_progress := false
+var can_be_looted := false
+
+# Лут система
+var loot_items = []
+signal loot_opened(items)
+signal enemy_died()
+
+# Ноды
+@onready var sprite := $AnimatedSprite2D
+@onready var attack_timer := $AttackTimer
+@onready var loot_area := $LootArea
+@onready var detection_area := $DetectionArea
+@onready var attack_area := $AttackArea
+@onready var hitbox := $Hitbox
 
 func _ready():
+	# Инициализация лута (пример)
+	loot_items.append({"name": "Золотая монета", "quantity": 3, "texture": null})
+	loot_items.append({"name": "Меч", "quantity": 1, "texture": null})
 	play_animation("idle")
 
+# Основные функции
 func take_damage(incoming_damage: int):
-	if is_dead: 
-		return  # Уже мёртв
+	if is_dead: return
 	
 	health -= incoming_damage
 	play_animation("hurt")
@@ -51,25 +46,21 @@ func take_damage(incoming_damage: int):
 		die()
 
 func die():
-	if is_dead: 
-		return
+	if is_dead: return
 	
 	is_dead = true
+	can_be_looted = true
+	current_state = State.DEAD
+	emit_signal("enemy_died")
 	
-	# Останавливаем всё
+	# Отключаем физику и коллайдеры
 	set_physics_process(false)
-	attack_timer.stop()  # Останавливаем таймер атаки
-	
-	# Отключаем все коллайдеры
 	$CollisionShape2D.set_deferred("disabled", true)
-	$DetectionArea/CollisionShape2D.set_deferred("disabled", true)
-	$AttackArea/CollisionShape2D.set_deferred("disabled", true)
-	$Hitbox/CollisionShape2D.set_deferred("disabled", true)  # Если есть хитбокс
+	detection_area.get_node("CollisionShape2D").set_deferred("disabled", true)
+	attack_area.get_node("CollisionShape2D").set_deferred("disabled", true)
+	hitbox.get_node("CollisionShape2D").set_deferred("disabled", true)
 	
-	# Принудительно останавливаем текущую анимацию
-	sprite.stop()
-	
-	# Проигрываем анимацию смерти
+	# Анимация смерти
 	play_animation("death")
 	await sprite.animation_finished
 	
@@ -77,36 +68,32 @@ func die():
 	sprite.stop()
 	sprite.frame = sprite.sprite_frames.get_frame_count("death") - 1
 	
-	# Включаем область лута (если есть)
+	# Включаем область лута
 	if has_node("LootArea"):
-		$LootArea/CollisionShape2D.disabled = false
+		loot_area.get_node("CollisionShape2D").disabled = false
 	
 	add_to_group("corpses")
-	_drop_loot()
 
-func _convert_to_corpse():
-	# Останавливаем анимацию
-	sprite.stop()
-	
-	# Создаем новый SpriteFrames с одной текстурой (труп)
-	var new_frames = SpriteFrames.new()
-	new_frames.add_animation("corpse")
-	new_frames.add_frame("corpse", corpse_texture)
-	
-	# Устанавливаем новые кадры
-	sprite.sprite_frames = new_frames
-	sprite.play("corpse")
-	
-	# Включаем область для лута
-	add_to_group("corpses")
+# Лут система
+func get_loot():
+	return loot_items.duplicate()
 
-func _drop_loot():
-	if has_node("LootComponent"):
-		var loot = $LootComponent.get_loot()
-		if loot.size() > 0:
-			get_tree().call_group("loot_handlers", "_on_enemy_loot_dropped", loot, global_position)
+func remove_item(index: int):
+	if index >= 0 and index < loot_items.size():
+		return loot_items.pop_at(index)
+	return null
 
+func take_all_items():
+	var items = loot_items.duplicate()
+	loot_items.clear()
+	can_be_looted = false
+	return items
 
+func open_loot():
+	if can_be_looted and not loot_items.is_empty():
+		emit_signal("loot_opened", get_loot())
+
+# Логика поведения
 func _physics_process(delta):
 	if is_dead: return
 	
@@ -121,10 +108,8 @@ func _physics_process(delta):
 	match current_state:
 		State.IDLE:
 			_handle_idle_state(distance_to_target)
-		
 		State.CHASE:
 			_handle_chase_state(distance_to_target, direction)
-		
 		State.ATTACK:
 			_handle_attack_state(distance_to_target)
 
@@ -145,12 +130,12 @@ func _handle_chase_state(distance_to_target, direction):
 	sprite.flip_h = direction.x < 0
 
 func _handle_attack_state(distance_to_target):
-	if distance_to_target > attack_range * 1.1:  # Небольшой гистерезис
+	if distance_to_target > attack_range * 1.1:
 		current_state = State.CHASE
 		return
 	
 	velocity = Vector2.ZERO
-	if not attack_in_progress and attack_timer.is_stopped():  # Изменено здесь
+	if not attack_in_progress and attack_timer.is_stopped():
 		_attack_player()
 
 func _attack_player():
@@ -159,49 +144,29 @@ func _attack_player():
 	attack_in_progress = true
 	play_animation("attack")
 	
-	# Ждем момент для нанесения урона (0.3 секунды)
 	await get_tree().create_timer(0.3).timeout
 	
-	# Проверяем, жив ли враг и цель ещё существует
 	if not is_dead and target and _is_target_alive(target) and global_position.distance_to(target.global_position) <= attack_range * 1.1:
 		target.take_damage(attack_damage, global_position)
 	
-	# Ждем окончания анимации атаки
 	await sprite.animation_finished
 	
-	if not is_dead:  # Только если ещё не умер
+	if not is_dead:
 		play_animation("idle")
 		attack_in_progress = false
 		attack_timer.start(attack_cooldown)
-	
-	# Запускаем кулдаун
-	attack_timer.start(attack_cooldown)
 
-	# После кулдауна сразу проверяем состояние
-	await attack_timer.timeout
-	if not is_dead:
-		if target and global_position.distance_to(target.global_position) <= attack_range:
-			_attack_player()  # Новая атака
-		else:
-			current_state = State.CHASE
-			play_animation("walk")
-
-func _on_AttackTimer_timeout():  # Изменено имя сигнала
-	# Проверяем дистанцию сразу после кулдауна
-	if target and global_position.distance_to(target.global_position) <= attack_range:
-		_attack_player()
-	else:
-		current_state = State.CHASE
-
+# Вспомогательные функции
 func play_animation(anim_name: String):
 	if sprite.sprite_frames and sprite.sprite_frames.has_animation(anim_name):
 		sprite.play(anim_name)
 
 func _is_target_alive(player):
-	return player and player.has_method("take_damage")
+	return player and player.has_method("take_damage") and not player.is_dead if player.has_method("is_dead") else true
 
+# Обработчики сигналов
 func _on_detection_area_body_entered(body):
-	if body.is_in_group("player") and _is_target_alive(body):
+	if not is_dead and body.is_in_group("player") and _is_target_alive(body):
 		target = body
 
 func _on_detection_area_body_exited(body):
@@ -210,6 +175,12 @@ func _on_detection_area_body_exited(body):
 		current_state = State.IDLE
 
 func _on_attack_area_body_entered(body):
-	# Только устанавливаем цель, но не наносим урон
-	if body.is_in_group("player") and _is_target_alive(body) and not target:
+	if not is_dead and body.is_in_group("player") and _is_target_alive(body) and not target:
 		target = body
+
+func _on_attack_timer_timeout():
+	if is_dead: return
+	if target and global_position.distance_to(target.global_position) <= attack_range:
+		_attack_player()
+	else:
+		current_state = State.CHASE
