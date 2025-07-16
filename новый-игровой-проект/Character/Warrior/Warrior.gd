@@ -11,12 +11,13 @@ extends CharacterBody2D
 @onready var block_area = $BlockArea
 @export var inv: Inv
 @onready var hotbar_ui = $hotbar_ui
-@onready var loot_ui = $LootUI
 @onready var loot_detection_area = $LootDetectionArea
 @export var shake_power: float = 5.0
 @export var shake_duration: float = 0.5
 var invincible := false
-
+@export var loot_ui_scene: PackedScene = preload("res://scripts/LootUI.tscn")
+var loot_ui: Panel = null
+var current_loot_target: Node = null 
 
 
 # Stamina system
@@ -50,11 +51,14 @@ signal died
 
 func _ready():
 	add_to_group("loot_handlers")
-
-	# Подключаем сигналы
-	if inv:
-		inv.equipment_updated.connect(_update_equipment_stats)
-		print("DEBUG: Сигналы подключены")  # Проверка подключения
+	if loot_ui_scene:
+		loot_ui = loot_ui_scene.instantiate()
+		add_child(loot_ui)
+		loot_ui.hide()
+		
+		# Подключаем сигнал от врагов к LootUI
+		for enemy in get_tree().get_nodes_in_group("enemies"):
+			enemy.loot_opened.connect(loot_ui.show_loot)
 		
 	call_deferred("_update_equipment_stats")
 	# Удаляем старый висячий инвентарь
@@ -81,7 +85,32 @@ func _ready():
 	current_stamina = max_stamina
 	stamina_ui.setup(max_stamina)	
 
+	if loot_ui_scene:
+		loot_ui = loot_ui_scene.instantiate()
+		add_child(loot_ui)
+		loot_ui.hide()
+	if has_node("LootDetectionArea"):
+		loot_detection_area.body_entered.connect(_on_loot_detection_area_body_entered)
+		loot_detection_area.body_exited.connect(_on_loot_detection_area_body_exited)
 
+
+
+func _on_loot_detection_area_body_entered(body):
+	print("Тело вошло в зону лута:", body.name, 
+		  " can_be_looted:", body.can_be_looted if "can_be_looted" in body else "N/A",
+		  " слои:", body.collision_layer)
+	
+	if body.is_in_group("corpses") and "can_be_looted" in body and body.can_be_looted:
+		print("✅ Можно лутать!")
+		current_loot_target = body
+	else:
+		print("❌ Нельзя лутать. Группы:", body.get_groups())
+
+func _on_loot_detection_area_body_exited(body):
+	print("Тело вышло:", body.name, " группы:", body.get_groups())
+	if body == current_loot_target and not body.can_be_looted:
+		# Только если враг "ожил" (что невозможно)
+		current_loot_target = null
 
 
 func _update_equipment_stats():
@@ -180,6 +209,13 @@ func _physics_process(delta):
 
 
 func _input(event):
+	if event.is_action_pressed("interact") and current_loot_target:
+		if current_loot_target.has_method("open_loot"):
+			current_loot_target.open_loot()  # Должен вызываться
+			print("Кнопка F нажата, open_loot() вызван")  # Отладочный вывод
+		else:
+			print("Ошибка: у current_loot_target нет метода open_loot()")
+	
 	if event.is_action_pressed("hotbar_1"):
 		inv.use_hotbar_slot(0, self)
 	elif event.is_action_pressed("hotbar_2"):

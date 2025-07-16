@@ -18,17 +18,6 @@ position = Vector2(352, 22)
 
 [node name="Warrior" parent="." instance=ExtResource("1_f3sb7")]
 position = Vector2(37, 6)
-speed = 300.0
-shake_power = 5.0
-shake_duration = 0.5
-max_stamina = 100.0
-stamina_regen_rate = 15.0
-stamina_consumption_rate = 25.0
-block_damage_reduction = 0.7
-dash_speed_multiplier = 2.5
-dash_duration = 0.2
-dash_cooldown = 0.8
-dash_stamina_cost = 25.0
 
 [node name="canvas_layer" parent="Warrior" instance=ExtResource("4_aqk2v")]
 

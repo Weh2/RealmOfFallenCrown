@@ -259,7 +259,7 @@ animations = [{
 }]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_56yyb"]
-size = Vector2(42, 31)
+size = Vector2(64, 47)
 
 [node name="Butcher" type="CharacterBody2D" groups=["enemies"]]
 collision_layer = 2
@@ -312,9 +312,10 @@ frame_progress = 1.0
 one_shot = true
 
 [node name="LootArea" type="Area2D" parent="."]
+collision_layer = 8
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="LootArea"]
-position = Vector2(-12, 0.5)
+position = Vector2(-10, 0.5)
 shape = SubResource("RectangleShape2D_56yyb")
 
 [connection signal="body_entered" from="DetectionArea" to="." method="_on_detection_area_body_entered"]

@@ -18,7 +18,7 @@ var can_be_looted := false
 
 # Лут система
 var loot_items = []
-signal loot_opened(items)
+signal loot_opened(items: Array)
 signal enemy_died()
 
 # Ноды
@@ -34,7 +34,12 @@ func _ready():
 	loot_items.append({"name": "Золотая монета", "quantity": 3, "texture": null})
 	loot_items.append({"name": "Меч", "quantity": 1, "texture": null})
 	play_animation("idle")
-
+	if has_node("LootComponent"):
+		$LootComponent.connect("loot_opened", _on_loot_opened)
+		
+		
+func _on_loot_opened(items):
+	emit_signal("loot_opened", items)
 # Основные функции
 func take_damage(incoming_damage: int):
 	if is_dead: return
@@ -50,29 +55,29 @@ func die():
 	
 	is_dead = true
 	can_be_looted = true
-	current_state = State.DEAD
-	emit_signal("enemy_died")
+	add_to_group("corpses")
 	
-	# Отключаем физику и коллайдеры
-	set_physics_process(false)
-	$CollisionShape2D.set_deferred("disabled", true)
-	detection_area.get_node("CollisionShape2D").set_deferred("disabled", true)
-	attack_area.get_node("CollisionShape2D").set_deferred("disabled", true)
-	hitbox.get_node("CollisionShape2D").set_deferred("disabled", true)
+	# Отключаем всё, кроме LootArea
+	$CollisionShape2D.disabled = true
+	$Hitbox/CollisionShape2D.disabled = true
+	$DetectionArea/CollisionShape2D.disabled = true
+	$AttackArea/CollisionShape2D.disabled = true
 	
-	# Анимация смерти
+	# Включаем LootArea
+	$LootArea/CollisionShape2D.disabled = false
+	
+	# Меняем слои (enemies=2, corpses=5)
+	set_collision_layer_value(2, false)  # Отключаем enemies
+	set_collision_layer_value(5, true)   # Включаем corpses
+	set_collision_mask_value(1, true)    # Маска на player (слой 1)
+	
+	print("Враг умер. can_be_looted=", can_be_looted, ", слои=", collision_layer)
+	
 	play_animation("death")
 	await sprite.animation_finished
-	
-	# Останавливаем на последнем кадре
 	sprite.stop()
 	sprite.frame = sprite.sprite_frames.get_frame_count("death") - 1
-	
-	# Включаем область лута
-	if has_node("LootArea"):
-		loot_area.get_node("CollisionShape2D").disabled = false
-	
-	add_to_group("corpses")
+
 
 # Лут система
 func get_loot():
@@ -91,8 +96,7 @@ func take_all_items():
 
 func open_loot():
 	if can_be_looted and not loot_items.is_empty():
-		emit_signal("loot_opened", get_loot())
-
+		emit_signal("loot_opened", loot_items.duplicate())  # Только items!
 # Логика поведения
 func _physics_process(delta):
 	if is_dead: return
