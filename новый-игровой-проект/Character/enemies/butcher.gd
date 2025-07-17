@@ -16,8 +16,18 @@ var is_dead := false
 var attack_in_progress := false
 var can_be_looted := false
 
+# Настройки лута
+@export_category("Loot Settings")
+@export var loot_items: Array[InvItem] = [
+	preload("res://ui/inventory/items/knife.tres"),
+	preload("res://ui/inventory/items/meat.tres")
+]
+@export var loot_chance: float = 0.8  # 80% шанс выпадения
+@export var min_quantity: int = 1
+@export var max_quantity: int = 3
+
 # Лут система
-var loot_items = []
+var generated_loot: Array = []  # Будем хранить сгенерированный лут
 signal loot_opened(items: Array)
 signal enemy_died()
 
@@ -30,9 +40,12 @@ signal enemy_died()
 @onready var hitbox := $Hitbox
 
 func _ready():
-	# Инициализация лута (пример)
-	loot_items.append({"name": "Золотая монета", "quantity": 3, "texture": null})
-	loot_items.append({"name": "Меч", "quantity": 1, "texture": null})
+	print("Загруженные предметы для лута:")
+	for item in loot_items:
+		if item:
+			print("- ", item.resource_path, " exists:", ResourceLoader.exists(item.resource_path))
+		else:
+			print("- NULL item in loot_items")
 	play_animation("idle")
 	if has_node("LootComponent"):
 		$LootComponent.connect("loot_opened", _on_loot_opened)
@@ -52,32 +65,43 @@ func take_damage(incoming_damage: int):
 
 func die():
 	if is_dead: return
-	
 	is_dead = true
 	can_be_looted = true
 	add_to_group("corpses")
 	
-	# Отключаем всё, кроме LootArea
+	# Отключаем коллайдеры
 	$CollisionShape2D.disabled = true
 	$Hitbox/CollisionShape2D.disabled = true
 	$DetectionArea/CollisionShape2D.disabled = true
 	$AttackArea/CollisionShape2D.disabled = true
 	
-	# Включаем LootArea
-	$LootArea/CollisionShape2D.disabled = false
-	
-	# Меняем слои (enemies=2, corpses=5)
+	# Меняем слои
 	set_collision_layer_value(2, false)  # Отключаем enemies
 	set_collision_layer_value(5, true)   # Включаем corpses
-	set_collision_mask_value(1, true)    # Маска на player (слой 1)
-	
-	print("Враг умер. can_be_looted=", can_be_looted, ", слои=", collision_layer)
 	
 	play_animation("death")
 	await sprite.animation_finished
 	sprite.stop()
 	sprite.frame = sprite.sprite_frames.get_frame_count("death") - 1
+	generated_loot = generate_loot()  # Генерируем лут один раз
+	can_be_looted = true
 
+func generate_loot() -> Array:  # Убрали [Dictionary] для совместимости
+	print("Генерация лута из:", loot_items)
+	var final_loot = []
+	for item in loot_items:
+		print("Проверка предмета:", item.resource_path if item else "null")
+		if item and randf() <= loot_chance:
+			final_loot.append({
+				"item": item,
+				"quantity": randi_range(min_quantity, max_quantity)
+			})
+	print("Сгенерированный лут:", final_loot)
+	return final_loot
+
+func open_loot():
+	if can_be_looted and generated_loot:
+		emit_signal("loot_opened", generated_loot) 
 
 # Лут система
 func get_loot():
@@ -94,9 +118,7 @@ func take_all_items():
 	can_be_looted = false
 	return items
 
-func open_loot():
-	if can_be_looted and not loot_items.is_empty():
-		emit_signal("loot_opened", loot_items.duplicate())  # Только items!
+
 # Логика поведения
 func _physics_process(delta):
 	if is_dead: return

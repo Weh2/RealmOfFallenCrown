@@ -16,9 +16,9 @@ extends CharacterBody2D
 @export var shake_duration: float = 0.5
 var invincible := false
 @export var loot_ui_scene: PackedScene = preload("res://scripts/LootUI.tscn")
-var loot_ui: Panel = null
-var current_loot_target: Node = null 
 
+var current_loot_target: Node = null 
+@onready var loot_ui: Panel = preload("res://scripts/LootUI.tscn").instantiate()
 
 # Stamina system
 @export var max_stamina: float = 100.0
@@ -50,6 +50,8 @@ signal died
 
 
 func _ready():
+	add_child(loot_ui)  # Добавляем на сцену
+	loot_ui.hide()      # Сразу скрываем
 	add_to_group("loot_handlers")
 	if loot_ui_scene:
 		loot_ui = loot_ui_scene.instantiate()
@@ -209,13 +211,20 @@ func _physics_process(delta):
 
 
 func _input(event):
-	if event.is_action_pressed("interact") and current_loot_target:
-		if current_loot_target.has_method("open_loot"):
-			current_loot_target.open_loot()  # Должен вызываться
-			print("Кнопка F нажата, open_loot() вызван")  # Отладочный вывод
-		else:
-			print("Ошибка: у current_loot_target нет метода open_loot()")
-	
+	if event.is_action_pressed("interact"):
+		# Если лут уже открыт - закрываем его
+		if loot_ui.visible:
+			loot_ui.hide()
+			return
+		
+		# Если есть активная цель для лута
+		if current_loot_target and current_loot_target.can_be_looted:
+			# Проверяем, не открыт ли уже лут от другого источника
+			if loot_ui.current_loot_source != current_loot_target:
+				current_loot_target.open_loot()
+			else:
+				loot_ui.show() 
+			
 	if event.is_action_pressed("hotbar_1"):
 		inv.use_hotbar_slot(0, self)
 	elif event.is_action_pressed("hotbar_2"):
@@ -226,6 +235,15 @@ func _input(event):
 	elif event.is_action_pressed("attack") and !is_blocking and !is_dashing:
 		weapon.start_attack(velocity)
 	
+func _on_loot_opened(items: Array):
+	# Добавьте проверку
+	print("Получен лут:", items)
+	if loot_ui:
+		loot_ui.show_loot(items)
+	else:
+		push_error("LootUI не инициализирован")
+
+
 func start_dash():
 	can_dash = false
 	is_dashing = true
