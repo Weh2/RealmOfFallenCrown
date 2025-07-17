@@ -212,18 +212,19 @@ func _physics_process(delta):
 
 func _input(event):
 	if event.is_action_pressed("interact"):
+		print("=== INTERACT PRESSED ===")
+		print("LootUI visible:", loot_ui.visible)
+		print("Current loot target:", current_loot_target)
+		
 		# Если лут уже открыт - закрываем его
 		if loot_ui.visible:
 			loot_ui.hide()
+			current_loot_target = null  # Сбрасываем цель
 			return
 		
-		# Если есть активная цель для лута
+		# Если есть цель для лута - открываем
 		if current_loot_target and current_loot_target.can_be_looted:
-			# Проверяем, не открыт ли уже лут от другого источника
-			if loot_ui.current_loot_source != current_loot_target:
-				current_loot_target.open_loot()
-			else:
-				loot_ui.show() 
+			current_loot_target.open_loot()
 			
 	if event.is_action_pressed("hotbar_1"):
 		inv.use_hotbar_slot(0, self)
@@ -338,8 +339,9 @@ func set_invincible(time: float):
 		health_component.set_invincible(time)
 
 
-func collect(item):
-	inv.insert(item)
+func collect(item: InvItem):
+	if inv:
+		inv.insert(item)
 
 func _on_enemy_loot_dropped(items: Array[InvItem], drop_position: Vector2):
 	for item in items:

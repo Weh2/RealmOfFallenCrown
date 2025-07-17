@@ -8,10 +8,19 @@ extends Panel
 @export var show_empty_slot_texture: bool = true
 @export var empty_slot_texture: Texture2D
 
+var current_item: InvItem = null
+var current_quantity: int = 0
+var slot_index: int = -1
+
+signal slot_clicked(index: int, item: InvItem, quantity: int)
+
 func update_slot(item: InvItem, amount: int):
 	if not item_visual or not amount_text:
 		push_error("Не найдены ноды для отображения предмета!")
 		return
+	
+	current_item = item
+	current_quantity = amount
 	
 	if item:
 		# Отображаем предмет
@@ -30,3 +39,12 @@ func update_slot(item: InvItem, amount: int):
 func _ready():
 	# Инициализация пустого слота
 	update_slot(null, 0)
+	gui_input.connect(_on_gui_input)
+
+func _on_gui_input(event: InputEvent):
+	if event is InputEventMouseButton:
+		if event.button_index == MOUSE_BUTTON_LEFT and event.pressed:
+			if current_item:
+				emit_signal("slot_clicked", slot_index, current_item, current_quantity)
+				# После клика обновляем слот
+				update_slot(null, 0)

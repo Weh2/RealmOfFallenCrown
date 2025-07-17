@@ -100,21 +100,25 @@ func generate_loot() -> Array:  # Убрали [Dictionary] для совмес�
 	return final_loot
 
 func open_loot():
-	if can_be_looted and generated_loot:
-		emit_signal("loot_opened", generated_loot) 
-
+	print("--- Enemy.open_loot() ---")
+	print("Can be looted:", can_be_looted)
+	if can_be_looted:
+		print("Emitting loot_opened signal")
+		emit_signal("loot_opened", generated_loot)
 # Лут система
 func get_loot():
 	return loot_items.duplicate()
 
 func remove_item(index: int):
-	if index >= 0 and index < loot_items.size():
-		return loot_items.pop_at(index)
+	if index >= 0 and index < generated_loot.size():
+		var item = generated_loot[index]
+		generated_loot.remove_at(index)
+		return item
 	return null
 
 func take_all_items():
-	var items = loot_items.duplicate()
-	loot_items.clear()
+	var items = generated_loot.duplicate()
+	generated_loot.clear()
 	can_be_looted = false
 	return items
 
