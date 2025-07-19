@@ -39,6 +39,8 @@ signal enemy_died()
 @onready var attack_area := $AttackArea
 @onready var hitbox := $Hitbox
 
+
+
 func _ready():
 	print("Загруженные предметы для лута:")
 	for item in loot_items:
@@ -86,41 +88,39 @@ func die():
 	generated_loot = generate_loot()  # Генерируем лут один раз
 	can_be_looted = true
 
-func generate_loot() -> Array:  # Убрали [Dictionary] для совместимости
-	print("Генерация лута из:", loot_items)
+
+
+func generate_loot() -> Array:
 	var final_loot = []
 	for item in loot_items:
-		print("Проверка предмета:", item.resource_path if item else "null")
 		if item and randf() <= loot_chance:
 			final_loot.append({
-				"item": item,
+				"item": item.duplicate(),  # Важно дублировать!
 				"quantity": randi_range(min_quantity, max_quantity)
 			})
-	print("Сгенерированный лут:", final_loot)
 	return final_loot
+	
 
 func open_loot():
 	print("--- Enemy.open_loot() ---")
 	print("Can be looted:", can_be_looted)
 	if can_be_looted:
 		print("Emitting loot_opened signal")
-		emit_signal("loot_opened", generated_loot)
+		return generated_loot  # Просто возвращаем текущий лут
+	return []
 # Лут система
 func get_loot():
 	return loot_items.duplicate()
 
 func remove_item(index: int):
 	if index >= 0 and index < generated_loot.size():
-		var item = generated_loot[index]
 		generated_loot.remove_at(index)
-		return item
-	return null
+		return true
+	return false
 
 func take_all_items():
-	var items = generated_loot.duplicate()
 	generated_loot.clear()
-	can_be_looted = false
-	return items
+	return true
 
 
 # Логика поведения

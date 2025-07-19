@@ -216,15 +216,22 @@ func _input(event):
 		print("LootUI visible:", loot_ui.visible)
 		print("Current loot target:", current_loot_target)
 		
-		# Если лут уже открыт - закрываем его
 		if loot_ui.visible:
 			loot_ui.hide()
-			current_loot_target = null  # Сбрасываем цель
 			return
-		
-		# Если есть цель для лута - открываем
+			
 		if current_loot_target and current_loot_target.can_be_looted:
-			current_loot_target.open_loot()
+			# Добавляем проверку расстояния
+			var distance = global_position.distance_to(current_loot_target.global_position)
+			var max_loot_distance = 100.0  # Настройте под ваш размер зоны
+			
+			if distance <= max_loot_distance:
+				var loot = current_loot_target.open_loot()
+				if loot:
+					loot_ui.show_loot(loot, current_loot_target)
+			else:
+				print("Слишком далеко для лута!")
+				current_loot_target = null  # Сбрасываем цель
 			
 	if event.is_action_pressed("hotbar_1"):
 		inv.use_hotbar_slot(0, self)
@@ -340,8 +347,13 @@ func set_invincible(time: float):
 
 
 func collect(item: InvItem):
+	print("Adding item to inventory: ", item.name)
 	if inv:
-		inv.insert(item)
+		var item_copy = item.duplicate()  # Создаем копию предмета
+		inv.insert(item_copy)
+		print("Item added to inventory")
+	else:
+		push_error("Inventory not found!")
 
 func _on_enemy_loot_dropped(items: Array[InvItem], drop_position: Vector2):
 	for item in items:

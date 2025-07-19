@@ -48,3 +48,25 @@ func _on_gui_input(event: InputEvent):
 				emit_signal("slot_clicked", slot_index, current_item, current_quantity)
 				# После клика обновляем слот
 				update_slot(null, 0)
+
+func _get_drag_data(_pos):
+	if current_item:
+		var drag_preview = TextureRect.new()
+		drag_preview.texture = item_visual.texture
+		drag_preview.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+		drag_preview.size = Vector2(32, 32)
+		set_drag_preview(drag_preview)
+		
+		return {
+			"origin_slot": self,
+			"item": current_item,
+			"quantity": current_quantity
+		}
+	return null
+
+func _can_drop_data(_pos, data):
+	return data is Dictionary and data.has("item")
+
+func _drop_data(_pos, data):
+	if current_item == null:
+		emit_signal("slot_clicked", slot_index, data["item"], data["quantity"])
