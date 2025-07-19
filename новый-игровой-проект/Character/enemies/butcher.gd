@@ -66,7 +66,8 @@ func take_damage(incoming_damage: int):
 		die()
 
 func die():
-	if is_dead: return
+	if is_dead: 
+		return
 	is_dead = true
 	can_be_looted = true
 	add_to_group("corpses")

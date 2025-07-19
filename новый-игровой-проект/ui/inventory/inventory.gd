@@ -45,7 +45,10 @@ func insert(item: InvItem):
 				return
 	
 	# Затем в основной инвентарь
-	var itemslots = slots.filter(func(s): return s.item == item and s.amount < item.max_stack)
+	var itemslots = slots.filter(func(s): 
+		return s.item != null and s.item.name == item.name and s.amount < item.max_stack
+	)
+	
 	if !itemslots.is_empty():
 		itemslots[0].amount += 1
 	else:

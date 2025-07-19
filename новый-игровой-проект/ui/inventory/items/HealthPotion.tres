@@ -7,9 +7,9 @@
 script = ExtResource("1_4dkxa")
 name = "Health Potion"
 texture = ExtResource("2_a72dy")
+item_type = 8
 stackable = true
 max_stack = 99
-item_type = 8
 stats = {
 "attack": 0,
 "defense": 0,

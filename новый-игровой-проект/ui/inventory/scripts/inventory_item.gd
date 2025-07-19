@@ -29,3 +29,16 @@ enum ItemType {
 # Метод для получения уникального идентификатора предмета
 func get_id() -> String:
 	return "%s_%d" % [name, item_type]
+
+func apply_effects(player: Node):
+	match name:
+		"Health Potion":
+			player.heal(30)
+		"Stamina Potion":
+			player.current_stamina = min(player.current_stamina + 50, player.max_stamina)
+		"Meat":
+			player.heal(stats.get("health", 15))
+			player.current_stamina = min(
+				player.current_stamina + stats.get("stamina", 20),
+				player.max_stamina
+			)

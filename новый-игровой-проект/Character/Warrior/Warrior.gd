@@ -95,7 +95,10 @@ func _ready():
 		loot_detection_area.body_entered.connect(_on_loot_detection_area_body_entered)
 		loot_detection_area.body_exited.connect(_on_loot_detection_area_body_exited)
 
-
+	if inv:
+		inv.equipment_updated.connect(_update_equipment_stats)
+	else:
+		push_error("Inventory not initialized!")
 
 func _on_loot_detection_area_body_entered(body):
 	print("Тело вошло в зону лута:", body.name, 
@@ -349,8 +352,11 @@ func set_invincible(time: float):
 func collect(item: InvItem):
 	print("Adding item to inventory: ", item.name)
 	if inv:
-		var item_copy = item.duplicate()  # Создаем копию предмета
-		inv.insert(item_copy)
+		# Для стакаемых предметов не делаем duplicate()
+		if item.stackable:
+			inv.insert(item)
+		else:
+			inv.insert(item.duplicate())
 		print("Item added to inventory")
 	else:
 		push_error("Inventory not found!")

@@ -8,6 +8,10 @@ var inv: Inv = null
 var current_slot: InvSlot  # Текущий слот, связанный с этим UI
 
 
+func _ready():
+	# Явно подключаем сигнал gui_input
+	gui_input.connect(_on_gui_input)
+
 
 # Обновление отображения слота
 func update(slot: InvSlot):
@@ -112,3 +116,42 @@ func _on_mouse_entered() -> void:
 
 func _on_mouse_exited() -> void:
 	selectSprite.visible = false
+
+
+func _on_gui_input(event: InputEvent):
+	if event is InputEventMouseButton and event.pressed:
+		if event.button_index == MOUSE_BUTTON_RIGHT:
+			_try_use_item()
+		elif event.button_index == MOUSE_BUTTON_LEFT:
+			# Ваша существующая логика для перетаскивания
+			pass
+
+func _try_use_item():
+	print("Попытка использовать предмет из слота")
+	if not current_slot:
+		print("Ошибка: current_slot отсутствует")
+		return
+	if not current_slot.item:
+		print("Ошибка: предмет в слоте отсутствует")
+		return
+	
+	print("Используем предмет:", current_slot.item.name)
+	var player = get_tree().get_first_node_in_group("player")
+	if not player:
+		print("Ошибка: игрок не найден в группе 'player'")
+		return
+	
+	print("Вызываем apply_effects для", current_slot.item.name)
+	current_slot.item.apply_effects(player)
+	
+	# Визуальная обратная связь
+	if player.has_method("show_message"):
+		player.show_message("Использован %s" % current_slot.item.name)
+	
+	# Уменьшаем количество
+	current_slot.amount -= 1
+	if current_slot.amount <= 0:
+		current_slot.item = null
+	
+	update(current_slot)
+	inv.update.emit()

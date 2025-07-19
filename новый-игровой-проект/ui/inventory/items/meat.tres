@@ -5,15 +5,15 @@
 
 [resource]
 script = ExtResource("1_suf5u")
-name = "meat"
+name = "Meat"
 texture = ExtResource("2_8q1st")
 item_type = 8
 stackable = true
-max_stack = 5
+max_stack = 10
 stats = {
 "attack": 0,
 "defense": 0,
-"health": 20,
-"stamina": 0
+"health": 15,
+"stamina": 20
 }
 metadata/_custom_type_script = "uid://ddvqv4vy8efxo"

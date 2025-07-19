@@ -50,17 +50,22 @@ func show_loot(items: Array, source):
 
 func _on_slot_clicked(index: int, item: InvItem, quantity: int):
 	if item and current_loot_source:
-		# Добавляем в инвентарь
 		var player = get_tree().get_first_node_in_group("player")
 		if player and player.has_method("collect"):
-			for i in range(quantity):
-				player.collect(item.duplicate())  # Важно дублировать предмет!
-		
-		# Удаляем из лута
-		if index < loot_items.size():
-			loot_items.remove_at(index)
-			grid.get_child(index).update_slot(null, 0)
-
+			if item.stackable:
+				# Для стакаемых предметов - добавляем сразу нужное количество
+				var item_copy = item.duplicate()
+				for i in range(quantity):
+					player.inv.insert(item_copy)  # Используем прямой вызов insert
+			else:
+				# Для нестакаемых - по одному
+				for i in range(quantity):
+					player.collect(item.duplicate())
+			
+			# Удаляем из лута
+			if index < loot_items.size():
+				loot_items.remove_at(index)
+				grid.get_child(index).update_slot(null, 0)
 func _on_take_all_pressed():
 	if current_loot_source:
 		var player = get_tree().get_first_node_in_group("player")
