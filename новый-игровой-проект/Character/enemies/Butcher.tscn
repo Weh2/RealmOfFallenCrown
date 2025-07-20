@@ -1,9 +1,8 @@
-[gd_scene load_steps=41 format=3 uid="uid://dc8qexmjly4ak"]
+[gd_scene load_steps=40 format=3 uid="uid://dc8qexmjly4ak"]
 
 [ext_resource type="Script" uid="uid://doed4m7bqefde" path="res://Character/enemies/butcher.gd" id="1_u7ynv"]
 [ext_resource type="Texture2D" uid="uid://oj8xoe440e3b" path="res://Character/enemies/2025-07-12_22-43-57 (1).png" id="2_56yyb"]
 [ext_resource type="Script" uid="uid://cmp1ipn38yuru" path="res://Character/health_component.gd" id="3_v1xi3"]
-[ext_resource type="Script" uid="uid://dku7q1rlddg4e" path="res://Character/enemies/loot_component.gd" id="4_wmvyn"]
 [ext_resource type="Texture2D" uid="uid://bxjx3g8cq8d4i" path="res://Character/enemies/Orc.png" id="7_00hqe"]
 
 [sub_resource type="CapsuleShape2D" id="CapsuleShape2D_u7ynv"]
@@ -293,16 +292,11 @@ collision_layer = 0
 position = Vector2(1, -3)
 shape = SubResource("CapsuleShape2D_v1xi3")
 
-[node name="LootComponent" type="Node" parent="."]
-script = ExtResource("4_wmvyn")
-
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
 position = Vector2(1, -2)
 scale = Vector2(1.91, 1.93)
 sprite_frames = SubResource("SpriteFrames_2gfau")
-animation = &"death"
-frame = 3
-frame_progress = 1.0
+animation = &"walk"
 
 [node name="AttackTimer" type="Timer" parent="."]
 one_shot = true

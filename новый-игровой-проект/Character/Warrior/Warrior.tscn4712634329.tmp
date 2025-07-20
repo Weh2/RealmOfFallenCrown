@@ -1,4 +1,4 @@
-[gd_scene load_steps=79 format=3 uid="uid://buxurdmy5l22s"]
+[gd_scene load_steps=82 format=3 uid="uid://buxurdmy5l22s"]
 
 [ext_resource type="Script" uid="uid://7j2fxan644jx" path="res://Character/Warrior/Warrior.gd" id="1_ij6vw"]
 [ext_resource type="Resource" uid="uid://ct3husp0sat75" path="res://ui/inventory/playerinv.tres" id="2_cr365"]
@@ -107,6 +107,18 @@ region = Rect2(0, 0, 96, 84)
 [sub_resource type="AtlasTexture" id="AtlasTexture_jn1l4"]
 atlas = ExtResource("13_xsn7v")
 region = Rect2(96, 0, 96, 84)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_ajbhx"]
+atlas = ExtResource("13_xsn7v")
+region = Rect2(192, 0, 96, 84)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_luelu"]
+atlas = ExtResource("13_xsn7v")
+region = Rect2(288, 0, 96, 84)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_yuael"]
+atlas = ExtResource("13_xsn7v")
+region = Rect2(384, 0, 96, 84)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_c7uji"]
 atlas = ExtResource("13_xsn7v")
@@ -328,6 +340,15 @@ animations = [{
 "texture": SubResource("AtlasTexture_jn1l4")
 }, {
 "duration": 1.0,
+"texture": SubResource("AtlasTexture_ajbhx")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_luelu")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_yuael")
+}, {
+"duration": 1.0,
 "texture": SubResource("AtlasTexture_c7uji")
 }],
 "loop": false,
@@ -462,7 +483,19 @@ animations = [{
 
 [node name="Warrior" type="CharacterBody2D" groups=["player", "player_weapons"]]
 script = ExtResource("1_ij6vw")
+speed = null
 inv = ExtResource("2_cr365")
+shake_power = null
+shake_duration = null
+loot_ui_scene = null
+max_stamina = null
+stamina_regen_rate = null
+stamina_consumption_rate = null
+block_damage_reduction = null
+dash_speed_multiplier = null
+dash_duration = null
+dash_cooldown = null
+dash_stamina_cost = null
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 position = Vector2(-4, -8)
@@ -555,9 +588,9 @@ shape = SubResource("CircleShape2D_8qwps")
 visible = false
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
-position = Vector2(-1, -2)
-scale = Vector2(1.64583, 1.8631)
+position = Vector2(1.90735e-06, -3)
+scale = Vector2(1.3125, 1.42857)
 sprite_frames = SubResource("SpriteFrames_dyqwu")
-animation = &"block"
-frame = 2
+animation = &"attack_combo2"
+frame = 5
 frame_progress = 1.0

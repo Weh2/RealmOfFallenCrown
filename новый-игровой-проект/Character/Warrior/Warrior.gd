@@ -1,8 +1,7 @@
 extends CharacterBody2D
 
 @export var speed = 300.0
-@onready var sprite = $Sprite2D
-@onready var movement_animation_player = $AnimationPlayer
+@onready var sprite = $AnimatedSprite2D  # Изменено с Sprite2D на AnimationSprite2D
 @onready var camera = $Camera2D
 @onready var health_component = $HealthComponent
 @onready var health_ui = $HealthUI
@@ -38,7 +37,7 @@ var is_flashing := false
 
 # Dash system
 @export var dash_speed_multiplier := 2.5
-@export var dash_duration := 0.20  # Изменено с 0.20 на 0.15 как во втором скрипте
+@export var dash_duration := 0.20
 @export var dash_cooldown := 0.8
 @export var dash_stamina_cost := 25.0
 var is_dashing := false
@@ -50,26 +49,23 @@ signal died
 
 
 func _ready():
-	add_child(loot_ui)  # Добавляем на сцену
-	loot_ui.hide()      # Сразу скрываем
+	add_child(loot_ui)
+	loot_ui.hide()
 	add_to_group("loot_handlers")
 	if loot_ui_scene:
 		loot_ui = loot_ui_scene.instantiate()
 		add_child(loot_ui)
 		loot_ui.hide()
 		
-		# Подключаем сигнал от врагов к LootUI
 		for enemy in get_tree().get_nodes_in_group("enemies"):
 			enemy.loot_opened.connect(loot_ui.show_loot)
 		
 	call_deferred("_update_equipment_stats")
-	# Удаляем старый висячий инвентарь
 	var old_inv = get_node_or_null("/root/InvUI")
 	if old_inv:
 		old_inv.queue_free()
 	
-	# Гарантируем, что используется только правильный инвентарь
-	var inv_ui = $Inv_UI  # Или правильный путь к вашему инвентарю
+	var inv_ui = $Inv_UI
 	inv_ui.add_to_group("player_inventory")
 	await get_tree().process_frame
 	
@@ -114,16 +110,14 @@ func _on_loot_detection_area_body_entered(body):
 func _on_loot_detection_area_body_exited(body):
 	print("Тело вышло:", body.name, " группы:", body.get_groups())
 	if body == current_loot_target and not body.can_be_looted:
-		# Только если враг "ожил" (что невозможно)
 		current_loot_target = null
 
 
 func _update_equipment_stats():
-	print("DEBUG: Вызов _update_equipment_stats")  # Должно появляться при любом изменении
+	print("DEBUG: Вызов _update_equipment_stats")
 	if not inv or inv.equipment_slots.size() < 8:
 		return
 	
-	# Базовые значения без экипировки
 	var base_stats = {
 		"health": 100,
 		"attack": 10,
@@ -131,7 +125,6 @@ func _update_equipment_stats():
 		"stamina": 100
 	}
 	
-	# Считаем ТОЛЬКО бонусы от экипировки
 	var bonuses = {
 		"health": 0,
 		"attack": 0,
@@ -144,25 +137,21 @@ func _update_equipment_stats():
 			for stat in bonuses:
 				bonuses[stat] += slot.item.stats.get(stat, 0)
 	
-	# Применяем к здоровью (важно: сначала сброс к базе)
 	if health_component:
 		health_component.max_health = base_stats["health"] + bonuses["health"]
 		health_component.current_health = min(health_component.current_health, health_component.max_health)
 		health_ui.update_health(health_component.current_health, health_component.max_health)
 	
-	# Обновляем оружие
 	var weapon_slot = inv.equipment_slots[InvItem.ItemType.WEAPON]
 	if weapon_slot and weapon_slot.item:
 		$Weapon.update_weapon(weapon_slot.item)
 	else:
 		$Weapon.unequip_weapon()
 	
-	# Стамина (сначала сброс к базе)
 	max_stamina = base_stats["stamina"] + bonuses["stamina"]
 	current_stamina = min(current_stamina, max_stamina)
 	stamina_ui.set_stamina(current_stamina)
 	
-	# Отладочный вывод
 	print("=== Статы после обновления ===")
 	print("Здоровье: ", health_component.max_health)
 	print("Урон: ", $Weapon.get_attack_damage())
@@ -178,10 +167,10 @@ func _physics_process(delta):
 	if new_blocking_state != is_blocking:
 		is_blocking = new_blocking_state
 		block_area.is_blocking = is_blocking
-		if is_blocking and movement_animation_player.has_animation("block"):
-			movement_animation_player.play("block")
-		elif not is_blocking:
-			movement_animation_player.play("idle")
+		if is_blocking:
+			sprite.play("block")
+		else:
+			sprite.play("idle")
 	
 	# Stamina management
 	if is_blocking:
@@ -204,14 +193,9 @@ func _physics_process(delta):
 		move_and_slide()
 		
 		if velocity.length() > 0:
-			if abs(velocity.x) > abs(velocity.y):
-				movement_animation_player.play("walk_right" if velocity.x > 0 else "walk_left")
-			else:
-				movement_animation_player.play("walk_down" if velocity.y > 0 else "walk_up")
-		elif movement_animation_player.has_animation("idle"):
-			movement_animation_player.play("idle")
-
-
+			sprite.play("walk")  # Используем одну анимацию ходьбы
+		else:
+			sprite.play("idle")
 
 func _input(event):
 	if event.is_action_pressed("interact"):
@@ -224,9 +208,8 @@ func _input(event):
 			return
 			
 		if current_loot_target and current_loot_target.can_be_looted:
-			# Добавляем проверку расстояния
 			var distance = global_position.distance_to(current_loot_target.global_position)
-			var max_loot_distance = 100.0  # Настройте под ваш размер зоны
+			var max_loot_distance = 100.0
 			
 			if distance <= max_loot_distance:
 				var loot = current_loot_target.open_loot()
@@ -234,7 +217,7 @@ func _input(event):
 					loot_ui.show_loot(loot, current_loot_target)
 			else:
 				print("Слишком далеко для лута!")
-				current_loot_target = null  # Сбрасываем цель
+				current_loot_target = null
 			
 	if event.is_action_pressed("hotbar_1"):
 		inv.use_hotbar_slot(0, self)
@@ -243,11 +226,14 @@ func _input(event):
 	
 	if event.is_action_pressed("dash") and can_dash and current_stamina >= dash_stamina_cost and !is_blocking:
 		start_dash()
-	elif event.is_action_pressed("attack") and !is_blocking and !is_dashing:
-		weapon.start_attack(velocity)
+	if event.is_action_pressed("attack") and !is_blocking and !is_dashing:
+		var attack_dir = Input.get_vector("ui_left", "ui_right", "ui_up", "ui_down")
+		if attack_dir == Vector2.ZERO:
+			attack_dir = Vector2.RIGHT if !sprite.flip_h else Vector2.LEFT
+		weapon.update_direction(attack_dir.x < 0)
+		weapon.start_attack(attack_dir)
 	
 func _on_loot_opened(items: Array):
-	# Добавьте проверку
 	print("Получен лут:", items)
 	if loot_ui:
 		loot_ui.show_loot(items)
@@ -265,19 +251,16 @@ func start_dash():
 		dash_direction = Vector2.RIGHT if !sprite.flip_h else Vector2.LEFT
 	
 	velocity = dash_direction.normalized() * speed * dash_speed_multiplier
-	if movement_animation_player.has_animation("dash"):
-		movement_animation_player.play("dash")
+	sprite.play("dash")
 	
 	await get_tree().create_timer(dash_duration).timeout
 	is_dashing = false
 	await get_tree().create_timer(dash_cooldown).timeout
 	can_dash = true
-
 func take_damage(damage: int, source_position: Vector2 = Vector2.ZERO):
 	if invincible or is_dashing:
 		return
 	
-	# При блокировке
 	if is_blocking and check_block_direction(source_position):
 		damage = int(damage * (1.0 - block_damage_reduction))
 		flash_sprite(Color.ROYAL_BLUE, 0.1, 1)
@@ -286,18 +269,17 @@ func take_damage(damage: int, source_position: Vector2 = Vector2.ZERO):
 		flash_sprite(Color.RED, 0.1, 3)
 		camera.apply_shake(shake_power, shake_duration)
 	
-	# Включаем неуязвимость на короткое время
 	invincible = true
 	get_tree().create_timer(0.5).timeout.connect(func(): invincible = false)
 	
 	if health_component:
 		health_component.take_damage(damage)
 	
-	# Отбрасывание
 	if source_position != Vector2.ZERO:
 		var knockback_direction = (global_position - source_position).normalized()
 		velocity = knockback_direction * 200
 		move_and_slide()
+
 func check_block_direction(source_position: Vector2) -> bool:
 	if source_position == Vector2.ZERO:
 		return false
@@ -309,8 +291,7 @@ func check_block_direction(source_position: Vector2) -> bool:
 func _on_stamina_depleted():
 	is_blocking = false
 	block_area.is_blocking = false
-	if movement_animation_player.has_animation("idle"):
-		movement_animation_player.play("idle")
+	sprite.play("idle")
 
 func _on_health_changed(current: float, max_hp: float):
 	health_ui.update_health(current, max_hp)
@@ -319,13 +300,11 @@ func _on_health_changed(current: float, max_hp: float):
 
 func _on_death():
 	died.emit()
-	if movement_animation_player.has_animation("death"):
-		movement_animation_player.play("death")
+	sprite.play("death")
 	set_physics_process(false)
 	camera.apply_shake(shake_power * 2, shake_duration * 1.5)
 	await flash_sprite(Color.DARK_RED, 0.2, 5)
-	if movement_animation_player.has_animation("death"):
-		await movement_animation_player.animation_finished
+	await sprite.animation_finished
 	queue_free()
 
 func flash_sprite(color: Color, duration: float, times: int = 1):
@@ -352,7 +331,6 @@ func set_invincible(time: float):
 func collect(item: InvItem):
 	print("Adding item to inventory: ", item.name)
 	if inv:
-		# Для стакаемых предметов не делаем duplicate()
 		if item.stackable:
 			inv.insert(item)
 		else:
@@ -363,7 +341,6 @@ func collect(item: InvItem):
 
 func _on_enemy_loot_dropped(items: Array[InvItem], drop_position: Vector2):
 	for item in items:
-		# Проверяем расстояние до лута (опционально)
 		if global_position.distance_to(drop_position) < 100.0:
-			collect(item)  # Используем существующий метод
+			collect(item)
 			print("Получен предмет: ", item.name)

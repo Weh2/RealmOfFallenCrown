@@ -22,7 +22,7 @@ var can_be_looted := false
 	preload("res://ui/inventory/items/knife.tres"),
 	preload("res://ui/inventory/items/meat.tres")
 ]
-@export var loot_chance: float = 0.8  # 80% шанс выпадения
+@export var loot_chance: float = 0.7  # 80% шанс выпадения
 @export var min_quantity: int = 1
 @export var max_quantity: int = 3
 
@@ -93,12 +93,28 @@ func die():
 
 func generate_loot() -> Array:
 	var final_loot = []
+	var items_to_drop = []
+	
+	# Сначала определяем какие типы предметов выпадут
 	for item in loot_items:
 		if item and randf() <= loot_chance:
+			items_to_drop.append(item)
+	
+	# Для каждого выпадающего типа предмета определяем количество
+	for item in items_to_drop:
+		# Для оружия всегда 1 экземпляр
+		if item.item_type == InvItem.ItemType.WEAPON:
 			final_loot.append({
-				"item": item.duplicate(),  # Важно дублировать!
+				"item": item.duplicate(),
+				"quantity": 1  # Оружие всегда в одном экземпляре
+			})
+		else:
+			# Для остальных предметов случайное количество
+			final_loot.append({
+				"item": item.duplicate(),
 				"quantity": randi_range(min_quantity, max_quantity)
 			})
+	
 	return final_loot
 	
 
