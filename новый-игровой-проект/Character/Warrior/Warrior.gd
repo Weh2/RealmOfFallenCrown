@@ -144,9 +144,13 @@ func _update_equipment_stats():
 	
 	var weapon_slot = inv.equipment_slots[InvItem.ItemType.WEAPON]
 	if weapon_slot and weapon_slot.item:
-		$Weapon.update_weapon(weapon_slot.item)
+		if has_node("Weapon") and $Weapon.has_method("update_weapon"):
+			$Weapon.update_weapon(weapon_slot.item)
+		else:
+			push_error("Weapon node or method missing!")
 	else:
-		$Weapon.unequip_weapon()
+		if has_node("Weapon") and $Weapon.has_method("unequip_weapon"):
+			$Weapon.unequip_weapon()
 	
 	max_stamina = base_stats["stamina"] + bonuses["stamina"]
 	current_stamina = min(current_stamina, max_stamina)

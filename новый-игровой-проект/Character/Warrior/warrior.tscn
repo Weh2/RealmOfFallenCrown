@@ -469,6 +469,7 @@ position = Vector2(-4, -8)
 shape = SubResource("CapsuleShape2D_ij6vw")
 
 [node name="Camera2D" type="Camera2D" parent="."]
+zoom = Vector2(1.3, 1.3)
 script = ExtResource("4_44cfe")
 
 [node name="HealthComponent" type="Node" parent="."]
@@ -555,8 +556,8 @@ shape = SubResource("CircleShape2D_8qwps")
 visible = false
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
-position = Vector2(-1, -2)
-scale = Vector2(1.64583, 1.8631)
+position = Vector2(1, -4)
+scale = Vector2(1.23958, 1.25149)
 sprite_frames = SubResource("SpriteFrames_dyqwu")
 animation = &"block"
 frame = 2

@@ -8,10 +8,10 @@ enum AttackType { NORMAL, COMBO1, COMBO2 }
 var current_attack = AttackType.NORMAL
 var is_attack_active := false
 var current_attack_dir = Vector2.RIGHT
-var current_weapon: InvItem = null
+@export var current_weapon: InvItem = null  # Используем только одно свойство
 var base_attack: int = 10
 var attack_cooldown := false
-var combo_window := 0.8 # Увеличили время для комбо
+var combo_window := 0.8
 var combo_timer := 0.0
 var can_combo := false
 
@@ -21,6 +21,17 @@ func _ready():
 	hitbox.disabled = true
 	$Hitbox.body_entered.connect(_on_hitbox_body_entered)
 	player_sprite.animation_finished.connect(_on_animation_finished)
+
+func update_weapon(weapon_data: InvItem) -> void:
+	current_weapon = weapon_data  # Сохраняем оружие в одном месте
+	visible = true
+
+	
+	# Включаем хитбокс
+	hitbox.disabled = false
+	
+	print("Weapon updated:", weapon_data.name)
+
 
 func _process(delta):
 	if combo_timer > 0:
@@ -52,7 +63,7 @@ func end_attack():
 
 func get_attack_damage() -> int:
 	var damage = base_attack
-	if current_weapon:
+	if current_weapon:  # Проверяем current_weapon вместо current_weapon_data
 		damage += current_weapon.stats.get("attack", 0)
 	
 	# Бонус к урону за комбо-атаки
@@ -61,6 +72,8 @@ func get_attack_damage() -> int:
 			damage *= 1.2
 		AttackType.COMBO2:
 			damage *= 1.4
+	
+	print("Calculated damage: ", damage)  # Добавим отладочный вывод
 	return int(damage)
 
 func update_direction(facing_left: bool) -> void:
@@ -125,8 +138,8 @@ func _on_hitbox_body_entered(body):
 		body.take_damage(final_damage)
 		print("Нанесен урон ", final_damage, " врагу ", body.name)
 
-func unequip_weapon():
+func unequip_weapon() -> void:
 	current_weapon = null
+	visible = false
 	hitbox.disabled = true
-	if weapon_sprite:
-		weapon_sprite.visible = false
+	print("Weapon unequipped")
