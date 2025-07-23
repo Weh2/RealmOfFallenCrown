@@ -542,9 +542,9 @@ offset_bottom = 198.0
 
 [node name="hotbar_ui" parent="." instance=ExtResource("11_8qwps")]
 offset_left = -273.0
-offset_top = 216.0
+offset_top = 186.0
 offset_right = -233.0
-offset_bottom = 256.0
+offset_bottom = 226.0
 
 [node name="LootDetectionArea" type="Area2D" parent="."]
 collision_mask = 16

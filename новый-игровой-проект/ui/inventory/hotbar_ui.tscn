@@ -7,33 +7,35 @@
 [node name="hotbar_ui" type="Control"]
 layout_mode = 3
 anchors_preset = 0
-offset_right = 40.0
-offset_bottom = 40.0
+offset_left = 4.0
+offset_top = -76.0
+offset_right = 44.0
+offset_bottom = -36.0
 script = ExtResource("1_mkn2p")
 
 [node name="HBoxContainer" type="HBoxContainer" parent="."]
 layout_mode = 0
-offset_right = 134.0
-offset_bottom = 65.0
+offset_right = 138.0
+offset_bottom = 45.0
 
 [node name="TextureRect" type="TextureRect" parent="HBoxContainer"]
 layout_mode = 2
 
 [node name="Slot1" type="Panel" parent="HBoxContainer"]
-custom_minimum_size = Vector2(65, 65)
+custom_minimum_size = Vector2(45, 0)
 layout_mode = 2
 script = ExtResource("1_1bivx")
 
 [node name="TextureRect" type="TextureRect" parent="HBoxContainer/Slot1"]
 layout_mode = 0
-offset_right = 65.0
-offset_bottom = 64.0
+offset_right = 45.0
+offset_bottom = 45.0
 texture = ExtResource("1_st2al")
 
 [node name="CenterContainer" type="CenterContainer" parent="HBoxContainer/Slot1"]
 layout_mode = 0
-offset_right = 65.0
-offset_bottom = 66.0
+offset_right = 45.0
+offset_bottom = 45.0
 
 [node name="Panel" type="Panel" parent="HBoxContainer/Slot1/CenterContainer"]
 layout_mode = 2
@@ -51,20 +53,20 @@ horizontal_alignment = 2
 [node name="select" type="Sprite2D" parent="HBoxContainer/Slot1/CenterContainer/Panel"]
 
 [node name="Slot2" type="Panel" parent="HBoxContainer"]
-custom_minimum_size = Vector2(65, 65)
+custom_minimum_size = Vector2(45, 0)
 layout_mode = 2
 script = ExtResource("1_1bivx")
 
 [node name="TextureRect" type="TextureRect" parent="HBoxContainer/Slot2"]
 layout_mode = 0
-offset_right = 65.0
-offset_bottom = 64.0
+offset_right = 45.0
+offset_bottom = 45.0
 texture = ExtResource("1_st2al")
 
 [node name="CenterContainer" type="CenterContainer" parent="HBoxContainer/Slot2"]
 layout_mode = 0
-offset_right = 65.0
-offset_bottom = 66.0
+offset_right = 45.0
+offset_bottom = 45.0
 
 [node name="Panel" type="Panel" parent="HBoxContainer/Slot2/CenterContainer"]
 layout_mode = 2
