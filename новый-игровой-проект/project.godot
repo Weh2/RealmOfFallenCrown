@@ -19,6 +19,11 @@ config/icon="res://icon.svg"
 
 InvUI="*res://ui/inventory/inv_ui.tscn"
 
+[display]
+
+window/size/viewport_width=1920
+window/size/viewport_height=1080
+
 [file_customization]
 
 folder_colors={
