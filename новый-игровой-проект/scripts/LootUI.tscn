@@ -16,6 +16,7 @@ texture_margin_right = 15.0
 texture_margin_bottom = 15.0
 
 [node name="Panel" type="Panel"]
+z_index = 100
 offset_right = 381.0
 offset_bottom = 309.0
 theme = SubResource("Theme_7qs66")
