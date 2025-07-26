@@ -5,6 +5,7 @@
 [ext_resource type="Texture2D" uid="uid://c81vlsp7cmjag" path="res://ui/inventory/HotkeyBox_34x34.png" id="1_st2al"]
 
 [node name="hotbar_ui" type="Control"]
+z_index = 100
 layout_mode = 3
 anchors_preset = 0
 offset_left = 4.0

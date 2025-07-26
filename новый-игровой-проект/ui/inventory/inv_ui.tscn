@@ -16,7 +16,7 @@ font = ExtResource("9_egwaa")
 font_color = Color(0.72549, 0.596078, 0.698039, 0.701961)
 
 [node name="Inv_UI" type="Control"]
-z_index = 1
+z_index = 100
 custom_minimum_size = Vector2(460, 519)
 layout_mode = 3
 anchors_preset = 1
