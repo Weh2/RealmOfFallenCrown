@@ -203,9 +203,9 @@ func _physics_process(delta):
 
 func _input(event):
 	if event.is_action_pressed("interact"):
-		print("=== INTERACT PRESSED ===")
-		print("LootUI visible:", loot_ui.visible)
-		print("Current loot target:", current_loot_target)
+		var nearest_lever = get_meta("near_lever") if has_meta("near_lever") else null
+		if nearest_lever:
+			nearest_lever.interact()
 		
 		if loot_ui.visible:
 			loot_ui.hide()
