@@ -1,4 +1,4 @@
-[gd_scene load_steps=38 format=3 uid="uid://kl82dpqu3msq"]
+[gd_scene load_steps=39 format=3 uid="uid://kl82dpqu3msq"]
 
 [ext_resource type="Texture2D" uid="uid://che40je76f7am" path="res://levels/mainlevbuild.png" id="1_p1bho"]
 [ext_resource type="Texture2D" uid="uid://b5ej7ag1bvekh" path="res://levels/decorative.png" id="2_7826r"]
@@ -21,6 +21,7 @@
 [ext_resource type="Texture2D" uid="uid://c823ewcacl2a7" path="res://assets/candleA_04.png" id="19_eqni0"]
 [ext_resource type="Texture2D" uid="uid://12olhpy0vi8b" path="res://assets/candleB_02.png" id="20_0bw1l"]
 [ext_resource type="Texture2D" uid="uid://cqxma5oeajfrt" path="res://assets/candleB_03.png" id="21_5e20h"]
+[ext_resource type="Texture2D" uid="uid://c5n2x875pbc01" path="res://assets/загруженное (3) (1).png" id="22_b7ltc"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_7826r"]
 resource_name = "меин"
@@ -3327,3 +3328,8 @@ animation = &"pull"
 visible = false
 position = Vector2(-349, -160)
 shape = SubResource("CapsuleShape2D_7vika")
+
+[node name="Загруженное(3)(1)" type="Sprite2D" parent="."]
+position = Vector2(137.25, -813.5)
+scale = Vector2(0.101223, 0.0840457)
+texture = ExtResource("22_b7ltc")
