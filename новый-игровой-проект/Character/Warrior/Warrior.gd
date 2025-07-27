@@ -15,6 +15,9 @@ extends CharacterBody2D
 @export var shake_duration: float = 0.5
 var invincible := false
 @export var loot_ui_scene: PackedScene = preload("res://scripts/LootUI.tscn")
+var near_interactable: Area2D = null
+var near_lever = null  # Для совместимости со старым кодом
+
 
 var current_loot_target: Node = null 
 @onready var loot_ui: Panel = preload("res://scripts/LootUI.tscn").instantiate()
@@ -97,20 +100,23 @@ func _ready():
 		push_error("Inventory not initialized!")
 
 func _on_loot_detection_area_body_entered(body):
-	print("Тело вошло в зону лута:", body.name, 
-		  " can_be_looted:", body.can_be_looted if "can_be_looted" in body else "N/A",
-		  " слои:", body.collision_layer)
+	# Для бочек и новых интерактивных объектов
+	if body.has_method("interact"):
+		near_interactable = body
+		print("Найдена интерактивная зона:", body.name)
 	
+	# Для трупов и лута
 	if body.is_in_group("corpses") and "can_be_looted" in body and body.can_be_looted:
-		print("✅ Можно лутать!")
 		current_loot_target = body
-	else:
-		print("❌ Нельзя лутать. Группы:", body.get_groups())
+		print("Можно лутать труп:", body.name)
 
 func _on_loot_detection_area_body_exited(body):
-	print("Тело вышло:", body.name, " группы:", body.get_groups())
-	if body == current_loot_target and not body.can_be_looted:
+	if body == near_interactable:
+		near_interactable = null
+	if body == current_loot_target:
 		current_loot_target = null
+	if has_meta("near_lever") and get_meta("near_lever") == body:
+		remove_meta("near_lever")
 
 
 func _update_equipment_stats():
@@ -202,26 +208,29 @@ func _physics_process(delta):
 			sprite.play("idle")
 
 func _input(event):
+	# Обработка взаимодействия
 	if event.is_action_pressed("interact"):
-		var nearest_lever = get_meta("near_lever") if has_meta("near_lever") else null
-		if nearest_lever:
-			nearest_lever.interact()
+		print("Нажата F! near_interactable:", near_interactable)
+		if near_interactable:
+			print("Пытаюсь взаимодействовать с:", near_interactable.name)
+			near_interactable.interact()
+		# Для совместимости со старыми рычагами
+		elif has_meta("near_lever"):
+			var lever = get_meta("near_lever")
+			if lever and lever.has_method("interact"):
+				lever.interact()
 		
-		if loot_ui.visible:
-			loot_ui.hide()
-			return
-			
-		if current_loot_target and current_loot_target.can_be_looted:
-			var distance = global_position.distance_to(current_loot_target.global_position)
-			var max_loot_distance = 100.0
-			
-			if distance <= max_loot_distance:
-				var loot = current_loot_target.open_loot()
-				if loot:
-					loot_ui.show_loot(loot, current_loot_target)
-			else:
-				print("Слишком далеко для лута!")
-				current_loot_target = null
+		# Обработка лута (если нет других взаимодействий)
+		if not near_interactable and not has_meta("near_lever"):
+			if current_loot_target and current_loot_target.can_be_looted:
+				var distance = global_position.distance_to(current_loot_target.global_position)
+				if distance <= 100.0:
+					var loot = current_loot_target.open_loot()
+					if loot:
+						loot_ui.show_loot(loot, current_loot_target)
+				else:
+					print("Слишком далеко для лута!")
+					current_loot_target = null
 			
 	if event.is_action_pressed("hotbar_1"):
 		inv.use_hotbar_slot(0, self)

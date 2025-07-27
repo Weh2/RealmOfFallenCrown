@@ -1,4 +1,4 @@
-[gd_scene load_steps=38 format=3 uid="uid://kl82dpqu3msq"]
+[gd_scene load_steps=44 format=3 uid="uid://kl82dpqu3msq"]
 
 [ext_resource type="Texture2D" uid="uid://che40je76f7am" path="res://levels/mainlevbuild.png" id="1_p1bho"]
 [ext_resource type="Texture2D" uid="uid://b5ej7ag1bvekh" path="res://levels/decorative.png" id="2_7826r"]
@@ -21,6 +21,10 @@
 [ext_resource type="Texture2D" uid="uid://c823ewcacl2a7" path="res://assets/candleA_04.png" id="19_eqni0"]
 [ext_resource type="Texture2D" uid="uid://12olhpy0vi8b" path="res://assets/candleB_02.png" id="20_0bw1l"]
 [ext_resource type="Texture2D" uid="uid://cqxma5oeajfrt" path="res://assets/candleB_03.png" id="21_5e20h"]
+[ext_resource type="Texture2D" uid="uid://brst2rbbjamaa" path="res://assets/2025-07-27_23-51-17-fotor-bg-remover-20250727235151.png" id="22_b7ltc"]
+[ext_resource type="Script" uid="uid://cf2745ig8jxul" path="res://levels/barrel.gd" id="22_ffrpj"]
+[ext_resource type="Script" uid="uid://kivagim1xe4q" path="res://scripts/LootComponent.gd" id="23_5e20h"]
+[ext_resource type="Script" uid="uid://d4ll2ktacoyub" path="res://levels/interaction_area.gd" id="24_kyst3"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_7826r"]
 resource_name = "меин"
@@ -2735,6 +2739,12 @@ animations = [{
 "speed": 3.0
 }]
 
+[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_ffrpj"]
+height = 26.0
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_kyst3"]
+radius = 28.2843
+
 [node name="PrisonRoom" type="Node2D"]
 
 [node name="TileMap" type="TileMap" parent="."]
@@ -3327,3 +3337,29 @@ animation = &"pull"
 visible = false
 position = Vector2(-349, -160)
 shape = SubResource("CapsuleShape2D_7vika")
+
+[node name="Barrel" type="StaticBody2D" parent="."]
+script = ExtResource("22_ffrpj")
+
+[node name="Sprite2D" type="Sprite2D" parent="Barrel"]
+modulate = Color(0.419813, 0.419813, 0.419813, 1)
+self_modulate = Color(0.78776, 0.787759, 0.787759, 1)
+position = Vector2(-508, -69)
+scale = Vector2(0.082, 0.0823293)
+texture = ExtResource("22_b7ltc")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Barrel"]
+visible = false
+position = Vector2(-508, -68)
+shape = SubResource("CapsuleShape2D_ffrpj")
+
+[node name="InteractionArea" type="Area2D" parent="Barrel"]
+script = ExtResource("24_kyst3")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Barrel/InteractionArea"]
+visible = false
+position = Vector2(-508, -71)
+shape = SubResource("CircleShape2D_kyst3")
+
+[node name="LootComponent" type="Node" parent="Barrel"]
+script = ExtResource("23_5e20h")
