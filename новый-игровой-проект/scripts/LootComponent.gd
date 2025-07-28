@@ -9,8 +9,8 @@ class_name LootComponent
 # Сигнал для передачи лута в UI  
 signal loot_generated(items: Array)  
 
-func generate_loot() -> Array[Dictionary]:  
-	var dropped_items = []  
+func generate_loot() -> Array:
+	var dropped_items: Array = []
 	for item in possible_loot:  
 		if randf() <= item["chance"]:  
 			dropped_items.append({  

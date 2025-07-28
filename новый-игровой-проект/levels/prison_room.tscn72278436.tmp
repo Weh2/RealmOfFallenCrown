@@ -2743,7 +2743,7 @@ animations = [{
 height = 26.0
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_kyst3"]
-radius = 41.0488
+radius = 28.2843
 
 [node name="PrisonRoom" type="Node2D"]
 
@@ -3354,7 +3354,6 @@ position = Vector2(-508, -68)
 shape = SubResource("CapsuleShape2D_ffrpj")
 
 [node name="InteractionArea" type="Area2D" parent="Barrel"]
-collision_layer = 0
 script = ExtResource("24_kyst3")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Barrel/InteractionArea"]

@@ -6,31 +6,29 @@ signal interacted
 var player_in_range = false
 
 func _ready():
-	# Явная настройка масок
-	collision_mask = 1  # Только слой игрока
-	monitoring = true
-	
-	# Проверка формы коллайдера
-	if not $CollisionShape2D.shape:
-		push_error("CollisionShape2D не имеет формы!")
-	else:
-		print("Тип формы:", $CollisionShape2D.shape)
+	collision_mask = 1  # Маска на слой игрока
+	# Отключаем детект родительского StaticBody2D
+	$CollisionShape2D.disabled = false
 
 func _on_body_entered(body):
-	print("Тело вошло в зону:", body.name, "| Группы:", body.get_groups())
-	if body.is_in_group("player"):
-		print("✅ Игрок вошёл в зону взаимодействия")
-		player_in_range = true
-		body.near_interactable = self
+	# Пропускаем саму бочку и другие не-игровые объекты
+	if body == get_parent() or not body.has_method("get_input_direction"):
+		return
+	
+	print("✅ Игрок вошёл в зону:", body.name)
+	player_in_range = true
+	body.near_interactable = self
 
 func _on_body_exited(body):
-	if body.is_in_group("player"):
+	if body == get_parent():
+		return
+		
+	if body.has_method("get_input_direction") and body.near_interactable == self:
 		print("❌ Игрок вышел из зоны")
 		player_in_range = false
-		if body.near_interactable == self:
-			body.near_interactable = null
+		body.near_interactable = null
 
 func interact():
-	print("Вызов interact() | player_in_range =", player_in_range)
 	if player_in_range:
+		print("🔥 Активируем бочку!")
 		interacted.emit()

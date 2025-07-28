@@ -52,6 +52,7 @@ signal died
 
 
 func _ready():
+	add_to_group("interactable_players")
 	add_child(loot_ui)
 	loot_ui.hide()
 	add_to_group("loot_handlers")
