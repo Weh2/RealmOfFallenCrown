@@ -1,4 +1,4 @@
-[gd_scene load_steps=45 format=3 uid="uid://kl82dpqu3msq"]
+[gd_scene load_steps=44 format=3 uid="uid://kl82dpqu3msq"]
 
 [ext_resource type="Texture2D" uid="uid://che40je76f7am" path="res://levels/mainlevbuild.png" id="1_p1bho"]
 [ext_resource type="Texture2D" uid="uid://b5ej7ag1bvekh" path="res://levels/decorative.png" id="2_7826r"]
@@ -3223,11 +3223,8 @@ animations = [{
 }]
 
 [sub_resource type="CapsuleShape2D" id="CapsuleShape2D_dmfh7"]
-radius = 49.0
-height = 98.0
-
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_kyst3"]
-size = Vector2(35, 21)
+radius = 42.0
+height = 84.0
 
 [node name="PrisonRoom" type="Node2D"]
 
@@ -4073,116 +4070,25 @@ visible = false
 position = Vector2(-349, -160)
 shape = SubResource("CapsuleShape2D_7vika")
 
-[node name="Barrel" type="Node" parent="."]
-
-[node name="Barrel" type="StaticBody2D" parent="Barrel"]
-position = Vector2(-418, 8)
-
-[node name="Barrel1" type="Area2D" parent="Barrel/Barrel" groups=["lootable"]]
-position = Vector2(1, -2)
+[node name="Barrel" type="StaticBody2D" parent="." groups=["lootable"]]
+position = Vector2(-233, -58)
 collision_layer = 33
 script = ExtResource("22_ffrpj")
 
-[node name="Sprite2D" type="Sprite2D" parent="Barrel/Barrel/Barrel1"]
+[node name="Sprite2D" type="Sprite2D" parent="Barrel"]
 modulate = Color(0.419813, 0.419813, 0.419813, 1)
 self_modulate = Color(0.78776, 0.787759, 0.787759, 1)
-position = Vector2(-1, 2)
+position = Vector2(0.999969, -0.999992)
 scale = Vector2(0.082, 0.0823293)
 texture = ExtResource("22_b7ltc")
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="Barrel/Barrel/Barrel1"]
-visible = false
-position = Vector2(-1, 2)
-shape = SubResource("CapsuleShape2D_dmfh7")
-
-[node name="LootComponent" type="Node" parent="Barrel/Barrel/Barrel1"]
+[node name="LootComponent" type="Node" parent="Barrel"]
 script = ExtResource("23_5e20h")
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="Barrel/Barrel"]
+[node name="InteractionArea" type="Area2D" parent="Barrel"]
+position = Vector2(233, 58)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Barrel/InteractionArea"]
 visible = false
-position = Vector2(-4.5, -3.5)
-shape = SubResource("RectangleShape2D_kyst3")
-
-[node name="Barrel2" type="StaticBody2D" parent="Barrel"]
-position = Vector2(-424, -84)
-
-[node name="Barrel1" type="Area2D" parent="Barrel/Barrel2" groups=["lootable"]]
-position = Vector2(1, -2)
-collision_layer = 33
-script = ExtResource("22_ffrpj")
-
-[node name="Sprite2D" type="Sprite2D" parent="Barrel/Barrel2/Barrel1"]
-modulate = Color(0.419813, 0.419813, 0.419813, 1)
-self_modulate = Color(0.78776, 0.787759, 0.787759, 1)
-position = Vector2(-1, 2)
-scale = Vector2(0.082, 0.0823293)
-texture = ExtResource("22_b7ltc")
-
-[node name="CollisionShape2D" type="CollisionShape2D" parent="Barrel/Barrel2/Barrel1"]
-visible = false
-position = Vector2(-1, 2)
+position = Vector2(-232, -58)
 shape = SubResource("CapsuleShape2D_dmfh7")
-
-[node name="LootComponent" type="Node" parent="Barrel/Barrel2/Barrel1"]
-script = ExtResource("23_5e20h")
-
-[node name="CollisionShape2D" type="CollisionShape2D" parent="Barrel/Barrel2"]
-visible = false
-position = Vector2(-4.5, -3.5)
-shape = SubResource("RectangleShape2D_kyst3")
-
-[node name="Barrel3" type="StaticBody2D" parent="Barrel"]
-position = Vector2(-301, -244)
-
-[node name="Barrel1" type="Area2D" parent="Barrel/Barrel3" groups=["lootable"]]
-position = Vector2(1, -2)
-collision_layer = 33
-script = ExtResource("22_ffrpj")
-
-[node name="Sprite2D" type="Sprite2D" parent="Barrel/Barrel3/Barrel1"]
-modulate = Color(0.419813, 0.419813, 0.419813, 1)
-self_modulate = Color(0.78776, 0.787759, 0.787759, 1)
-position = Vector2(-1, 2)
-scale = Vector2(0.082, 0.0823293)
-texture = ExtResource("22_b7ltc")
-
-[node name="CollisionShape2D" type="CollisionShape2D" parent="Barrel/Barrel3/Barrel1"]
-visible = false
-position = Vector2(-1, 2)
-shape = SubResource("CapsuleShape2D_dmfh7")
-
-[node name="LootComponent" type="Node" parent="Barrel/Barrel3/Barrel1"]
-script = ExtResource("23_5e20h")
-
-[node name="CollisionShape2D" type="CollisionShape2D" parent="Barrel/Barrel3"]
-visible = false
-position = Vector2(-4.5, -3.5)
-shape = SubResource("RectangleShape2D_kyst3")
-
-[node name="Barrel4" type="StaticBody2D" parent="Barrel"]
-position = Vector2(-278, -99)
-
-[node name="Barrel1" type="Area2D" parent="Barrel/Barrel4" groups=["lootable"]]
-position = Vector2(1, -2)
-collision_layer = 33
-script = ExtResource("22_ffrpj")
-
-[node name="Sprite2D" type="Sprite2D" parent="Barrel/Barrel4/Barrel1"]
-modulate = Color(0.419813, 0.419813, 0.419813, 1)
-self_modulate = Color(0.78776, 0.787759, 0.787759, 1)
-position = Vector2(-1, 2)
-scale = Vector2(0.082, 0.0823293)
-texture = ExtResource("22_b7ltc")
-
-[node name="CollisionShape2D" type="CollisionShape2D" parent="Barrel/Barrel4/Barrel1"]
-visible = false
-position = Vector2(-1, 2)
-shape = SubResource("CapsuleShape2D_dmfh7")
-
-[node name="LootComponent" type="Node" parent="Barrel/Barrel4/Barrel1"]
-script = ExtResource("23_5e20h")
-
-[node name="CollisionShape2D" type="CollisionShape2D" parent="Barrel/Barrel4"]
-visible = false
-position = Vector2(-4.5, -3.5)
-shape = SubResource("RectangleShape2D_kyst3")

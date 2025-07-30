@@ -1,35 +1,51 @@
-extends StaticBody2D
+extends Area2D
+class_name Barrel
 
+@onready var sprite = $Sprite2D
 @onready var loot_component = $LootComponent
-var is_opened = false
+
+var is_opened := false
+var player_in_range := false
 
 func _ready():
-	# Явное подключение сигнала
-	if not loot_component.loot_generated.is_connected(_on_loot_generated):
-		loot_component.loot_generated.connect(_on_loot_generated)
-	print("Бочка инициализирована. Сигналы подключены:", loot_component.loot_generated.is_connected(_on_loot_generated))
+	add_to_group("lootable")  
+	loot_component.generate_loot()  
+	body_entered.connect(_on_body_entered)
+	body_exited.connect(_on_body_exited)
+
+func _on_body_entered(body: Node2D):
+	if body.is_in_group("player"):
+		player_in_range = true
+		print("Игрок вошел в зону бочки")
+
+func _on_body_exited(body: Node2D):
+	if body.is_in_group("player"):
+		player_in_range = false
+		print("Игрок вышел из зоны бочки")
 
 func interact():
-	if not is_opened:
-		open()
-
-func open():
-	print("Открываю бочку")
-	is_opened = true
-	$Sprite2D.modulate = Color.GREEN
-	loot_component.generate_loot()  # Генерируем лут
-
-func _on_loot_generated(items: Array):
-	print("Получен лут:", items)
-	if items.is_empty():
-		print("Бочка пуста!")
+	if is_opened or not player_in_range:
 		return
 	
-	# Явная проверка LootUI
-	if get_tree().has_group("loot_ui"):
-		get_tree().call_group("loot_ui", "show_loot", items, self)
-	else:
-		push_error("LootUI не найден в группах!")
+	var player = get_tree().get_first_node_in_group("player")
+	if player:
+		var ui = player.get_loot_ui()
+		if ui:
+			# Получаем лут с учетом стаков
+			var loot = loot_component.get_loot()
+			# Группируем одинаковые предметы
+			var grouped_loot = _group_loot_items(loot)
+			ui.show_loot(grouped_loot, self)
+			is_opened = true
 
-func take_item(item_id: String, amount: int):
-	print("Взят предмет: ", item_id, " x", amount)
+# Группирует одинаковые предметы в один слот
+func _group_loot_items(loot: Array) -> Array:
+	var grouped = {}
+	for item_data in loot:
+		var item = item_data["item"]
+		var quantity = item_data["quantity"]
+		if item in grouped:
+			grouped[item]["quantity"] += quantity
+		else:
+			grouped[item] = {"item": item, "quantity": quantity}
+	return grouped.values()

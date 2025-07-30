@@ -15,12 +15,11 @@ extends CharacterBody2D
 @export var shake_duration: float = 0.5
 var invincible := false
 @export var loot_ui_scene: PackedScene = preload("res://scripts/LootUI.tscn")
-var near_interactable: Area2D = null
-var near_lever = null  # Для совместимости со старым кодом
+var loot_ui: Panel = null  
 
 
 var current_loot_target: Node = null 
-@onready var loot_ui: Panel = preload("res://scripts/LootUI.tscn").instantiate()
+
 
 # Stamina system
 @export var max_stamina: float = 100.0
@@ -52,9 +51,6 @@ signal died
 
 
 func _ready():
-	add_to_group("interactable_players")
-	add_child(loot_ui)
-	loot_ui.hide()
 	add_to_group("loot_handlers")
 	if loot_ui_scene:
 		loot_ui = loot_ui_scene.instantiate()
@@ -68,7 +64,7 @@ func _ready():
 	var old_inv = get_node_or_null("/root/InvUI")
 	if old_inv:
 		old_inv.queue_free()
-	
+
 	var inv_ui = $Inv_UI
 	inv_ui.add_to_group("player_inventory")
 	await get_tree().process_frame
@@ -100,24 +96,25 @@ func _ready():
 	else:
 		push_error("Inventory not initialized!")
 
+func get_loot_ui() -> Panel:
+	return loot_ui
+
+
 func _on_loot_detection_area_body_entered(body):
-	# Для бочек и новых интерактивных объектов
-	if body.has_method("interact"):
-		near_interactable = body
-		print("Найдена интерактивная зона:", body.name)
+	print("Тело вошло в зону лута:", body.name, 
+		  " can_be_looted:", body.can_be_looted if "can_be_looted" in body else "N/A",
+		  " слои:", body.collision_layer)
 	
-	# Для трупов и лута
 	if body.is_in_group("corpses") and "can_be_looted" in body and body.can_be_looted:
+		print("✅ Можно лутать!")
 		current_loot_target = body
-		print("Можно лутать труп:", body.name)
+	else:
+		print("❌ Нельзя лутать. Группы:", body.get_groups())
 
 func _on_loot_detection_area_body_exited(body):
-	if body == near_interactable:
-		near_interactable = null
-	if body == current_loot_target:
+	print("Тело вышло:", body.name, " группы:", body.get_groups())
+	if body == current_loot_target and not body.can_be_looted:
 		current_loot_target = null
-	if has_meta("near_lever") and get_meta("near_lever") == body:
-		remove_meta("near_lever")
 
 
 func _update_equipment_stats():
@@ -209,29 +206,29 @@ func _physics_process(delta):
 			sprite.play("idle")
 
 func _input(event):
-	# Обработка взаимодействия
 	if event.is_action_pressed("interact"):
-		print("Нажата F! near_interactable:", near_interactable)
-		if near_interactable:
-			print("Пытаюсь взаимодействовать с:", near_interactable.name)
-			near_interactable.interact()
-		# Для совместимости со старыми рычагами
-		elif has_meta("near_lever"):
-			var lever = get_meta("near_lever")
-			if lever and lever.has_method("interact"):
-				lever.interact()
-		
-		# Обработка лута (если нет других взаимодействий)
-		if not near_interactable and not has_meta("near_lever"):
-			if current_loot_target and current_loot_target.can_be_looted:
-				var distance = global_position.distance_to(current_loot_target.global_position)
-				if distance <= 100.0:
-					var loot = current_loot_target.open_loot()
-					if loot:
-						loot_ui.show_loot(loot, current_loot_target)
-				else:
-					print("Слишком далеко для лута!")
-					current_loot_target = null
+		var nearest_lever = get_meta("near_lever") if has_meta("near_lever") else null
+		if nearest_lever:
+			nearest_lever.interact()
+		for area in $LootDetectionArea.get_overlapping_areas():
+			if area.is_in_group("lootable") and area.has_method("interact"):
+				area.interact()
+				return 
+		if loot_ui.visible:
+			loot_ui.hide()
+			return
+			
+		if current_loot_target and current_loot_target.can_be_looted:
+			var distance = global_position.distance_to(current_loot_target.global_position)
+			var max_loot_distance = 100.0
+			
+			if distance <= max_loot_distance:
+				var loot = current_loot_target.open_loot()
+				if loot:
+					loot_ui.show_loot(loot, current_loot_target)
+			else:
+				print("Слишком далеко для лута!")
+				current_loot_target = null
 			
 	if event.is_action_pressed("hotbar_1"):
 		inv.use_hotbar_slot(0, self)
@@ -358,3 +355,20 @@ func _on_enemy_loot_dropped(items: Array[InvItem], drop_position: Vector2):
 		if global_position.distance_to(drop_position) < 100.0:
 			collect(item)
 			print("Получен предмет: ", item.name)
+
+func collect_multiple(item: InvItem, quantity: int):
+	if not inv:
+		return
+		
+	if item.stackable:
+		# Для стакаемых предметов добавляем сразу все количество
+		var remaining = quantity
+		while remaining > 0:
+			var added = inv.insert_item(item, remaining)
+			if added <= 0:  # Если не удалось добавить (нет места)
+				break
+			remaining -= added
+	else:
+		# Для нестакаемых - по одному
+		for i in range(quantity):
+			inv.insert_item(item.duplicate(), 1)

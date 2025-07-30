@@ -1,21 +1,31 @@
-extends Node  
-class_name LootComponent  
+extends Node
+class_name LootComponent
 
-# Настройки лута в инспекторе:  
-@export var possible_loot: Array[Dictionary] = [  
-	{"id": "health_potion", "chance": 1.0, "min": 1, "max": 1}  # 100% шанс
+@export var possible_loot: Array[Dictionary] = [
+	{"item": preload("res://ui/inventory/items/HealthPotion.tres"), "chance": 1, "min": 1, "max": 3},
+	
 ]
 
-# Сигнал для передачи лута в UI  
-signal loot_generated(items: Array)  
+var generated_loot: Array = []
+var can_be_looted := false
 
 func generate_loot() -> Array:
-	var dropped_items: Array = []
-	for item in possible_loot:  
-		if randf() <= item["chance"]:  
-			dropped_items.append({  
-				"id": item["id"],  
-				"amount": randi_range(item["min"], item["max"])  
-			})  
-	loot_generated.emit(dropped_items)  # Отправляем лут в UI  
-	return dropped_items  
+	generated_loot.clear()
+	for loot_data in possible_loot:
+		if randf() <= loot_data["chance"]:
+			generated_loot.append({
+				"item": loot_data["item"],
+				"quantity": randi_range(loot_data["min"], loot_data["max"])
+			})
+	can_be_looted = !generated_loot.is_empty()
+	return generated_loot
+
+func get_loot() -> Array:
+	return generated_loot
+
+func remove_item(index: int) -> bool:
+	if index < 0 or index >= generated_loot.size():
+		return false
+	generated_loot.remove_at(index)
+	can_be_looted = !generated_loot.is_empty()
+	return true

@@ -20,7 +20,7 @@
 [ext_resource type="Texture2D" uid="uid://cnnu0ti6nskx0" path="res://Character/Warrior/ATTACK 3.png" id="14_owr25"]
 
 [sub_resource type="CapsuleShape2D" id="CapsuleShape2D_ij6vw"]
-radius = 12.0
+radius = 15.0
 height = 48.0
 
 [sub_resource type="CapsuleShape2D" id="CapsuleShape2D_44cfe"]
@@ -465,7 +465,7 @@ script = ExtResource("1_ij6vw")
 inv = ExtResource("2_cr365")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
-position = Vector2(-4, -8)
+position = Vector2(-1, -1)
 shape = SubResource("CapsuleShape2D_ij6vw")
 
 [node name="Camera2D" type="Camera2D" parent="."]
@@ -547,7 +547,7 @@ offset_right = -306.0
 offset_bottom = 313.0
 
 [node name="LootDetectionArea" type="Area2D" parent="."]
-collision_mask = 16
+collision_mask = 48
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="LootDetectionArea"]
 shape = SubResource("CircleShape2D_8qwps")

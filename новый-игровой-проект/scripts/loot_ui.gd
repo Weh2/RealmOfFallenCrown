@@ -25,6 +25,8 @@ func _input(event):
 		get_viewport().set_input_as_handled()
 
 func show_loot(items: Array, source):
+	if source.is_in_group("lootable"):  # Проверяем, что источник — бочка/сундук
+		current_loot_source = source
 	print("Showing loot with items:", items)
 	if items.is_empty():
 		print("No items to show!")
@@ -51,16 +53,9 @@ func show_loot(items: Array, source):
 func _on_slot_clicked(index: int, item: InvItem, quantity: int):
 	if item and current_loot_source:
 		var player = get_tree().get_first_node_in_group("player")
-		if player and player.has_method("collect"):
-			if item.stackable:
-				# Для стакаемых предметов - добавляем сразу нужное количество
-				var item_copy = item.duplicate()
-				for i in range(quantity):
-					player.inv.insert(item_copy)  # Используем прямой вызов insert
-			else:
-				# Для нестакаемых - по одному
-				for i in range(quantity):
-					player.collect(item.duplicate())
+		if player and player.has_method("collect_multiple"):
+			# Используем новый метод для добавления сразу всего количества
+			player.collect_multiple(item, quantity)
 			
 			# Удаляем из лута
 			if index < loot_items.size():

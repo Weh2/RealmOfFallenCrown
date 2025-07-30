@@ -26,37 +26,60 @@ func _init():
 		equipment_slots[i] = InvSlot.new()  # Гарантируем, что каждый слот существует
 		
 
-func insert(item: InvItem):
-	# Сначала пробуем добавить в хотбар (только для зелий)
+func insert(item: InvItem, quantity: int = 1) -> int:
+	var remaining = quantity
+	
+	# 1. Сначала пробуем добавить в хотбар (только для зелий)
 	if item.name in ["Health Potion", "Stamina Potion"]:
-		# Ищем такой же предмет в хотбаре
+		# Ищем частично заполненные стаки в хотбаре
 		for slot in hotbar_slots:
-			if slot.item == item and slot.amount < item.max_stack:
-				slot.amount += 1
+			if slot.item and slot.item.name == item.name and slot.amount < item.max_stack:
+				var can_add = min(remaining, item.max_stack - slot.amount)
+				slot.amount += can_add
+				remaining -= can_add
 				hotbar_updated.emit()
-				return
+				if remaining <= 0:
+					update.emit()
+					return quantity
 		
-		# Ищем пустой слот в хотбаре
-		for slot in hotbar_slots:
+		# Ищем пустые слоты в хотбаре
+		if remaining > 0:
+			for slot in hotbar_slots:
+				if slot.item == null:
+					slot.item = item.duplicate()
+					var to_add = min(remaining, item.max_stack)
+					slot.amount = to_add
+					remaining -= to_add
+					hotbar_updated.emit()
+					if remaining <= 0:
+						update.emit()
+						return quantity
+	
+	# 2. Затем в основной инвентарь (частично заполненные стаки)
+	if remaining > 0 and item.stackable:
+		for slot in slots:
+			if slot.item and slot.item.name == item.name and slot.amount < item.max_stack:
+				var can_add = min(remaining, item.max_stack - slot.amount)
+				slot.amount += can_add
+				remaining -= can_add
+				if remaining <= 0:
+					update.emit()
+					return quantity
+	
+	# 3. В пустые слоты основного инвентаря
+	if remaining > 0:
+		for slot in slots:
 			if slot.item == null:
-				slot.item = item
-				slot.amount = 1
-				hotbar_updated.emit()
-				return
+				slot.item = item.duplicate()
+				var to_add = min(remaining, item.max_stack)
+				slot.amount = to_add
+				remaining -= to_add
+				if remaining <= 0:
+					update.emit()
+					return quantity
 	
-	# Затем в основной инвентарь
-	var itemslots = slots.filter(func(s): 
-		return s.item != null and s.item.name == item.name and s.amount < item.max_stack
-	)
-	
-	if !itemslots.is_empty():
-		itemslots[0].amount += 1
-	else:
-		var emptyslots = slots.filter(func(s): return s.item == null)
-		if !emptyslots.is_empty():
-			emptyslots[0].item = item
-			emptyslots[0].amount = 1
 	update.emit()
+	return quantity - remaining  
 
 func use_hotbar_slot(index: int, player: Node):
 	if index < 0 or index >= hotbar_slots.size():
