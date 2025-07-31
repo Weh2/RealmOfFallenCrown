@@ -1,8 +1,11 @@
 extends Node
 class_name LootComponent
-
+@export_category("Loot Settings")
 @export var possible_loot: Array[Dictionary] = [
 	{"item": preload("res://ui/inventory/items/HealthPotion.tres"), "chance": 1, "min": 1, "max": 3},
+	{"item": preload("res://ui/inventory/items/meat.tres"), "chance": 1, "min": 1, "max": 3},
+	{"item": preload("res://ui/inventory/items/knife.tres"), "chance": 1, "min": 1, "max": 1},
+	{"item": preload("res://ui/inventory/items/Stamina Potion.tres"), "chance": 1, "min": 1, "max": 1},
 	
 ]
 
