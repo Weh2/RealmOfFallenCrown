@@ -1,7 +1,6 @@
-[gd_scene load_steps=41 format=3 uid="uid://dc8qexmjly4ak"]
+[gd_scene load_steps=40 format=3 uid="uid://dc8qexmjly4ak"]
 
 [ext_resource type="Script" uid="uid://doed4m7bqefde" path="res://Character/enemies/butcher.gd" id="1_u7ynv"]
-[ext_resource type="Texture2D" uid="uid://oj8xoe440e3b" path="res://Character/enemies/2025-07-12_22-43-57 (1).png" id="2_56yyb"]
 [ext_resource type="Script" uid="uid://cmp1ipn38yuru" path="res://Character/health_component.gd" id="3_v1xi3"]
 [ext_resource type="Script" uid="uid://kivagim1xe4q" path="res://scripts/LootComponent.gd" id="5_so0dp"]
 [ext_resource type="Texture2D" uid="uid://bxjx3g8cq8d4i" path="res://Character/enemies/Orc.png" id="7_00hqe"]
@@ -10,8 +9,8 @@
 radius = 14.0
 height = 48.0
 
-[sub_resource type="CircleShape2D" id="CircleShape2D_u7ynv"]
-radius = 275.029
+[sub_resource type="CircleShape2D" id="CircleShape2D_o6haj"]
+radius = 139.004
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_v1xi3"]
 
@@ -261,7 +260,6 @@ radius = 37.1214
 [node name="Butcher" type="CharacterBody2D" groups=["enemies"]]
 collision_layer = 2
 script = ExtResource("1_u7ynv")
-corpse_texture = ExtResource("2_56yyb")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 visible = false
@@ -269,12 +267,12 @@ position = Vector2(0, -3)
 shape = SubResource("CapsuleShape2D_u7ynv")
 
 [node name="DetectionArea" type="Area2D" parent="."]
-visible = false
 collision_layer = 0
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="DetectionArea"]
-position = Vector2(0, -1)
-shape = SubResource("CircleShape2D_u7ynv")
+visible = false
+position = Vector2(3, -3)
+shape = SubResource("CircleShape2D_o6haj")
 
 [node name="AttackArea" type="Area2D" parent="."]
 visible = false
@@ -301,9 +299,7 @@ shape = SubResource("CapsuleShape2D_v1xi3")
 position = Vector2(1, -2)
 scale = Vector2(1.91, 1.93)
 sprite_frames = SubResource("SpriteFrames_2gfau")
-animation = &"death"
-frame = 3
-frame_progress = 1.0
+animation = &"idle"
 
 [node name="AttackTimer" type="Timer" parent="."]
 one_shot = true
@@ -313,6 +309,7 @@ position = Vector2(2, -5)
 collision_layer = 16
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="LootArea"]
+visible = false
 position = Vector2(-12, 5)
 shape = SubResource("CircleShape2D_so0dp")
 

@@ -8,14 +8,23 @@ extends CharacterBody2D
 @export var health := 100
 @export var corpse_texture: Texture2D
 
+# Настройки патрулирования
+@export var patrol_speed: float = 80.0
+@export var wait_time_at_point: float = 1.0
+var current_patrol_index := 0
+var patrol_points: Array[Vector2] = []
+var is_patrolling := true
+var patrol_direction := Vector2.ZERO
+var is_waiting := false  # Флаг ожидания
+var wait_timer := 0.0   
+
 # Состояния врага
-enum State {IDLE, CHASE, ATTACK, DEAD}
-var current_state = State.IDLE
+enum State {PATROL, IDLE, CHASE, ATTACK, DEAD}
+var current_state = State.PATROL
 var target = null
 var is_dead := false
 var attack_in_progress := false
 var can_be_looted := false
-
 
 # Лут система
 var generated_loot: Array = []
@@ -32,108 +41,108 @@ signal enemy_died()
 @onready var attack_area := $AttackArea
 @onready var hitbox := $Hitbox
 
-
-
 func _ready():
+	_setup_patrol_points()
 	play_animation("idle")
-	if has_node("LootComponent"):
-		$LootComponent.connect("loot_opened", _on_loot_opened)
-		
-		
-func _on_loot_generated(items):
-	generated_loot = items
-		
-func _on_loot_opened(items):
-	emit_signal("loot_opened", items)
-# Основные функции
-func take_damage(incoming_damage: int):
-	if is_dead: return
-	
-	health -= incoming_damage
-	play_animation("hurt")
-	
-	if health <= 0:
-		die()
 
-func die():
+
+func _setup_patrol_points():
+	patrol_points.clear()
+	# Собираем все дочерние Marker2D как точки патрулирования
+	for child in get_children():
+		if child is Marker2D:
+			patrol_points.append(child.global_position)
+	
+	# Если маркеров нет - создаем дефолтный маршрут
+	if patrol_points.is_empty():
+		patrol_points.append(global_position + Vector2(100, 0))
+		patrol_points.append(global_position + Vector2(-100, 0))
+		print("Создан дефолтный маршрут патрулирования")
+
+func _physics_process(delta):
 	if is_dead: 
 		return
-	is_dead = true
-	can_be_looted = true
-	add_to_group("corpses")
 	
-	# Отключаем коллайдеры
-	$CollisionShape2D.disabled = true
-	$Hitbox/CollisionShape2D.disabled = true
-	$DetectionArea/CollisionShape2D.disabled = true
-	$AttackArea/CollisionShape2D.disabled = true
-	
-	# Меняем слои
-	set_collision_layer_value(2, false)  # Отключаем enemies
-	set_collision_layer_value(5, true)   # Включаем corpses
-	
-	play_animation("death")
-	await sprite.animation_finished
-	sprite.stop()
-	sprite.frame = sprite.sprite_frames.get_frame_count("death") - 1
-	if has_node("LootComponent"):
-		loot_component.generate_loot()
-	else:
-		generated_loot = []  # На всякий случай
-	can_be_looted = true
+	match current_state:
+		State.PATROL:
+			_handle_patrol_state()
+		State.IDLE:
+			_handle_idle_state()
+		State.CHASE:
+			_handle_chase_state()
+		State.ATTACK:
+			_handle_attack_state()
+		State.DEAD:
+			pass
 
-
-
-	
-
-func open_loot():
-	if can_be_looted:
-		if has_node("LootComponent"):
-			return loot_component.get_loot()
-		return generated_loot
-	return []
-
-
-
-
-# Логика поведения
-func _physics_process(delta):
-	if is_dead: return
-	
-	if not target or not _is_target_alive(target):
-		current_state = State.IDLE
+func _handle_patrol_state():
+	if patrol_points.is_empty():
 		play_animation("idle")
 		return
 	
-	var direction = (target.global_position - global_position).normalized()
-	var distance_to_target = global_position.distance_to(target.global_position)
+	# Если враг в режиме ожидания
+	if is_waiting:
+		wait_timer -= get_process_delta_time()
+		play_animation("idle")  # Проигрываем анимацию каждый кадр
+		if wait_timer <= 0:
+			is_waiting = false
+			current_patrol_index = (current_patrol_index + 1) % patrol_points.size()
+		return
 	
-	match current_state:
-		State.IDLE:
-			_handle_idle_state(distance_to_target)
-		State.CHASE:
-			_handle_chase_state(distance_to_target, direction)
-		State.ATTACK:
-			_handle_attack_state(distance_to_target)
+	var target_pos = patrol_points[current_patrol_index]
+	patrol_direction = (target_pos - global_position).normalized()
+	
+	# Движение к точке
+	velocity = patrol_direction * patrol_speed
+	move_and_slide()
+	
+	# Поворот спрайта
+	if patrol_direction.x != 0:
+		sprite.flip_h = patrol_direction.x < 0
+	
+	# Анимация движения
+	play_animation("walk")
+	
+	# Проверка достижения точки
+	if global_position.distance_to(target_pos) < 5.0:
+		velocity = Vector2.ZERO
+		is_waiting = true
+		wait_timer = wait_time_at_point
+		play_animation("idle")  # Начинаем анимацию ожидания
 
-func _handle_idle_state(distance_to_target):
-	if distance_to_target <= attack_range:
-		current_state = State.ATTACK
-	else:
-		current_state = State.CHASE
+func _handle_idle_state():
+	play_animation("idle")
+	if target and _is_target_alive(target):
+		var distance = global_position.distance_to(target.global_position)
+		if distance <= attack_range:
+			current_state = State.ATTACK
+		else:
+			current_state = State.CHASE
 
-func _handle_chase_state(distance_to_target, direction):
-	if distance_to_target <= attack_range:
+func _handle_chase_state():
+	if not target or not _is_target_alive(target):
+		current_state = State.PATROL
+		return
+	
+	var chase_direction = (target.global_position - global_position).normalized()
+	var distance = global_position.distance_to(target.global_position)
+	
+	if distance <= attack_range:
 		current_state = State.ATTACK
 		return
 	
-	velocity = direction * speed
+	velocity = chase_direction * speed
 	move_and_slide()
 	play_animation("walk")
-	sprite.flip_h = direction.x < 0
+	sprite.flip_h = chase_direction.x < 0
 
-func _handle_attack_state(distance_to_target):
-	if distance_to_target > attack_range * 1.1:
+func _handle_attack_state():
+	if not target or not _is_target_alive(target):
+		current_state = State.PATROL
+		return
+	
+	var distance = global_position.distance_to(target.global_position)
+	if distance > attack_range * 1.1:
 		current_state = State.CHASE
 		return
 	
@@ -142,7 +151,8 @@ func _handle_attack_state(distance_to_target):
 		_attack_player()
 
 func _attack_player():
-	if is_dead or attack_in_progress: return
+	if is_dead or attack_in_progress: 
+		return
 	
 	attack_in_progress = true
 	play_animation("attack")
@@ -159,7 +169,53 @@ func _attack_player():
 		attack_in_progress = false
 		attack_timer.start(attack_cooldown)
 
-# Вспомогательные функции
+func take_damage(incoming_damage: int):
+	if is_dead: 
+		return
+	
+	health -= incoming_damage
+	play_animation("hurt")
+	
+	if health <= 0:
+		die()
+
+func die():
+	if is_dead: 
+		return
+	
+	is_dead = true
+	can_be_looted = true
+	current_state = State.DEAD
+	add_to_group("corpses")
+	
+	# Отключаем коллайдеры
+	$CollisionShape2D.disabled = true
+	$Hitbox/CollisionShape2D.disabled = true
+	$DetectionArea/CollisionShape2D.disabled = true
+	$AttackArea/CollisionShape2D.disabled = true
+	
+	# Меняем слои
+	set_collision_layer_value(2, false)  # Отключаем enemies
+	set_collision_layer_value(5, true)   # Включаем corpses
+	
+	play_animation("death")
+	await sprite.animation_finished
+	sprite.stop()
+	sprite.frame = sprite.sprite_frames.get_frame_count("death") - 1
+	
+	if has_node("LootComponent"):
+		loot_component.generate_loot()
+	else:
+		generated_loot = []
+	can_be_looted = true
+
+func open_loot():
+	if can_be_looted:
+		if has_node("LootComponent"):
+			return loot_component.get_loot()
+		return generated_loot
+	return []
+
 func play_animation(anim_name: String):
 	if sprite.sprite_frames and sprite.sprite_frames.has_animation(anim_name):
 		sprite.play(anim_name)
@@ -171,18 +227,21 @@ func _is_target_alive(player):
 func _on_detection_area_body_entered(body):
 	if not is_dead and body.is_in_group("player") and _is_target_alive(body):
 		target = body
+		current_state = State.CHASE
 
 func _on_detection_area_body_exited(body):
 	if body == target:
 		target = null
-		current_state = State.IDLE
+		current_state = State.PATROL
 
 func _on_attack_area_body_entered(body):
 	if not is_dead and body.is_in_group("player") and _is_target_alive(body) and not target:
 		target = body
+		current_state = State.ATTACK
 
 func _on_attack_timer_timeout():
-	if is_dead: return
+	if is_dead: 
+		return
 	if target and global_position.distance_to(target.global_position) <= attack_range:
 		_attack_player()
 	else:

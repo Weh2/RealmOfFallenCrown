@@ -4654,14 +4654,9 @@ position = Vector2(-0.5, -0.5)
 shape = SubResource("RectangleShape2D_8gn0v")
 
 [node name="Butcher" parent="." instance=ExtResource("32_35vx5")]
-z_index = -1
 position = Vector2(354, -13)
 
 [node name="PatrolPoint2" type="Marker2D" parent="Butcher"]
-position = Vector2(-169, -239)
 
 [node name="PatrolPoint3" type="Marker2D" parent="Butcher"]
-position = Vector2(283, -66)
-
-[node name="PatrolPoint4" type="Marker2D" parent="Butcher"]
-position = Vector2(29, 28)
+position = Vector2(72, 18)
