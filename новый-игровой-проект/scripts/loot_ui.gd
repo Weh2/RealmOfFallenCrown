@@ -61,6 +61,11 @@ func _on_slot_clicked(index: int, item: InvItem, quantity: int):
 			if index < loot_items.size():
 				loot_items.remove_at(index)
 				grid.get_child(index).update_slot(null, 0)
+	# Обновляем источник лута
+	if current_loot_source and current_loot_source.has_method("update_loot"):
+		current_loot_source.update_loot(loot_items)
+		
+		
 func _on_take_all_pressed():
 	if current_loot_source:
 		var player = get_tree().get_first_node_in_group("player")
@@ -75,6 +80,9 @@ func _on_take_all_pressed():
 		
 		hide()
 		is_open = false
+	if current_loot_source and current_loot_source.has_method("update_loot"):
+		current_loot_source.update_loot([])  # Передаем пустой массив
+
 
 func _on_close_pressed():
 	hide()

@@ -105,11 +105,10 @@ func _on_loot_detection_area_body_entered(body):
 		  " can_be_looted:", body.can_be_looted if "can_be_looted" in body else "N/A",
 		  " слои:", body.collision_layer)
 	
-	if body.is_in_group("corpses") and "can_be_looted" in body and body.can_be_looted:
-		print("✅ Можно лутать!")
-		current_loot_target = body
-	else:
-		print("❌ Нельзя лутать. Группы:", body.get_groups())
+
+	if body.is_in_group("corpses"):
+		if body.has_method("open_loot") or (body.has_node("LootComponent") and body.can_be_looted):
+			current_loot_target = body
 
 func _on_loot_detection_area_body_exited(body):
 	print("Тело вышло:", body.name, " группы:", body.get_groups())
@@ -364,11 +363,11 @@ func collect_multiple(item: InvItem, quantity: int):
 		# Для стакаемых предметов добавляем сразу все количество
 		var remaining = quantity
 		while remaining > 0:
-			var added = inv.insert_item(item, remaining)
+			var added = inv.insert(item, remaining)
 			if added <= 0:  # Если не удалось добавить (нет места)
 				break
 			remaining -= added
 	else:
 		# Для нестакаемых - по одному
 		for i in range(quantity):
-			inv.insert_item(item.duplicate(), 1)
+			inv.insert(item.duplicate(), 1)

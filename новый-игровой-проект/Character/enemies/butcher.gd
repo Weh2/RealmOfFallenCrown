@@ -16,19 +16,12 @@ var is_dead := false
 var attack_in_progress := false
 var can_be_looted := false
 
-# Настройки лута
-@export_category("Loot Settings")
-@export var loot_items: Array[InvItem] = [
-	preload("res://ui/inventory/items/knife.tres"),
-	preload("res://ui/inventory/items/meat.tres")
-]
-@export var loot_chance: float = 0.7  # 80% шанс выпадения
-@export var min_quantity: int = 1
-@export var max_quantity: int = 3
 
 # Лут система
-var generated_loot: Array = []  # Будем хранить сгенерированный лут
+var generated_loot: Array = []
 signal loot_opened(items: Array)
+
+@onready var loot_component = $LootComponent
 signal enemy_died()
 
 # Ноды
@@ -42,16 +35,13 @@ signal enemy_died()
 
 
 func _ready():
-	print("Загруженные предметы для лута:")
-	for item in loot_items:
-		if item:
-			print("- ", item.resource_path, " exists:", ResourceLoader.exists(item.resource_path))
-		else:
-			print("- NULL item in loot_items")
 	play_animation("idle")
 	if has_node("LootComponent"):
 		$LootComponent.connect("loot_opened", _on_loot_opened)
 		
+		
+func _on_loot_generated(items):
+	generated_loot = items
 		
 func _on_loot_opened(items):
 	emit_signal("loot_opened", items)
@@ -86,58 +76,24 @@ func die():
 	await sprite.animation_finished
 	sprite.stop()
 	sprite.frame = sprite.sprite_frames.get_frame_count("death") - 1
-	generated_loot = generate_loot()  # Генерируем лут один раз
+	if has_node("LootComponent"):
+		loot_component.generate_loot()
+	else:
+		generated_loot = []  # На всякий случай
 	can_be_looted = true
 
 
 
-func generate_loot() -> Array:
-	var final_loot = []
-	var items_to_drop = []
-	
-	# Сначала определяем какие типы предметов выпадут
-	for item in loot_items:
-		if item and randf() <= loot_chance:
-			items_to_drop.append(item)
-	
-	# Для каждого выпадающего типа предмета определяем количество
-	for item in items_to_drop:
-		# Для оружия всегда 1 экземпляр
-		if item.item_type == InvItem.ItemType.WEAPON:
-			final_loot.append({
-				"item": item.duplicate(),
-				"quantity": 1  # Оружие всегда в одном экземпляре
-			})
-		else:
-			# Для остальных предметов случайное количество
-			final_loot.append({
-				"item": item.duplicate(),
-				"quantity": randi_range(min_quantity, max_quantity)
-			})
-	
-	return final_loot
 	
 
 func open_loot():
-	print("--- Enemy.open_loot() ---")
-	print("Can be looted:", can_be_looted)
 	if can_be_looted:
-		print("Emitting loot_opened signal")
-		return generated_loot  # Просто возвращаем текущий лут
+		if has_node("LootComponent"):
+			return loot_component.get_loot()
+		return generated_loot
 	return []
-# Лут система
-func get_loot():
-	return loot_items.duplicate()
 
-func remove_item(index: int):
-	if index >= 0 and index < generated_loot.size():
-		generated_loot.remove_at(index)
-		return true
-	return false
 
-func take_all_items():
-	generated_loot.clear()
-	return true
 
 
 # Логика поведения

@@ -1,8 +1,9 @@
-[gd_scene load_steps=40 format=3 uid="uid://dc8qexmjly4ak"]
+[gd_scene load_steps=41 format=3 uid="uid://dc8qexmjly4ak"]
 
 [ext_resource type="Script" uid="uid://doed4m7bqefde" path="res://Character/enemies/butcher.gd" id="1_u7ynv"]
 [ext_resource type="Texture2D" uid="uid://oj8xoe440e3b" path="res://Character/enemies/2025-07-12_22-43-57 (1).png" id="2_56yyb"]
 [ext_resource type="Script" uid="uid://cmp1ipn38yuru" path="res://Character/health_component.gd" id="3_v1xi3"]
+[ext_resource type="Script" uid="uid://kivagim1xe4q" path="res://scripts/LootComponent.gd" id="5_so0dp"]
 [ext_resource type="Texture2D" uid="uid://bxjx3g8cq8d4i" path="res://Character/enemies/Orc.png" id="7_00hqe"]
 
 [sub_resource type="CapsuleShape2D" id="CapsuleShape2D_u7ynv"]
@@ -254,8 +255,8 @@ animations = [{
 "speed": 10.0
 }]
 
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_56yyb"]
-size = Vector2(64, 47)
+[sub_resource type="CircleShape2D" id="CircleShape2D_so0dp"]
+radius = 37.1214
 
 [node name="Butcher" type="CharacterBody2D" groups=["enemies"]]
 collision_layer = 2
@@ -263,10 +264,12 @@ script = ExtResource("1_u7ynv")
 corpse_texture = ExtResource("2_56yyb")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+visible = false
 position = Vector2(0, -3)
 shape = SubResource("CapsuleShape2D_u7ynv")
 
 [node name="DetectionArea" type="Area2D" parent="."]
+visible = false
 collision_layer = 0
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="DetectionArea"]
@@ -274,6 +277,7 @@ position = Vector2(0, -1)
 shape = SubResource("CircleShape2D_u7ynv")
 
 [node name="AttackArea" type="Area2D" parent="."]
+visible = false
 position = Vector2(1, 4)
 collision_layer = 0
 
@@ -286,6 +290,7 @@ script = ExtResource("3_v1xi3")
 max_health = 50.0
 
 [node name="Hitbox" type="Area2D" parent="."]
+visible = false
 collision_layer = 0
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Hitbox"]
@@ -296,17 +301,23 @@ shape = SubResource("CapsuleShape2D_v1xi3")
 position = Vector2(1, -2)
 scale = Vector2(1.91, 1.93)
 sprite_frames = SubResource("SpriteFrames_2gfau")
-animation = &"walk"
+animation = &"death"
+frame = 3
+frame_progress = 1.0
 
 [node name="AttackTimer" type="Timer" parent="."]
 one_shot = true
 
 [node name="LootArea" type="Area2D" parent="."]
+position = Vector2(2, -5)
 collision_layer = 16
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="LootArea"]
-position = Vector2(-10, 0.5)
-shape = SubResource("RectangleShape2D_56yyb")
+position = Vector2(-12, 5)
+shape = SubResource("CircleShape2D_so0dp")
+
+[node name="LootComponent" type="Node" parent="."]
+script = ExtResource("5_so0dp")
 
 [connection signal="body_entered" from="DetectionArea" to="." method="_on_detection_area_body_entered"]
 [connection signal="body_entered" from="AttackArea" to="." method="_on_attack_area_body_entered"]
