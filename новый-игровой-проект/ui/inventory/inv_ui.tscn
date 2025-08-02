@@ -8,11 +8,11 @@
 [ext_resource type="Texture2D" uid="uid://b2wowno27hy7d" path="res://ui/inventory/TopPatternPanel_01_33x15.png" id="6_mwi2l"]
 [ext_resource type="Texture2D" uid="uid://dhimvca7boih3" path="res://ui/inventory/TitleBox_64x16.png" id="8_egwaa"]
 [ext_resource type="Texture2D" uid="uid://bbks2drirv2qv" path="res://ui/inventory/Pipe_36x11.png" id="8_fqce0"]
-[ext_resource type="FontVariation" uid="uid://f4x4doy5kxmh" path="res://fonts/main_font.variation.tres" id="9_egwaa"]
+[ext_resource type="FontFile" uid="uid://b1m73gvtht1u3" path="res://fonts/TabulaPeutingeriana-ELv9.ttf" id="9_ferii"]
 [ext_resource type="Texture2D" uid="uid://dps2m4tppflu5" path="res://ui/inventory/TopPatternPanel_02_33x15.png" id="10_ferii"]
 
 [sub_resource type="LabelSettings" id="LabelSettings_ferii"]
-font = ExtResource("9_egwaa")
+font = ExtResource("9_ferii")
 font_color = Color(0.72549, 0.596078, 0.698039, 0.701961)
 
 [node name="Inv_UI" type="Control"]
@@ -162,17 +162,17 @@ columns = 2
 layout_mode = 2
 
 [node name="TitleBox64x16" type="Sprite2D" parent="EquipmentPanel/GridContainer/inv_UI_slot"]
-position = Vector2(38.6, -14.938)
-scale = Vector2(1.65625, 1.71875)
+position = Vector2(38.6, -14.5)
+scale = Vector2(1.65625, 2.0625)
 texture = ExtResource("8_egwaa")
 
 [node name="Label" type="Label" parent="EquipmentPanel/GridContainer/inv_UI_slot"]
 layout_mode = 0
-offset_left = -6.39999
-offset_top = -25.938
-offset_right = 79.6
-offset_bottom = -2.938
-text = "WEAPON"
+offset_left = -2.0
+offset_top = -40.0
+offset_right = 79.0
+offset_bottom = 3.0
+text = "Оружие"
 label_settings = SubResource("LabelSettings_ferii")
 horizontal_alignment = 1
 vertical_alignment = 1
