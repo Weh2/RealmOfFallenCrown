@@ -14,7 +14,7 @@ var current_value: float = 100.0:
 			if current_value <= 0:
 				stamina_depleted.emit()
 
-@onready var progress_bar: ProgressBar = $UIRoot/StaminaBar
+@onready var progress_bar: TextureProgressBar = $UIRoot/StaminaBar
 @onready var stamina_label: Label = $UIRoot/StaminaBar.get_node("Label") if $UIRoot/StaminaBar.has_node("Label") else null
 
 func _ready():

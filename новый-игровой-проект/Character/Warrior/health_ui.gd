@@ -1,6 +1,6 @@
 extends CanvasLayer
 
-@onready var health_bar: ProgressBar = $UIRoot/HealthBar
+@onready var health_bar: TextureProgressBar = $UIRoot/HealthBar
 @onready var health_label: Label = $UIRoot/HealthBar/Label  # Опциональный лейбл
 
 func _ready():
