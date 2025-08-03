@@ -4666,3 +4666,17 @@ position = Vector2(283, -66)
 
 [node name="PatrolPoint4" type="Marker2D" parent="Butcher"]
 position = Vector2(29, 28)
+
+[node name="Butcher2" parent="." instance=ExtResource("32_35vx5")]
+z_index = -1
+position = Vector2(1306, 114)
+scale = Vector2(0.743782, 0.799753)
+
+[node name="PatrolPoint2" type="Marker2D" parent="Butcher2"]
+position = Vector2(-169, -239)
+
+[node name="PatrolPoint3" type="Marker2D" parent="Butcher2"]
+position = Vector2(283, -66)
+
+[node name="PatrolPoint4" type="Marker2D" parent="Butcher2"]
+position = Vector2(29, 28)

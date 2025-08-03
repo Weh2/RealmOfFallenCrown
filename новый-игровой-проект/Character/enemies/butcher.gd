@@ -8,6 +8,13 @@ extends CharacterBody2D
 @export var health := 100
 @export var corpse_texture: Texture2D
 
+# Уровень врага (добавлено)
+@export var current_level: int = 1
+@export var level_scaling: Dictionary = {
+	"health": 10,
+	"damage": 2
+}
+
 # Настройки патрулирования
 @export var patrol_speed: float = 80.0
 @export var wait_time_at_point: float = 1.0
@@ -42,8 +49,19 @@ signal enemy_died()
 @onready var hitbox := $Hitbox
 
 func _ready():
+	scale_enemy_by_level()
 	_setup_patrol_points()
 	play_animation("idle")
+
+func scale_enemy_by_level():
+	health += level_scaling["health"] * (current_level - 1)
+	attack_damage += level_scaling["damage"] * (current_level - 1)
+	
+	# Визуальное отличие для врагов высокого уровня
+	if current_level > 1:
+		var scale_factor = 1.0 + (current_level - 1) * 0.05
+		sprite.scale *= scale_factor
+		sprite.modulate = Color(1.0, 0.9, 0.9)  # Легкий красный оттенок
 
 
 func _setup_patrol_points():
@@ -203,11 +221,37 @@ func die():
 	sprite.stop()
 	sprite.frame = sprite.sprite_frames.get_frame_count("death") - 1
 	
+	# Генерация лута
 	if has_node("LootComponent"):
 		loot_component.generate_loot()
 	else:
 		generated_loot = []
 	can_be_looted = true
+	
+	# Даем игроку опыт (исправленная версия)
+	var player = get_tree().get_first_node_in_group("player")
+	if player and player.has_method("gain_xp"):
+		var base_xp = 10
+		var xp_amount = base_xp * current_level
+		
+		# Учет разницы уровней (дополнительный бонус/штраф)
+		var player_level = 1
+		if player.has_method("get_current_level"):
+			player_level = player.get_current_level()
+		
+		var level_diff = current_level - player_level
+		var diff_multiplier = 1.0 + level_diff * 0.1
+		diff_multiplier = clamp(diff_multiplier, 0.5, 2.0)
+		
+		xp_amount = int(xp_amount * diff_multiplier)
+		player.gain_xp(xp_amount)
+		
+
+	
+	enemy_died.emit()
+
+
+
 
 func open_loot():
 	if can_be_looted:

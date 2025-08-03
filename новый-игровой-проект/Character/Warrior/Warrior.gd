@@ -1,6 +1,6 @@
 extends CharacterBody2D
 
-@export var speed = 300.0
+@export var speed = 200.0
 @onready var sprite = $AnimatedSprite2D  # Изменено с Sprite2D на AnimationSprite2D
 @onready var camera = $Camera2D
 @onready var health_component = $HealthComponent
@@ -20,6 +20,37 @@ var loot_ui: Panel = null
 
 var current_loot_target: Node = null 
 
+# Система прокачки
+@export var max_level: int = 50
+@export var xp_to_level_up: int = 100
+var current_level: int = 1
+var current_xp: int = 0
+var skill_points: int = 0
+
+
+
+# Базовые характеристики
+@export var base_stats = {
+	"health": 100,
+	"attack": 10,
+	"defense": 0,
+	"stamina": 100,
+	"speed": 300,
+	"luck": 5
+}
+
+# Текущие модификаторы
+var stat_modifiers = {
+	"health": 0,
+	"attack": 0,
+	"defense": 0,
+	"stamina": 0,
+	"speed": 0,
+	"luck": 0
+}
+
+signal xp_gained(amount: int, current_xp: int, required_xp: int)
+signal level_up(new_level: int)
 
 # Stamina system
 @export var max_stamina: float = 100.0
@@ -96,6 +127,41 @@ func _ready():
 	else:
 		push_error("Inventory not initialized!")
 
+func gain_xp(amount: int):
+	if current_level >= max_level:
+		return
+	
+	current_xp += amount
+	emit_signal("xp_gained", amount, current_xp, xp_to_level_up)
+	
+	# Проверка уровня
+	if current_xp >= xp_to_level_up:
+		_level_up()
+
+func _level_up():
+	current_level += 1
+	skill_points += 3  # Даем 3 очка навыков за уровень
+	current_xp = max(current_xp - xp_to_level_up, 0)
+	xp_to_level_up = int(xp_to_level_up * 1.2)  # Увеличиваем требуемый опыт
+	
+	# Небольшое автоулучшение характеристик
+	base_stats.health += 5
+	base_stats.stamina += 3
+	base_stats.attack += 1
+	
+	emit_signal("level_up", current_level)
+	_update_equipment_stats()  # Обновляем статы
+
+func upgrade_stat(stat: String, amount: int = 1):
+	if skill_points >= amount:
+		stat_modifiers[stat] += amount
+		skill_points -= amount
+		_update_equipment_stats()
+		return true
+	return false
+
+
+
 func get_loot_ui() -> Panel:
 	return loot_ui
 
@@ -115,36 +181,42 @@ func _on_loot_detection_area_body_exited(body):
 	if body == current_loot_target and not body.can_be_looted:
 		current_loot_target = null
 
-
 func _update_equipment_stats():
 	print("DEBUG: Вызов _update_equipment_stats")
 	if not inv or inv.equipment_slots.size() < 8:
 		return
 	
+	# Базовые характеристики + модификаторы от прокачки
 	var base_stats = {
-		"health": 100,
-		"attack": 10,
-		"defense": 0,
-		"stamina": 100
+		"health": 100 + stat_modifiers["health"],
+		"attack": 10 + stat_modifiers["attack"],
+		"defense": 0 + stat_modifiers["defense"],
+		"stamina": 100 + stat_modifiers["stamina"],
+		"speed": 300 + stat_modifiers["speed"]
 	}
 	
+	# Бонусы от экипировки
 	var bonuses = {
 		"health": 0,
 		"attack": 0,
 		"defense": 0,
-		"stamina": 0
+		"stamina": 0,
+		"speed": 0
 	}
 	
+	# Суммируем бонусы от всей экипировки
 	for slot in inv.equipment_slots:
 		if slot and slot.item:
 			for stat in bonuses:
 				bonuses[stat] += slot.item.stats.get(stat, 0)
 	
+	# Применяем характеристики к компонентам
 	if health_component:
 		health_component.max_health = base_stats["health"] + bonuses["health"]
 		health_component.current_health = min(health_component.current_health, health_component.max_health)
 		health_ui.update_health(health_component.current_health, health_component.max_health)
 	
+	# Обновляем оружие
 	var weapon_slot = inv.equipment_slots[InvItem.ItemType.WEAPON]
 	if weapon_slot and weapon_slot.item:
 		if has_node("Weapon") and $Weapon.has_method("update_weapon"):
@@ -155,14 +227,19 @@ func _update_equipment_stats():
 		if has_node("Weapon") and $Weapon.has_method("unequip_weapon"):
 			$Weapon.unequip_weapon()
 	
+	# Стамина и скорость
 	max_stamina = base_stats["stamina"] + bonuses["stamina"]
 	current_stamina = min(current_stamina, max_stamina)
+	speed = base_stats["speed"] + bonuses["speed"]
+	
 	stamina_ui.set_stamina(current_stamina)
 	
 	print("=== Статы после обновления ===")
 	print("Здоровье: ", health_component.max_health)
 	print("Урон: ", $Weapon.get_attack_damage())
 	print("Стамина: ", max_stamina)
+	print("Скорость: ", speed)
+	print("Защита: ", base_stats["defense"] + bonuses["defense"])
 
 func _physics_process(delta):
 	if weapon.is_attacking() or is_dashing:
@@ -267,28 +344,46 @@ func start_dash():
 	is_dashing = false
 	await get_tree().create_timer(dash_cooldown).timeout
 	can_dash = true
+	
+	
+	
 func take_damage(damage: int, source_position: Vector2 = Vector2.ZERO):
 	if invincible or is_dashing:
 		return
 	
+	# Рассчитываем базовую защиту (характеристика + бонусы экипировки)
+	var total_defense = stat_modifiers["defense"]
+	for slot in inv.equipment_slots:
+		if slot and slot.item:
+			total_defense += slot.item.stats.get("defense", 0)
+	
+	# Применяем защиту (минимум 1 урона)
+	var damage_after_defense = max(1, damage - total_defense)
+	
+	# Дополнительное снижение урона при блоке
 	if is_blocking and check_block_direction(source_position):
-		damage = int(damage * (1.0 - block_damage_reduction))
+		damage_after_defense = int(damage_after_defense * (1.0 - block_damage_reduction))
 		flash_sprite(Color.ROYAL_BLUE, 0.1, 1)
 		camera.apply_shake(shake_power * 0.5, shake_duration * 0.7)
 	else:
 		flash_sprite(Color.RED, 0.1, 3)
 		camera.apply_shake(shake_power, shake_duration)
 	
+	# Устанавливаем неуязвимость на короткое время
 	invincible = true
 	get_tree().create_timer(0.5).timeout.connect(func(): invincible = false)
 	
+	# Наносим урон
 	if health_component:
-		health_component.take_damage(damage)
+		health_component.take_damage(damage_after_defense)
 	
+	# Отбрасывание персонажа
 	if source_position != Vector2.ZERO:
 		var knockback_direction = (global_position - source_position).normalized()
 		velocity = knockback_direction * 200
 		move_and_slide()
+	
+	print("Получено урона: ", damage, " | После защиты: ", damage_after_defense)
 
 func check_block_direction(source_position: Vector2) -> bool:
 	if source_position == Vector2.ZERO:

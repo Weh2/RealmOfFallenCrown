@@ -20,8 +20,10 @@ texture_margin_bottom = 15.0
 
 [node name="Panel" type="Panel"]
 z_index = 100
-offset_right = 381.0
-offset_bottom = 309.0
+offset_left = -302.0
+offset_top = -134.0
+offset_right = 79.0
+offset_bottom = 175.0
 scale = Vector2(0.640398, 0.676713)
 theme = SubResource("Theme_7qs66")
 theme_override_styles/panel = SubResource("StyleBoxTexture_1g7jf")
@@ -104,8 +106,8 @@ text = "Взять все"
 flat = true
 
 [node name="BottomPatternBg128x112" type="Sprite2D" parent="."]
-position = Vector2(191, 251)
-scale = Vector2(0.947917, 0.875)
+position = Vector2(190.404, 260.081)
+scale = Vector2(0.951022, 0.738865)
 texture = ExtResource("6_j6xp1")
 
 [node name="TopPatternPanel0133x15" type="Sprite2D" parent="."]

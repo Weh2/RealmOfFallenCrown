@@ -1,4 +1,4 @@
-[gd_scene load_steps=79 format=3 uid="uid://buxurdmy5l22s"]
+[gd_scene load_steps=80 format=3 uid="uid://buxurdmy5l22s"]
 
 [ext_resource type="Script" uid="uid://7j2fxan644jx" path="res://Character/Warrior/Warrior.gd" id="1_ij6vw"]
 [ext_resource type="Resource" uid="uid://ct3husp0sat75" path="res://ui/inventory/playerinv.tres" id="2_cr365"]
@@ -18,6 +18,7 @@
 [ext_resource type="Texture2D" uid="uid://ban76xwv28ghx" path="res://Character/Warrior/DEFEND.png" id="13_xsn7v"]
 [ext_resource type="Texture2D" uid="uid://denj0yei6nqe3" path="res://Character/Warrior/RUN.png" id="14_jkru6"]
 [ext_resource type="Texture2D" uid="uid://cnnu0ti6nskx0" path="res://Character/Warrior/ATTACK 3.png" id="14_owr25"]
+[ext_resource type="PackedScene" uid="uid://qudwcfkia18l" path="res://ui/ExperienceBar.tscn" id="19_owr25"]
 
 [sub_resource type="CapsuleShape2D" id="CapsuleShape2D_ij6vw"]
 radius = 15.0
@@ -462,7 +463,6 @@ animations = [{
 
 [node name="Warrior" type="CharacterBody2D" groups=["player", "player_weapons"]]
 script = ExtResource("1_ij6vw")
-speed = 200.0
 inv = ExtResource("2_cr365")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
@@ -535,7 +535,6 @@ offset_right = 40.0
 offset_bottom = 23.0
 
 [node name="Inv_UI" parent="." instance=ExtResource("10_pxgkq")]
-visible = false
 offset_left = 187.0
 offset_top = -237.0
 offset_right = 647.0
@@ -550,14 +549,16 @@ offset_bottom = 229.0
 scale = Vector2(0.691562, 0.706187)
 
 [node name="LootDetectionArea" type="Area2D" parent="."]
-visible = false
 collision_mask = 48
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="LootDetectionArea"]
 shape = SubResource("CircleShape2D_8qwps")
 
 [node name="Panel" parent="LootDetectionArea" instance=ExtResource("12_5vi50")]
-visible = false
+offset_left = -226.0
+offset_top = -235.0
+offset_right = 155.0
+offset_bottom = 74.0
 scale = Vector2(0.506969, 0.499165)
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
@@ -568,3 +569,10 @@ sprite_frames = SubResource("SpriteFrames_dyqwu")
 animation = &"dash"
 frame = 7
 frame_progress = 1.0
+
+[node name="ExperienceBar" parent="." instance=ExtResource("19_owr25")]
+offset_left = -480.0
+offset_top = -184.0
+offset_right = -480.0
+offset_bottom = -184.0
+scale = Vector2(0.440327, 0.491103)

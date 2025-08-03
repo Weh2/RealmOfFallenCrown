@@ -163,7 +163,7 @@ layout_mode = 2
 
 [node name="TitleBox64x16" type="Sprite2D" parent="EquipmentPanel/GridContainer/inv_UI_slot"]
 position = Vector2(38.6, -14.5)
-scale = Vector2(1.65625, 2.0625)
+scale = Vector2(1.81686, 2.27771)
 texture = ExtResource("8_egwaa")
 
 [node name="Label" type="Label" parent="EquipmentPanel/GridContainer/inv_UI_slot"]
@@ -181,17 +181,19 @@ vertical_alignment = 1
 layout_mode = 2
 
 [node name="TitleBox64x16" type="Sprite2D" parent="EquipmentPanel/GridContainer/inv_UI_slot2"]
-position = Vector2(38.6, -14.938)
-scale = Vector2(1.65625, 1.71875)
+z_index = 1
+position = Vector2(38.6, -14.5)
+scale = Vector2(1.81686, 2.27771)
 texture = ExtResource("8_egwaa")
 
 [node name="Label" type="Label" parent="EquipmentPanel/GridContainer/inv_UI_slot2"]
+z_index = 1
 layout_mode = 0
-offset_left = -6.39999
-offset_top = -25.938
-offset_right = 79.6
-offset_bottom = -2.938
-text = "SHIELD"
+offset_left = -5.99997
+offset_top = -38.0
+offset_right = 80.0
+offset_bottom = 5.0
+text = "Щит"
 label_settings = SubResource("LabelSettings_ferii")
 horizontal_alignment = 1
 vertical_alignment = 1
@@ -199,18 +201,18 @@ vertical_alignment = 1
 [node name="inv_UI_slot3" parent="EquipmentPanel/GridContainer" instance=ExtResource("3_hxx7b")]
 layout_mode = 2
 
-[node name="TitleBox64x16" type="Sprite2D" parent="EquipmentPanel/GridContainer/inv_UI_slot3"]
-position = Vector2(38.6, -14.938)
-scale = Vector2(1.65625, 1.71875)
+[node name="TitleBox64x17" type="Sprite2D" parent="EquipmentPanel/GridContainer/inv_UI_slot3"]
+position = Vector2(38.6, -14.5)
+scale = Vector2(1.81686, 2.27771)
 texture = ExtResource("8_egwaa")
 
 [node name="Label" type="Label" parent="EquipmentPanel/GridContainer/inv_UI_slot3"]
 layout_mode = 0
-offset_left = -6.39999
-offset_top = -25.938
-offset_right = 79.6
-offset_bottom = -2.938
-text = "ARMOR"
+offset_left = -5.99997
+offset_top = -39.0
+offset_right = 80.0
+offset_bottom = 4.0
+text = "Броня"
 label_settings = SubResource("LabelSettings_ferii")
 horizontal_alignment = 1
 vertical_alignment = 1
@@ -218,18 +220,18 @@ vertical_alignment = 1
 [node name="inv_UI_slot4" parent="EquipmentPanel/GridContainer" instance=ExtResource("3_hxx7b")]
 layout_mode = 2
 
-[node name="TitleBox64x16" type="Sprite2D" parent="EquipmentPanel/GridContainer/inv_UI_slot4"]
-position = Vector2(38.6, -14.938)
-scale = Vector2(1.65625, 1.71875)
+[node name="TitleBox64x17" type="Sprite2D" parent="EquipmentPanel/GridContainer/inv_UI_slot4"]
+position = Vector2(38.6, -14.5)
+scale = Vector2(1.81686, 2.27771)
 texture = ExtResource("8_egwaa")
 
 [node name="Label" type="Label" parent="EquipmentPanel/GridContainer/inv_UI_slot4"]
 layout_mode = 0
-offset_left = -6.39999
-offset_top = -25.938
-offset_right = 79.6
-offset_bottom = -2.938
-text = "HELMET"
+offset_left = -4.99997
+offset_top = -39.0
+offset_right = 81.0
+offset_bottom = 4.0
+text = "Шлем"
 label_settings = SubResource("LabelSettings_ferii")
 horizontal_alignment = 1
 vertical_alignment = 1
@@ -237,18 +239,18 @@ vertical_alignment = 1
 [node name="inv_UI_slot5" parent="EquipmentPanel/GridContainer" instance=ExtResource("3_hxx7b")]
 layout_mode = 2
 
-[node name="TitleBox64x16" type="Sprite2D" parent="EquipmentPanel/GridContainer/inv_UI_slot5"]
-position = Vector2(38.6, -14.938)
-scale = Vector2(1.65625, 1.71875)
+[node name="TitleBox64x17" type="Sprite2D" parent="EquipmentPanel/GridContainer/inv_UI_slot5"]
+position = Vector2(38.6, -14.5)
+scale = Vector2(1.81686, 2.27771)
 texture = ExtResource("8_egwaa")
 
 [node name="Label" type="Label" parent="EquipmentPanel/GridContainer/inv_UI_slot5"]
 layout_mode = 0
-offset_left = -6.39999
-offset_top = -25.938
-offset_right = 79.6
-offset_bottom = -2.938
-text = "GLOVES"
+offset_left = -9.99997
+offset_top = -38.0
+offset_right = 91.0
+offset_bottom = 5.0
+text = "Перчатки"
 label_settings = SubResource("LabelSettings_ferii")
 horizontal_alignment = 1
 vertical_alignment = 1
@@ -256,18 +258,18 @@ vertical_alignment = 1
 [node name="inv_UI_slot6" parent="EquipmentPanel/GridContainer" instance=ExtResource("3_hxx7b")]
 layout_mode = 2
 
-[node name="TitleBox64x16" type="Sprite2D" parent="EquipmentPanel/GridContainer/inv_UI_slot6"]
-position = Vector2(38.6, -14.938)
-scale = Vector2(1.65625, 1.71875)
+[node name="TitleBox64x17" type="Sprite2D" parent="EquipmentPanel/GridContainer/inv_UI_slot6"]
+position = Vector2(38.6, -14.5)
+scale = Vector2(1.81686, 2.27771)
 texture = ExtResource("8_egwaa")
 
 [node name="Label" type="Label" parent="EquipmentPanel/GridContainer/inv_UI_slot6"]
 layout_mode = 0
-offset_left = -6.39999
-offset_top = -25.938
-offset_right = 79.6
-offset_bottom = -2.938
-text = "BOOTS"
+offset_left = -6.99997
+offset_top = -39.0
+offset_right = 86.0
+offset_bottom = 3.99999
+text = "Ботинки"
 label_settings = SubResource("LabelSettings_ferii")
 horizontal_alignment = 1
 vertical_alignment = 1
@@ -275,18 +277,18 @@ vertical_alignment = 1
 [node name="inv_UI_slot7" parent="EquipmentPanel/GridContainer" instance=ExtResource("3_hxx7b")]
 layout_mode = 2
 
-[node name="TitleBox64x16" type="Sprite2D" parent="EquipmentPanel/GridContainer/inv_UI_slot7"]
-position = Vector2(38.6, -14.938)
-scale = Vector2(1.65625, 1.71875)
+[node name="TitleBox64x17" type="Sprite2D" parent="EquipmentPanel/GridContainer/inv_UI_slot7"]
+position = Vector2(38.6, -14.5)
+scale = Vector2(1.81686, 2.27771)
 texture = ExtResource("8_egwaa")
 
 [node name="Label" type="Label" parent="EquipmentPanel/GridContainer/inv_UI_slot7"]
 layout_mode = 0
-offset_left = -6.39999
-offset_top = -25.938
-offset_right = 79.6
-offset_bottom = -2.938
-text = "RING"
+offset_left = -4.99997
+offset_top = -38.0
+offset_right = 81.0
+offset_bottom = 4.99999
+text = "Кольцо"
 label_settings = SubResource("LabelSettings_ferii")
 horizontal_alignment = 1
 vertical_alignment = 1
@@ -294,18 +296,18 @@ vertical_alignment = 1
 [node name="inv_UI_slot8" parent="EquipmentPanel/GridContainer" instance=ExtResource("3_hxx7b")]
 layout_mode = 2
 
-[node name="TitleBox64x16" type="Sprite2D" parent="EquipmentPanel/GridContainer/inv_UI_slot8"]
-position = Vector2(38.6, -14.938)
-scale = Vector2(1.65625, 1.71875)
+[node name="TitleBox64x17" type="Sprite2D" parent="EquipmentPanel/GridContainer/inv_UI_slot8"]
+position = Vector2(38.6, -14.5)
+scale = Vector2(1.81686, 2.27771)
 texture = ExtResource("8_egwaa")
 
 [node name="Label" type="Label" parent="EquipmentPanel/GridContainer/inv_UI_slot8"]
 layout_mode = 0
-offset_left = -6.39999
-offset_top = -25.938
-offset_right = 79.6
-offset_bottom = -2.938
-text = "AMULET"
+offset_left = -4.99997
+offset_top = -38.0
+offset_right = 81.0
+offset_bottom = 4.99999
+text = "Амулет"
 label_settings = SubResource("LabelSettings_ferii")
 horizontal_alignment = 1
 vertical_alignment = 1
