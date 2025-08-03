@@ -22,6 +22,7 @@ texture_margin_bottom = 15.0
 z_index = 100
 offset_right = 381.0
 offset_bottom = 309.0
+scale = Vector2(0.640398, 0.676713)
 theme = SubResource("Theme_7qs66")
 theme_override_styles/panel = SubResource("StyleBoxTexture_1g7jf")
 script = ExtResource("2_l2vls")
