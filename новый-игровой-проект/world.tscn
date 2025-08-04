@@ -1,8 +1,7 @@
-[gd_scene load_steps=5 format=3 uid="uid://di2dvgsex66k0"]
+[gd_scene load_steps=4 format=3 uid="uid://di2dvgsex66k0"]
 
 [ext_resource type="PackedScene" uid="uid://buxurdmy5l22s" path="res://Character/Warrior/Warrior.tscn" id="1_f3sb7"]
 [ext_resource type="Script" uid="uid://e1e2wt4yv510" path="res://world.gd" id="1_fj7yv"]
-[ext_resource type="PackedScene" uid="uid://bbkr4n78dcosl" path="res://canvas_layer.tscn" id="4_aqk2v"]
 [ext_resource type="PackedScene" uid="uid://kl82dpqu3msq" path="res://levels/prison_room.tscn" id="7_gbfbk"]
 
 [node name="World" type="Node2D"]
@@ -10,7 +9,5 @@ script = ExtResource("1_fj7yv")
 
 [node name="Warrior" parent="." instance=ExtResource("1_f3sb7")]
 position = Vector2(37, 6)
-
-[node name="canvas_layer" parent="Warrior" instance=ExtResource("4_aqk2v")]
 
 [node name="PrisonRoom" parent="." instance=ExtResource("7_gbfbk")]

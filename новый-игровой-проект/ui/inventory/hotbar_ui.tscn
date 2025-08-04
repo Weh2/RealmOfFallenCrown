@@ -47,10 +47,11 @@ layout_mode = 2
 
 [node name="Label" type="Label" parent="HBoxContainer/Slot1/CenterContainer/Panel"]
 layout_mode = 0
-offset_left = -19.0
-offset_top = 1.0
-offset_right = 21.0
-offset_bottom = 24.0
+offset_left = -18.0
+offset_top = -9.0
+offset_right = 22.0
+offset_bottom = 34.0
+text = "99"
 horizontal_alignment = 2
 
 [node name="select" type="Sprite2D" parent="HBoxContainer/Slot1/CenterContainer/Panel"]
@@ -80,10 +81,11 @@ layout_mode = 2
 
 [node name="Label" type="Label" parent="HBoxContainer/Slot2/CenterContainer/Panel"]
 layout_mode = 0
-offset_left = -19.0
-offset_top = 1.0
-offset_right = 21.0
-offset_bottom = 24.0
+offset_left = -18.0
+offset_top = -9.0
+offset_right = 22.0
+offset_bottom = 34.0
+text = "99"
 horizontal_alignment = 2
 
 [node name="select" type="Sprite2D" parent="HBoxContainer/Slot2/CenterContainer/Panel"]

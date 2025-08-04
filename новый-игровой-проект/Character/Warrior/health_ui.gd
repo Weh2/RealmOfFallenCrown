@@ -1,7 +1,7 @@
 extends CanvasLayer
 
 @onready var health_bar: TextureProgressBar = $UIRoot/HealthBar
-@onready var health_label: Label = $UIRoot/HealthBar/Label  # Опциональный лейбл
+
 
 func _ready():
 	if not _validate_nodes():
@@ -57,11 +57,3 @@ func update_health(current: float, max_hp: float):
 	
 	health_bar.add_theme_stylebox_override("fill", fill_style)
 	
-	# Обновляем текст лейбла, если он существует
-	if health_label:
-		health_label.text = "%d/%d" % [current, max_hp]
-		# Динамическое изменение цвета текста
-		if health_ratio < 0.25:
-			health_label.add_theme_color_override("font_color", Color(1, 0.3, 0.3))
-		else:
-			health_label.add_theme_color_override("font_color", Color(1, 1, 1))
