@@ -1,4 +1,4 @@
-[gd_scene load_steps=85 format=3 uid="uid://buxurdmy5l22s"]
+[gd_scene load_steps=86 format=3 uid="uid://buxurdmy5l22s"]
 
 [ext_resource type="Script" uid="uid://7j2fxan644jx" path="res://Character/Warrior/Warrior.gd" id="1_ij6vw"]
 [ext_resource type="Resource" uid="uid://ct3husp0sat75" path="res://ui/inventory/playerinv.tres" id="2_cr365"]
@@ -24,6 +24,7 @@
 [ext_resource type="Texture2D" uid="uid://cnnu0ti6nskx0" path="res://Character/Warrior/ATTACK 3.png" id="14_owr25"]
 [ext_resource type="PackedScene" uid="uid://qudwcfkia18l" path="res://ui/ExperienceBar.tscn" id="19_owr25"]
 [ext_resource type="Texture2D" uid="uid://cxf55eo5rt3rk" path="res://ui/bars 2.png" id="24_tarew"]
+[ext_resource type="PackedScene" uid="uid://bgrax1wiegbam" path="res://ui/stats_panel.tscn" id="25_lwhy1"]
 
 [sub_resource type="CapsuleShape2D" id="CapsuleShape2D_ij6vw"]
 radius = 15.0
@@ -616,3 +617,6 @@ offset_right = 132.0
 offset_bottom = 29.0
 scale = Vector2(2.06542, 2.37431)
 texture_under = ExtResource("24_tarew")
+
+[node name="StatsPanel" parent="." instance=ExtResource("25_lwhy1")]
+visible = false
