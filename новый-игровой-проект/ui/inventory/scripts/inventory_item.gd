@@ -21,7 +21,7 @@ enum ItemType {
 @export var max_stack: int = 1
 @export var stats: Dictionary = {
 	"attack": 0,
-	"defense": 0,
+	"armor": 0,
 	"health": 0,
 	"stamina": 0
 }

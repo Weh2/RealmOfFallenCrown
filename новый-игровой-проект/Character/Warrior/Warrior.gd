@@ -44,9 +44,9 @@ var skill_points: int = 0
 		attack = value
 		stats_updated.emit()
 
-@export var defense: int = 0:
+var armor: int = 0:
 	set(value):
-		defense = value
+		armor = value
 		stats_updated.emit()
 
 @export var stamina: int = 100:
@@ -54,24 +54,42 @@ var skill_points: int = 0
 		stamina = value
 		stats_updated.emit()
 
+# Система сопротивлений
+var resistances = {
+	"physical": {
+		"from_stats": 0.0,
+		"from_armor": 0.0
+	},
+	"magic": 0.0,
+	"poison": 0.0,
+	"fire": 0.0,
+	"ice": 0.0
+}
+
 # Базовые характеристики
 @export var base_stats = {
 	"health": 100,
 	"attack": 10,
-	"defense": 0,
+	"armor": 0,
 	"stamina": 100,
 	"speed": 300,
-	"luck": 5
+	"strength": 1,
+	"agility": 1,
+	"endurance": 1,
+	"intellect": 1
 }
 
 # Модификаторы
 var stat_modifiers = {
 	"health": 0,
 	"attack": 0,
-	"defense": 0,
+	"armor": 0,
 	"stamina": 0,
 	"speed": 0,
-	"luck": 0
+	"strength": 0,
+	"agility": 0,
+	"endurance": 0,
+	"intellect": 0
 }
 
 # Stamina system
@@ -157,6 +175,43 @@ func _ready():
 	else:
 		push_error("Inventory not initialized!")
 
+func _update_resistances():
+	# Физическое сопротивление от силы (1% каждые 5 уровней, макс 15%)
+	resistances["physical"]["from_stats"] = min(floor(base_stats["strength"] / 5) * 0.01, 0.15)
+	
+	# Сопротивление от брони (нелинейное, макс 50%)
+	var armor_cap = 100
+	resistances["physical"]["from_armor"] = (armor / (armor + armor_cap)) * 0.5
+	
+	# Магическое сопротивление от интеллекта
+	resistances["magic"] = base_stats["intellect"] * 0.005
+	
+	# Сопротивление ядам от выносливости
+	resistances["poison"] = base_stats["endurance"] * 0.015
+	
+	# Другие сопротивления
+	resistances["fire"] = base_stats["endurance"] * 0.01
+	resistances["ice"] = base_stats["endurance"] * 0.01
+
+func get_stat_bonus(stat_type: String) -> float:
+	match stat_type:
+		"physical_damage":
+			return base_stats["strength"] * 0.03  # +3% за уровень силы
+		"attack_speed":
+			return base_stats["agility"] * 0.02  # +2% за уровень ловкости
+		"crit_chance":
+			return base_stats["agility"] * 0.015 # +1.5% за уровень ловкости
+		"crit_damage":
+			return base_stats["agility"] * 0.02  # +2% за уровень ловкости
+		"skill_damage":
+			return base_stats["intellect"] * 0.05 # +5% за уровень интеллекта
+		"cooldown_reduction":
+			return base_stats["intellect"] * 0.01 # +1% за уровень интеллекта
+		"dodge_chance":
+			return base_stats["agility"] * 0.008 # +0.8% за уровень ловкости
+		_:
+			return 0.0
+
 func gain_xp(amount: int):
 	if current_level >= max_level:
 		return
@@ -173,9 +228,9 @@ func _level_up():
 	current_xp = max(current_xp - xp_to_level_up, 0)
 	xp_to_level_up = int(xp_to_level_up * 1.2)
 	
-	base_stats.health += 5
-	base_stats.stamina += 3
-	base_stats.attack += 1
+	base_stats["health"] += 5
+	base_stats["stamina"] += 3
+	base_stats["attack"] += 1
 	
 	emit_signal("level_up", current_level)
 	_update_equipment_stats()
@@ -192,20 +247,17 @@ func _update_equipment_stats():
 	if not inv or inv.equipment_slots.size() < 8:
 		return
 	
-	var final_stats = {
-		"health": base_stats["health"] + stat_modifiers["health"],
-		"attack": base_stats["attack"] + stat_modifiers["attack"],
-		"defense": base_stats["defense"] + stat_modifiers["defense"],
-		"stamina": base_stats["stamina"] + stat_modifiers["stamina"],
-		"speed": base_stats["speed"] + stat_modifiers["speed"]
-	}
-	
+	# Рассчитываем бонусы от экипировки
 	var bonuses = {
 		"health": 0,
 		"attack": 0,
-		"defense": 0,
+		"armor": 0,
 		"stamina": 0,
-		"speed": 0
+		"speed": 0,
+		"strength": 0,
+		"agility": 0,
+		"endurance": 0,
+		"intellect": 0
 	}
 	
 	for slot in inv.equipment_slots:
@@ -213,11 +265,23 @@ func _update_equipment_stats():
 			for stat in bonuses:
 				bonuses[stat] += slot.item.stats.get(stat, 0)
 	
+	
+	# Обновляем реальные характеристики с учетом бонусов
+	self.health = base_stats["health"] + stat_modifiers["health"] + bonuses["health"]
+	self.attack = base_stats["attack"] + stat_modifiers["attack"] + bonuses["attack"]
+	self.armor = base_stats["armor"] + stat_modifiers["armor"] + bonuses["armor"]
+	self.stamina = base_stats["stamina"] + stat_modifiers["stamina"] + bonuses["stamina"]
+	self.speed = base_stats["speed"] + stat_modifiers["speed"] + bonuses["speed"]
+	
+	# Обновляем сопротивления
+	_update_resistances()
+	
+	# Обновляем максимальное здоровье в health_component
 	if health_component:
-		health_component.max_health = final_stats["health"] + bonuses["health"]
-		health_component.current_health = min(health_component.current_health, health_component.max_health)
+		health_component.max_health = self.health
 		health_ui.update_health(health_component.current_health, health_component.max_health)
 	
+	# Обновляем оружие
 	var weapon_slot = inv.equipment_slots[InvItem.ItemType.WEAPON]
 	if weapon_slot and weapon_slot.item:
 		if has_node("Weapon") and $Weapon.has_method("update_weapon"):
@@ -225,12 +289,14 @@ func _update_equipment_stats():
 	elif has_node("Weapon") and $Weapon.has_method("unequip_weapon"):
 		$Weapon.unequip_weapon()
 	
-	max_stamina = final_stats["stamina"] + bonuses["stamina"]
+	# Обновляем стамину
+	max_stamina = self.stamina
 	current_stamina = min(current_stamina, max_stamina)
-	speed = final_stats["speed"] + bonuses["speed"]
-	
 	stamina_ui.set_stamina(current_stamina)
-
+	
+	# Принудительно обновляем UI
+	stats_updated.emit()
+	
 func _physics_process(delta):
 	if weapon.is_attacking() or is_dashing:
 		move_and_slide()
@@ -260,7 +326,7 @@ func _physics_process(delta):
 		sprite.play("walk" if velocity.length() > 0 else "idle")
 
 func _input(event):
-	if event.is_action_pressed("toggle_stats"):
+	if event.is_action_pressed("stats_panel"):
 		var panel = get_node("StatsPanel")
 		if panel.visible:
 			panel.hide()
@@ -319,22 +385,25 @@ func start_dash():
 	await get_tree().create_timer(dash_cooldown).timeout
 	can_dash = true
 
-func take_damage(damage: int, source_position: Vector2 = Vector2.ZERO):
-	health -= damage
-	stats_updated.emit()
-	
+func take_damage(damage: int, damage_type: String = "physical", source_position: Vector2 = Vector2.ZERO):
 	if invincible or is_dashing:
 		return
 	
-	var total_defense = stat_modifiers["defense"]
-	for slot in inv.equipment_slots:
-		if slot and slot.item:
-			total_defense += slot.item.stats.get("defense", 0)
+	var reduction = 0.0
 	
-	var damage_after_defense = max(1, damage - total_defense)
+	match damage_type:
+		"physical":
+			reduction = min(
+				resistances["physical"]["from_stats"] + resistances["physical"]["from_armor"],
+				0.65
+			)
+		_:
+			reduction = resistances.get(damage_type, 0.0)
+	
+	var damage_after_reduction = int(damage * (1.0 - reduction))
 	
 	if is_blocking and check_block_direction(source_position):
-		damage_after_defense = int(damage_after_defense * (1.0 - block_damage_reduction))
+		damage_after_reduction = int(damage_after_reduction * (1.0 - block_damage_reduction))
 		flash_sprite(Color.ROYAL_BLUE, 0.1, 1)
 		camera.apply_shake(shake_power * 0.5, shake_duration * 0.7)
 	else:
@@ -345,7 +414,7 @@ func take_damage(damage: int, source_position: Vector2 = Vector2.ZERO):
 	get_tree().create_timer(0.5).timeout.connect(func(): invincible = false)
 	
 	if health_component:
-		health_component.take_damage(damage_after_defense)
+		health_component.take_damage(damage_after_reduction)
 	
 	if source_position != Vector2.ZERO:
 		var knockback_direction = (global_position - source_position).normalized()

@@ -11,8 +11,8 @@ item_type = 1
 stackable = false
 max_stack = 1
 stats = {
+"armor": 20,
 "attack": 0,
-"defense": 20,
 "health": 10,
 "stamina": 0
 }

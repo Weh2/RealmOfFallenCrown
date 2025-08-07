@@ -178,7 +178,7 @@ func _attack_player():
 	await get_tree().create_timer(0.3).timeout
 	
 	if not is_dead and target and _is_target_alive(target) and global_position.distance_to(target.global_position) <= attack_range * 1.1:
-		target.take_damage(attack_damage, global_position)
+		target.take_damage(attack_damage, "physical", global_position)
 	
 	await sprite.animation_finished
 	
