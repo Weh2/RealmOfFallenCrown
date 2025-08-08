@@ -195,23 +195,27 @@ func _update_resistances():
 	resistances["ice"] = base_stats["endurance"] * 0.01
 
 func get_stat_bonus(stat_type: String) -> float:
+	var bonus = 0.0
 	match stat_type:
 		"physical_damage":
-			return base_stats["strength"] * 0.03  # +3% за уровень силы
+			bonus = base_stats["strength"] * 0.03  # +3% за уровень силы
 		"attack_speed":
-			return base_stats["agility"] * 0.02  # +2% за уровень ловкости
+			bonus = base_stats["agility"] * 0.02 + stat_modifiers.get("attack_speed", 0) * 0.01  # +1% за каждую единицу скорости атаки
 		"crit_chance":
-			return base_stats["agility"] * 0.015 # +1.5% за уровень ловкости
+			bonus = base_stats["agility"] * 0.015 + stat_modifiers.get("crit_chance", 0) * 0.01 # +1% за каждую единицу шанса крита
 		"crit_damage":
-			return base_stats["agility"] * 0.02  # +2% за уровень ловкости
+			bonus = base_stats["agility"] * 0.02 + stat_modifiers.get("crit_damage", 0) * 0.01  # +1% за каждую единицу урона крита
 		"skill_damage":
-			return base_stats["intellect"] * 0.05 # +5% за уровень интеллекта
+			bonus = base_stats["intellect"] * 0.05 # +5% за уровень интеллекта
 		"cooldown_reduction":
-			return base_stats["intellect"] * 0.01 # +1% за уровень интеллекта
+			bonus = base_stats["intellect"] * 0.01 # +1% за уровень интеллекта
 		"dodge_chance":
-			return base_stats["agility"] * 0.008 # +0.8% за уровень ловкости
+			bonus = base_stats["agility"] * 0.008 # +0.8% за уровень ловкости
 		_:
-			return 0.0
+			bonus = 0.0
+
+	
+	return bonus
 
 func gain_xp(amount: int):
 	if current_level >= max_level:
@@ -244,6 +248,8 @@ func upgrade_stat(stat: String, amount: int = 1) -> bool:
 		return true
 	return false
 
+
+
 func _update_equipment_stats():
 	if not inv or inv.equipment_slots.size() < 8:
 		return
@@ -258,7 +264,11 @@ func _update_equipment_stats():
 		"strength": 0,
 		"agility": 0,
 		"endurance": 0,
-		"intellect": 0
+		"intellect": 0,
+		# Добавляем новые статы
+		"attack_speed": 0,
+		"crit_chance": 0,
+		"crit_damage": 0
 	}
 	
 	for slot in inv.equipment_slots:
@@ -266,13 +276,17 @@ func _update_equipment_stats():
 			for stat in bonuses:
 				bonuses[stat] += slot.item.stats.get(stat, 0)
 	
-	
 	# Обновляем реальные характеристики с учетом бонусов
 	self.health = base_stats["health"] + stat_modifiers["health"] + bonuses["health"]
 	self.attack = base_stats["attack"] + stat_modifiers["attack"] + bonuses["attack"]
 	self.armor = base_stats["armor"] + stat_modifiers["armor"] + bonuses["armor"]
 	self.stamina = base_stats["stamina"] + stat_modifiers["stamina"] + bonuses["stamina"]
 	self.speed = base_stats["speed"] + stat_modifiers["speed"] + bonuses["speed"]
+	
+	# Обновляем новые статы
+	stat_modifiers["attack_speed"] = bonuses["attack_speed"]
+	stat_modifiers["crit_chance"] = bonuses["crit_chance"]
+	stat_modifiers["crit_damage"] = bonuses["crit_damage"]
 	
 	# Обновляем сопротивления
 	_update_resistances()
