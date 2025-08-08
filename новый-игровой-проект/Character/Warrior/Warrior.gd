@@ -176,12 +176,13 @@ func _ready():
 		push_error("Inventory not initialized!")
 
 func _update_resistances():
-	# Физическое сопротивление от силы (1% каждые 5 уровней, макс 15%)
+	# Физическое сопротивление от силы (1% каждые 5 уровней силы)
 	resistances["physical"]["from_stats"] = min(floor(base_stats["strength"] / 5) * 0.01, 0.15)
 	
-	# Сопротивление от брони (нелинейное, макс 50%)
-	var armor_cap = 100
-	resistances["physical"]["from_armor"] = (armor / (armor + armor_cap)) * 0.5
+	# Сопротивление от брони (20 брони = 20/(20+100)*0.5 = 0.083)
+	var armor_value = max(armor, 0)  # Не может быть отрицательным
+	resistances["physical"]["from_armor"] = (armor_value / (armor_value + 100.0)) * 0.5
+	
 	
 	# Магическое сопротивление от интеллекта
 	resistances["magic"] = base_stats["intellect"] * 0.005
@@ -389,18 +390,16 @@ func take_damage(damage: int, damage_type: String = "physical", source_position:
 	if invincible or is_dashing:
 		return
 	
-	var reduction = 0.0
 	
+	var reduction = 0.0
 	match damage_type:
 		"physical":
-			reduction = min(
-				resistances["physical"]["from_stats"] + resistances["physical"]["from_armor"],
-				0.65
-			)
-		_:
-			reduction = resistances.get(damage_type, 0.0)
+			var phys_resist = resistances["physical"]["from_stats"] + resistances["physical"]["from_armor"]
+			reduction = min(phys_resist, 0.75)  # Макс 75% защиты
+
 	
 	var damage_after_reduction = int(damage * (1.0 - reduction))
+
 	
 	if is_blocking and check_block_direction(source_position):
 		damage_after_reduction = int(damage_after_reduction * (1.0 - block_damage_reduction))
@@ -428,6 +427,8 @@ func check_block_direction(source_position: Vector2) -> bool:
 	var attack_direction = (source_position - global_position).normalized()
 	var block_direction = Vector2(-1 if sprite.flip_h else 1, 0)
 	return attack_direction.dot(block_direction) > 0.7
+
+
 
 func _on_stamina_depleted():
 	is_blocking = false

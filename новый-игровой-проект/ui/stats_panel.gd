@@ -17,15 +17,7 @@ func _ready():
 		update_stats()
 
 func update_stats():
-	print("Updating stats panel...")  # Отладочное сообщение
-	if !is_instance_valid(player):
-		push_error("Player instance is invalid")
-		return
-	
-	print("Armor: ", player.armor, " Stamina: ", player.stamina)  # Проверка значений
-	if !is_instance_valid(player):
-		push_error("Player instance is invalid")
-		return
+
 	
 	level_label.text = "Уровень: %d" % player.current_level
 	
