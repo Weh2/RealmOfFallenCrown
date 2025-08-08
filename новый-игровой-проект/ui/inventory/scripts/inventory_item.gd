@@ -23,7 +23,10 @@ enum ItemType {
 	"attack": 0,
 	"armor": 0,
 	"health": 0,
-	"stamina": 0
+	"stamina": 0,
+	"attack_speed": 0,    # +X% к скорости атаки
+	"crit_chance": 0,     # +X% к шансу крита
+	"crit_damage": 0      # +X% к урону крита
 }
 
 # Метод для получения уникального идентификатора предмета
