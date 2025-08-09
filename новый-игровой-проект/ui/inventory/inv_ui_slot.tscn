@@ -43,6 +43,7 @@ horizontal_alignment = 1
 
 [node name="select" type="Sprite2D" parent="CenterContainer/Panel"]
 visible = false
+z_index = 102
 position = Vector2(4.5, -2.99999)
 scale = Vector2(2.88462, 2.84615)
 texture = ExtResource("3_iowq5")

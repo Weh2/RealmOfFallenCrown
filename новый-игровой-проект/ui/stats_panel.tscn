@@ -1,15 +1,28 @@
-[gd_scene load_steps=5 format=3 uid="uid://bgrax1wiegbam"]
+[gd_scene load_steps=11 format=3 uid="uid://bgrax1wiegbam"]
 
 [ext_resource type="Texture2D" uid="uid://cndyuhoba7185" path="res://ui/inventory/RectangleBox_96x96.png" id="1_i5gt7"]
 [ext_resource type="Script" uid="uid://b8er8g7b8ovk6" path="res://ui/stats_panel.gd" id="2_oiwt0"]
 [ext_resource type="PackedScene" uid="uid://dbglcha74aimg" path="res://ui/StatItem.tscn" id="3_nkcmh"]
+[ext_resource type="Texture2D" uid="uid://brnf2rfwdoys8" path="res://ui/inventory/RightArrowButton_7x10.png" id="4_shpxu"]
+[ext_resource type="Script" uid="uid://qppp36ye86ck" path="res://ui/upgrade_sub_panel.gd" id="4_tf14i"]
+[ext_resource type="Texture2D" uid="uid://cdhb28kp06g56" path="res://ui/inventory/LeftArrowButton_7x10.png" id="5_tf14i"]
+[ext_resource type="Texture2D" uid="uid://dom154iixboek" path="res://assets/491fe4f9bce119c.png" id="7_rn7dr"]
 
 [sub_resource type="StyleBoxTexture" id="StyleBoxTexture_e5vn0"]
 texture = ExtResource("1_i5gt7")
-texture_margin_left = 5.0
-texture_margin_top = 5.0
-texture_margin_right = 5.0
-texture_margin_bottom = 5.0
+texture_margin_left = 7.0
+texture_margin_top = 7.0
+texture_margin_right = 7.0
+texture_margin_bottom = 7.0
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_shpxu"]
+texture = ExtResource("1_i5gt7")
+texture_margin_left = 7.0
+texture_margin_top = 7.0
+texture_margin_right = 7.0
+texture_margin_bottom = 7.0
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_shpxu"]
 
 [node name="StatsPanel" type="Panel"]
 z_index = 101
@@ -19,13 +32,13 @@ anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
-offset_left = -260.0
-offset_top = -245.0
-offset_right = 126.0
-offset_bottom = 404.0
+offset_left = -271.0
+offset_top = -174.0
+offset_right = 115.0
+offset_bottom = 475.0
 grow_horizontal = 2
 grow_vertical = 2
-scale = Vector2(0.614108, 0.614525)
+scale = Vector2(0.409612, 0.497152)
 theme_override_styles/panel = SubResource("StyleBoxTexture_e5vn0")
 script = ExtResource("2_oiwt0")
 
@@ -57,3 +70,182 @@ text = "1"
 [node name="StatItem" parent="VBoxContainer" instance=ExtResource("3_nkcmh")]
 layout_mode = 2
 alignment = 1
+
+[node name="UpgradePanel" type="Panel" parent="."]
+visible = false
+layout_mode = 0
+offset_left = -448.0
+offset_right = -38.0
+offset_bottom = 352.0
+theme_override_styles/panel = SubResource("StyleBoxTexture_shpxu")
+script = ExtResource("4_tf14i")
+
+[node name="MainContainer" type="VBoxContainer" parent="UpgradePanel"]
+layout_mode = 0
+offset_left = 11.0
+offset_top = 5.0
+offset_right = 377.0
+offset_bottom = 194.0
+
+[node name="PointsLabel" type="Label" parent="UpgradePanel/MainContainer"]
+layout_mode = 2
+text = "Очки улучшений: 0"
+horizontal_alignment = 1
+
+[node name="StatsContainer" type="VBoxContainer" parent="UpgradePanel/MainContainer"]
+layout_mode = 2
+
+[node name="Strength" type="Panel" parent="UpgradePanel/MainContainer/StatsContainer"]
+custom_minimum_size = Vector2(80, 40)
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxEmpty_shpxu")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="UpgradePanel/MainContainer/StatsContainer/Strength"]
+layout_mode = 0
+offset_right = 226.0
+offset_bottom = 43.0
+
+[node name="StrengthLabel" type="Label" parent="UpgradePanel/MainContainer/StatsContainer/Strength/VBoxContainer"]
+layout_mode = 2
+text = " Сила (Ур. 1)"
+
+[node name="RightButton" type="Button" parent="UpgradePanel/MainContainer/StatsContainer/Strength"]
+layout_mode = 2
+offset_left = 321.0
+offset_top = 3.0
+offset_right = 336.0
+offset_bottom = 21.0
+scale = Vector2(2.12373, 2.36428)
+icon = ExtResource("4_shpxu")
+flat = true
+
+[node name="LeftButton" type="Button" parent="UpgradePanel/MainContainer/StatsContainer/Strength"]
+layout_mode = 0
+offset_left = 280.0
+offset_top = 3.0
+offset_right = 295.0
+offset_bottom = 21.0
+scale = Vector2(2.12373, 2.36428)
+icon = ExtResource("5_tf14i")
+flat = true
+
+[node name="agility" type="Panel" parent="UpgradePanel/MainContainer/StatsContainer"]
+custom_minimum_size = Vector2(80, 40)
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxEmpty_shpxu")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="UpgradePanel/MainContainer/StatsContainer/agility"]
+layout_mode = 0
+offset_right = 226.0
+offset_bottom = 43.0
+
+[node name="StrengthLabel" type="Label" parent="UpgradePanel/MainContainer/StatsContainer/agility/VBoxContainer"]
+layout_mode = 2
+text = " Ловкость (Ур. 1)"
+
+[node name="RightButton" type="Button" parent="UpgradePanel/MainContainer/StatsContainer/agility"]
+layout_mode = 2
+offset_left = 321.0
+offset_top = 2.0
+offset_right = 336.0
+offset_bottom = 20.0
+scale = Vector2(2.12373, 2.36428)
+icon = ExtResource("4_shpxu")
+flat = true
+
+[node name="LeftButton" type="Button" parent="UpgradePanel/MainContainer/StatsContainer/agility"]
+layout_mode = 0
+offset_left = 280.0
+offset_top = 2.0
+offset_right = 295.0
+offset_bottom = 20.0
+scale = Vector2(2.12373, 2.36428)
+icon = ExtResource("5_tf14i")
+flat = true
+
+[node name="durability" type="Panel" parent="UpgradePanel/MainContainer/StatsContainer"]
+custom_minimum_size = Vector2(80, 40)
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxEmpty_shpxu")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="UpgradePanel/MainContainer/StatsContainer/durability"]
+layout_mode = 0
+offset_right = 226.0
+offset_bottom = 43.0
+
+[node name="StrengthLabel" type="Label" parent="UpgradePanel/MainContainer/StatsContainer/durability/VBoxContainer"]
+layout_mode = 2
+text = " Выносливость (Ур. 1)"
+
+[node name="RightButton" type="Button" parent="UpgradePanel/MainContainer/StatsContainer/durability"]
+layout_mode = 2
+offset_left = 322.0
+offset_top = 3.0
+offset_right = 337.0
+offset_bottom = 21.0
+scale = Vector2(2.12373, 2.36428)
+icon = ExtResource("4_shpxu")
+flat = true
+
+[node name="LeftButton" type="Button" parent="UpgradePanel/MainContainer/StatsContainer/durability"]
+layout_mode = 0
+offset_left = 281.0
+offset_top = 3.0
+offset_right = 296.0
+offset_bottom = 21.0
+scale = Vector2(2.12373, 2.36428)
+icon = ExtResource("5_tf14i")
+flat = true
+
+[node name="intellect" type="Panel" parent="UpgradePanel/MainContainer/StatsContainer"]
+custom_minimum_size = Vector2(80, 40)
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxEmpty_shpxu")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="UpgradePanel/MainContainer/StatsContainer/intellect"]
+layout_mode = 0
+offset_right = 226.0
+offset_bottom = 43.0
+
+[node name="StrengthLabel" type="Label" parent="UpgradePanel/MainContainer/StatsContainer/intellect/VBoxContainer"]
+layout_mode = 2
+text = " Интеллект (Ур. 1)"
+
+[node name="RightButton" type="Button" parent="UpgradePanel/MainContainer/StatsContainer/intellect"]
+layout_mode = 2
+offset_left = 322.0
+offset_top = 3.0
+offset_right = 337.0
+offset_bottom = 21.0
+scale = Vector2(2.12373, 2.36428)
+icon = ExtResource("4_shpxu")
+flat = true
+
+[node name="LeftButton" type="Button" parent="UpgradePanel/MainContainer/StatsContainer/intellect"]
+layout_mode = 0
+offset_left = 281.0
+offset_top = 3.0
+offset_right = 296.0
+offset_bottom = 21.0
+scale = Vector2(2.12373, 2.36428)
+icon = ExtResource("5_tf14i")
+flat = true
+
+[node name="AcceptButton" type="Button" parent="UpgradePanel/MainContainer"]
+layout_mode = 2
+text = "Принять"
+flat = true
+
+[node name="UpgradeButton" type="TextureButton" parent="."]
+visible = false
+z_index = 105
+layout_mode = 2
+offset_left = 300.284
+offset_top = 26.1489
+offset_right = 490.284
+offset_bottom = 226.149
+scale = Vector2(0.297684, 0.266116)
+texture_normal = ExtResource("7_rn7dr")
+
+[connection signal="pressed" from="UpgradePanel/MainContainer/AcceptButton" to="UpgradePanel" method="_on_accept_button_pressed"]
+[connection signal="pressed" from="UpgradeButton" to="." method="_on_upgrade_button_pressed"]

@@ -24,10 +24,15 @@ InvUI="*res://ui/inventory/inv_ui.tscn"
 window/size/viewport_width=1920
 window/size/viewport_height=1080
 
+[editor_plugins]
+
+enabled=PackedStringArray("res://addons/simple_ai/plugin.cfg")
+
 [file_customization]
 
 folder_colors={
 "res://Character/": "purple",
+"res://addons/": "orange",
 "res://assets/": "orange",
 "res://levels/": "green",
 "res://network/": "blue",

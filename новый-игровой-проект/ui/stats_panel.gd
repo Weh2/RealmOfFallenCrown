@@ -3,21 +3,26 @@ extends Panel
 @onready var player = get_tree().get_first_node_in_group("player")
 @onready var level_label = $VBoxContainer/LevelContainer/LevelValue
 @onready var stats_container = $VBoxContainer
-@onready var upgrade_button = $VBoxContainer/UpgradeButton
+@onready var upgrade_button = $UpgradeButton
 
 func _ready():
 	hide()
-	# Удаляем старое подключение, если было
-	if player and player.stats_updated.is_connected(update_stats):
-		player.stats_updated.disconnect(update_stats)
-	
-	player = get_tree().get_first_node_in_group("player")
 	if player:
 		player.stats_updated.connect(update_stats)
+		player.level_up.connect(_on_player_level_up)
 		update_stats()
 
-func update_stats():
+func _on_player_level_up(_new_level: int):
+	# При повышении уровня обновляем кнопку
+	upgrade_button.disabled = player.skill_points <= 0
+	update_stats()
 
+func update_stats():
+	if !player: return
+	
+	# Обновляем состояние кнопки улучшений
+	upgrade_button.disabled = player.skill_points <= 0
+	upgrade_button.visible = player.skill_points > 0  # Скрываем если нет очков
 	
 	level_label.text = "Уровень: %d" % player.current_level
 	
@@ -47,7 +52,7 @@ func update_stats():
 	add_stat_row("💥 Крит. урон", "+%.1f%%" % player.get_stat_bonus("crit_damage"))
 	add_stat_row("⏱ Перезарядка", "-%.1f%%" % player.get_stat_bonus("cooldown_reduction"))
 
-func add_stat_row(name: String, value: String):
+func add_stat_row(name: String, value: String, bonus: String = ""):
 	var row = HBoxContainer.new()
 	row.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	
@@ -61,13 +66,20 @@ func add_stat_row(name: String, value: String):
 	value_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
 	row.add_child(value_label)
 	
+	if bonus != "":
+		var bonus_label = Label.new()
+		bonus_label.text = " (+%s)" % bonus
+		bonus_label.modulate = Color.GREEN_YELLOW
+		row.add_child(bonus_label)
+	
 	stats_container.add_child(row)
 
 func _on_close_button_pressed():
 	hide()
 
 func _on_upgrade_button_pressed():
-	get_tree().call_group("upgrade_panel", "show")
+	$UpgradePanel.show()
+	$UpgradePanel.update_display()
 
 func _input(event):
 	if event.is_action_pressed("stats_panel"):

@@ -130,6 +130,7 @@ func _ready():
 	add_to_group("player")
 	add_to_group("loot_handlers")
 	
+	
 	if loot_ui_scene:
 		loot_ui = loot_ui_scene.instantiate()
 		add_child(loot_ui)
@@ -196,27 +197,42 @@ func _update_resistances():
 
 func get_stat_bonus(stat_type: String) -> float:
 	var bonus = 0.0
+	var equipment_bonus = stat_modifiers.get(stat_type, 0.0) 
+		
 	match stat_type:
 		"physical_damage":
 			bonus = base_stats["strength"] * 0.03  # +3% за уровень силы
-		"attack_speed":
-			bonus = base_stats["agility"] * 0.02 + stat_modifiers.get("attack_speed", 0) * 0.01  # +1% за каждую единицу скорости атаки
 		"crit_chance":
-			bonus = base_stats["agility"] * 0.015 + stat_modifiers.get("crit_chance", 0) * 0.01 # +1% за каждую единицу шанса крита
-		"crit_damage":
-			bonus = base_stats["agility"] * 0.02 + stat_modifiers.get("crit_damage", 0) * 0.01  # +1% за каждую единицу урона крита
-		"skill_damage":
-			bonus = base_stats["intellect"] * 0.05 # +5% за уровень интеллекта
+			bonus = base_stats["agility"] * 0.015 + equipment_bonus * 0.01
+			bonus = min(bonus, 0.25)  # Макс 25%
+		"attack_speed":
+			bonus = floor(base_stats["agility"] / 2.0) * 0.05 + equipment_bonus * 0.01
+		"health_bonus":
+			bonus = base_stats["strength"] * 5.0  # +5 HP за уровень силы
+		"stamina_bonus":
+			bonus = base_stats["endurance"] * 10.0  # +10 стамины за уровень
+		"ability_damage":
+			bonus = base_stats["intellect"] * 0.08  # +8% за уровень
 		"cooldown_reduction":
-			bonus = base_stats["intellect"] * 0.01 # +1% за уровень интеллекта
+			bonus = base_stats["intellect"] * 0.02  # +2% за уровень
 		"dodge_chance":
-			bonus = base_stats["agility"] * 0.008 # +0.8% за уровень ловкости
+			bonus = base_stats["agility"] * 0.01  # +1% за уровень
+			bonus = min(bonus, 20.0)  # Макс 20%
+		"damage_resistance":
+			# Сопротивление от силы (1% каждые 5 уровней)
+			bonus = floor(base_stats["strength"] / 5.0) * 0.01
+			bonus = min(bonus, 0.15)  # Макс 15%
+		"all_resistance":
+			bonus = base_stats["endurance"] * 0.02  # +2% за уровень
+			bonus = min(bonus, 0.30)  # Макс 30%
 		_:
 			bonus = 0.0
-
 	
 	return bonus
-
+	
+	
+	
+	
 func gain_xp(amount: int):
 	if current_level >= max_level:
 		return
@@ -233,24 +249,52 @@ func _level_up():
 	current_xp = max(current_xp - xp_to_level_up, 0)
 	xp_to_level_up = int(xp_to_level_up * 1.2)
 	
-	base_stats["health"] += 5
-	base_stats["stamina"] += 3
-	base_stats["attack"] += 1
-	
+	# УБИРАЕМ автоматическое повышение статов здесь!
+	stats_updated.emit()
 	emit_signal("level_up", current_level)
-	_update_equipment_stats()
 
+# Модифицируем метод upgrade_stat
 func upgrade_stat(stat: String, amount: int = 1) -> bool:
-	if skill_points >= amount and stat in stat_modifiers:
-		stat_modifiers[stat] += amount
+	if skill_points >= amount and stat in ["strength", "agility", "endurance", "intellect"]:
+		base_stats[stat] += amount
 		skill_points -= amount
+		
+		# Применяем бонусы в соответствии с вашими требованиями
+		match stat:
+			"strength":
+				base_stats["health"] += 5 * amount  # +5 HP за уровень силы
+				if health_component:
+					health_component.max_health = base_stats["health"] + stat_modifiers["health"]
+				# Бонусы для воинов (если нужно)
+				
+			"agility":
+				# Бонусы для ловкости (скорость атаки, крит и т.д.)
+				pass
+				
+			"endurance":
+				base_stats["stamina"] += 10 * amount  # +10 стамины за уровень
+				max_stamina = base_stats["stamina"] + stat_modifiers["stamina"]
+				current_stamina = max_stamina
+				# Другие бонусы выносливости
+				
+			"intellect":
+				# Бонусы для интеллекта
+				pass
+		
 		_update_equipment_stats()
+		stats_updated.emit()
 		return true
 	return false
 
 
-
 func _update_equipment_stats():
+	print("--- Updating Equipment Stats ---")
+	print("Base Stats: ", base_stats)
+	print("Modifiers: ", stat_modifiers)
+	
+	if not inv:
+		push_error("Inventory is null!")	
+		return
 	if not inv or inv.equipment_slots.size() < 8:
 		return
 	
@@ -309,8 +353,15 @@ func _update_equipment_stats():
 	current_stamina = min(current_stamina, max_stamina)
 	stamina_ui.set_stamina(current_stamina)
 	
-	# Принудительно обновляем UI
-	stats_updated.emit()
+	print("Final Stats:")
+	print("Health: ", health)
+	print("Attack: ", attack)
+	print("Armor: ", armor)
+	print("Stamina: ", stamina)
+	print("Crit Chance: ", get_stat_bonus("crit_chance"))
+	print("Attack Speed: ", get_stat_bonus("attack_speed"))
+	
+	stats_updated.emit() 
 	
 func _physics_process(delta):
 	if weapon.is_attacking() or is_dashing:

@@ -231,7 +231,7 @@ func die():
 	# Даем игроку опыт (исправленная версия)
 	var player = get_tree().get_first_node_in_group("player")
 	if player and player.has_method("gain_xp"):
-		var base_xp = 10
+		var base_xp = 110
 		var xp_amount = base_xp * current_level
 		
 		# Учет разницы уровней (дополнительный бонус/штраф)
