@@ -4,6 +4,8 @@ extends Panel
 @onready var level_label = $VBoxContainer/LevelContainer/LevelValue
 @onready var stats_container = $VBoxContainer
 @onready var upgrade_button = $UpgradeButton
+@onready var stat_tooltip = preload("res://ui/StatTooltip.tscn").instantiate()
+
 
 func _ready():
 	hide()
@@ -11,6 +13,9 @@ func _ready():
 		player.stats_updated.connect(update_stats)
 		player.level_up.connect(_on_player_level_up)
 		update_stats()
+	add_child(stat_tooltip)
+	stat_tooltip.hide()
+
 
 func _on_player_level_up(_new_level: int):
 	# При повышении уровня обновляем кнопку
@@ -52,7 +57,7 @@ func update_stats():
 	add_stat_row("💥 Крит. урон", "+%.1f%%" % player.get_stat_bonus("crit_damage"))
 	add_stat_row("⏱ Перезарядка", "-%.1f%%" % player.get_stat_bonus("cooldown_reduction"))
 
-func add_stat_row(name: String, value: String, bonus: String = ""):
+func add_stat_row(name: String, value: String, bonus: String = "", stat_name: String = ""):
 	var row = HBoxContainer.new()
 	row.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	
@@ -72,7 +77,27 @@ func add_stat_row(name: String, value: String, bonus: String = ""):
 		bonus_label.modulate = Color.GREEN_YELLOW
 		row.add_child(bonus_label)
 	
+	# Добавляем обработчики для подсказки, если указан stat_name
+	if stat_name != "":
+	# Создаем локальную копию переменной для использования в лямбде
+		var tooltip_stat_name = stat_name
+	
+	# Обработка наведения мыши
+		row.mouse_entered.connect(func():
+			stat_tooltip.display(tooltip_stat_name)
+		# Позиционируем подсказку над строкой
+			var pos = row.get_global_rect().position
+			stat_tooltip.position = pos + Vector2(0, -stat_tooltip.size.y - 5)
+	)
+	
+	# Обработка ухода мыши
+	row.mouse_exited.connect(func():
+		stat_tooltip.hide()
+	)
+	
 	stats_container.add_child(row)
+
+
 
 func _on_close_button_pressed():
 	hide()

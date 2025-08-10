@@ -12,8 +12,8 @@
 texture = ExtResource("1_i5gt7")
 texture_margin_left = 7.0
 texture_margin_top = 7.0
-texture_margin_right = 7.0
-texture_margin_bottom = 7.0
+texture_margin_right = 8.0
+texture_margin_bottom = 8.0
 
 [sub_resource type="StyleBoxTexture" id="StyleBoxTexture_shpxu"]
 texture = ExtResource("1_i5gt7")
@@ -34,8 +34,8 @@ anchor_right = 0.5
 anchor_bottom = 0.5
 offset_left = -271.0
 offset_top = -174.0
-offset_right = 115.0
-offset_bottom = 475.0
+offset_right = 88.0
+offset_bottom = 452.0
 grow_horizontal = 2
 grow_vertical = 2
 scale = Vector2(0.409612, 0.497152)
@@ -46,7 +46,7 @@ script = ExtResource("2_oiwt0")
 layout_mode = 0
 offset_left = 22.0
 offset_top = 24.0
-offset_right = 268.0
+offset_right = 334.0
 offset_bottom = 375.0
 
 [node name="Title" type="Label" parent="VBoxContainer"]
@@ -240,11 +240,11 @@ flat = true
 visible = false
 z_index = 105
 layout_mode = 2
-offset_left = 300.284
-offset_top = 26.1489
-offset_right = 490.284
-offset_bottom = 226.149
-scale = Vector2(0.297684, 0.266116)
+offset_left = 300.0
+offset_top = 26.0
+offset_right = 490.0
+offset_bottom = 226.0
+scale = Vector2(0.216826, 0.218701)
 texture_normal = ExtResource("7_rn7dr")
 
 [connection signal="pressed" from="UpgradePanel/MainContainer/AcceptButton" to="UpgradePanel" method="_on_accept_button_pressed"]
