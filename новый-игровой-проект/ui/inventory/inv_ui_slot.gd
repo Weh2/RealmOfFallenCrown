@@ -4,16 +4,17 @@ extends Panel
 @onready var amount_text: Label = $CenterContainer/Panel/Label
 @onready var selectSprite: Sprite2D = $CenterContainer/Panel/select
 
-var inv: Inv = null 
-var current_slot: InvSlot  # Текущий слот, связанный с этим UI
+signal slot_hovered(slot_data: InvSlot)
+signal slot_unhovered()
 
+var inv: Inv = null 
+var current_slot: InvSlot
 
 func _ready():
-	# Явно подключаем сигнал gui_input
 	gui_input.connect(_on_gui_input)
 
 
-# Обновление отображения слота
+
 func update(slot: InvSlot):
 	if slot == null:
 		push_warning("Attempted to update slot with null")
@@ -112,10 +113,12 @@ func _drop_data(_pos, data):
 
 func _on_mouse_entered() -> void:
 	selectSprite.visible = true
-
+	if current_slot:
+		emit_signal("slot_hovered", current_slot)
 
 func _on_mouse_exited() -> void:
 	selectSprite.visible = false
+	emit_signal("slot_unhovered")
 
 
 func _on_gui_input(event: InputEvent):

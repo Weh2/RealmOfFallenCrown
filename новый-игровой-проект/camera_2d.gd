@@ -11,6 +11,8 @@ var original_offset: Vector2
 @export var follow_speed := 5.0
 @export var margin := Vector2(100, 50)
 
+
+
 func _ready():
 	original_offset = offset
 	set_physics_process(true)

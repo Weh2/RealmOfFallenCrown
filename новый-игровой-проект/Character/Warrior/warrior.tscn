@@ -502,11 +502,10 @@ position = Vector2(24, 1)
 shape = SubResource("CircleShape2D_uqe86")
 
 [node name="Inv_UI" parent="." instance=ExtResource("10_pxgkq")]
-visible = false
-offset_left = 183.0
-offset_top = -177.0
-offset_right = 643.0
-offset_bottom = 342.0
+offset_left = 76.0
+offset_top = -176.0
+offset_right = 536.0
+offset_bottom = 343.0
 scale = Vector2(0.55063, 0.598588)
 
 [node name="hotbar_ui" parent="." instance=ExtResource("11_8qwps")]
