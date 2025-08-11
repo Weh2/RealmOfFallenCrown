@@ -484,6 +484,7 @@ script = ExtResource("3_ghijl")
 
 [node name="Weapon" type="Node2D" parent="."]
 script = ExtResource("5_dd465")
+base_attack_speed = null
 
 [node name="Sprite2D" type="Sprite2D" parent="Weapon"]
 

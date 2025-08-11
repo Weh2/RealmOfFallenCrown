@@ -72,7 +72,7 @@ var resistances = {
 	"attack": 10,
 	"armor": 0,
 	"stamina": 100,
-	"speed": 300,
+	"speed": 200,
 	"strength": 1,
 	"agility": 1,
 	"endurance": 1,
@@ -364,31 +364,58 @@ func _update_equipment_stats():
 	stats_updated.emit() 
 	
 func _physics_process(delta):
-	if weapon.is_attacking() or is_dashing:
-		move_and_slide()
-		return
+	# Обработка блокировки (финальная версия)
+	var want_to_block = Input.is_action_pressed("block") and current_stamina > 0 and !weapon.is_attacking()
 	
-	var new_blocking_state = Input.is_action_pressed("block") and current_stamina > 0
-	if new_blocking_state != is_blocking:
-		is_blocking = new_blocking_state
+	# Плавное изменение состояния блока
+	if want_to_block != is_blocking:
+		is_blocking = want_to_block
 		block_area.is_blocking = is_blocking
-		sprite.play("block" if is_blocking else "idle")
-	
+		if is_blocking:
+			sprite.play("block")
+		else:
+			sprite.play("idle")
+		# Небольшая задержка для предотвращения дребезга
+		get_tree().create_timer(0.05).timeout.connect(func(): pass)
+
+	# Регенерация стамины
 	if is_blocking:
 		current_stamina = max(current_stamina - stamina_consumption_rate * delta, 0)
 	else:
 		current_stamina = min(current_stamina + stamina_regen_rate * delta, max_stamina)
-	
-	if !is_blocking and !is_dashing:
+
+	# Обработка даша
+	if Input.is_action_just_pressed("dash") and can_dash and current_stamina >= dash_stamina_cost and !is_blocking:
+		start_dash()
+
+	# Управление движением
+	if is_dashing:
+		move_and_slide()
+		return
+		
+	if !is_blocking and !weapon.is_attacking():
 		var input_direction = Input.get_vector("ui_left", "ui_right", "ui_up", "ui_down")
 		
 		if input_direction.x != 0:
 			sprite.flip_h = input_direction.x < 0
 			$Weapon.update_direction(input_direction.x < 0)
 		
-		velocity = input_direction * speed   
-		move_and_slide()
-		
+		velocity = input_direction * speed
+	else:
+		# Плавное торможение при атаке/блоке
+		velocity = velocity.move_toward(Vector2.ZERO, speed * delta * 10)
+	
+	move_and_slide()
+	
+	# Анимации (финальная версия)
+	if is_dashing:
+		sprite.play("dash")
+	elif weapon.is_attacking():
+		pass  # Анимация управляется weapon.gd
+	elif is_blocking:
+		if sprite.animation != "block":  # Защита от повторного проигрывания
+			sprite.play("block")
+	else:
 		sprite.play("walk" if velocity.length() > 0 else "idle")
 
 func _input(event):

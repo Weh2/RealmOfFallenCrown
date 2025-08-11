@@ -27,6 +27,7 @@ func _ready():
 	$Hitbox.body_entered.connect(_on_hitbox_body_entered)
 	player_sprite.animation_finished.connect(_on_animation_finished)
 
+
 func update_weapon(weapon_data: InvItem) -> void:
 	current_weapon = weapon_data
 	visible = true
