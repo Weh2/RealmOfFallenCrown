@@ -299,7 +299,7 @@ shape = SubResource("CapsuleShape2D_v1xi3")
 position = Vector2(1, -2)
 scale = Vector2(1.91, 1.93)
 sprite_frames = SubResource("SpriteFrames_2gfau")
-animation = &"idle"
+animation = &"hurt"
 
 [node name="AttackTimer" type="Timer" parent="."]
 one_shot = true
